@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { AuthService } from './servicios/auth.service/auth.service.component';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,24 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  title = 'PSICOFI';
-}
+export class AppComponent implements OnInit {
+ constructor(
+  private router: Router,
+  private _auth_service: AuthService,
+
+  
+  ){}
+
+  async ngOnInit() {
+    try{
+      console.log('app.component');
+      await this._auth_service.validaLogin();
+      console.log('termine de validar login')
+
+    } catch (error: any) {
+      this.router.navigate(['/login']);
+    }
+  }
+  
+} 
+
