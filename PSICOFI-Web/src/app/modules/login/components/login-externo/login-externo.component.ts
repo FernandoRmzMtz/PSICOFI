@@ -6,9 +6,15 @@ import { LoginService } from '../../services/login.services';
   styleUrls: ['./login-externo.component.css']
 })
 export class LoginExternoComponent {
+  curp: string = "";
+  contrasena: string = "";
   constructor(private loginService: LoginService) {
   }
   public switchLogin(): void {
     this.loginService.toggleForm();
+  }
+
+  public onSubmit(): void {
+    
   }
 }

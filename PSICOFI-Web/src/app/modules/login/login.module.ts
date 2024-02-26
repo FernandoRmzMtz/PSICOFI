@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoginInternoComponent } from './components/login-interno/login-interno.component';
 import { LoginPage } from './login.page';
 import { LoginExternoComponent } from './components/login-externo/login-externo.component';
-
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -14,7 +14,8 @@ import { LoginExternoComponent } from './components/login-externo/login-externo.
     LoginExternoComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ]
 })
 export class LoginModule { }

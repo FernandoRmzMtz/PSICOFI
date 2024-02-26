@@ -10,7 +10,7 @@
     <h2 class="text-center mt-4">Departamento de Atenci&oacute;n Psicol&oacute;gica</h2>
     <hr style="color:#23488C;">
     <div class="container">
-        <form>
+        <form (ngSubmit)="onSubmit()">
             <div class="mb-3">
                 <label for="" class="form-label">CURP</label>
                 <input
@@ -19,6 +19,7 @@
                     name="curp"
                     id="curp"
                     placeholder="CURP a 18 caracteres"
+                    [(ngModel)] = "curp"
                 />
             </div>
             <div class="mb-3">
@@ -29,6 +30,7 @@
                     name="contrasena"
                     id="contrasena"
                     placeholder="Contrase&ntilde;a"
+                    [(ngModel)] = "contrasena"
                 />
             </div>
             <button
