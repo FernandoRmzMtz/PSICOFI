@@ -28,7 +28,6 @@ export class LoginExternoComponent {
 
   private iniciarSesion(): void {
     //Validacion.
-    alert("a");
     if(this.curp == "RAPE011208HSPMDRA0" && this.contrasena == "123456"){
       alert("Sesion iniciada")
     }else{

@@ -29,7 +29,6 @@ export class LoginInternoComponent {
 
   private iniciarSesion(): void {
     //Validacion.
-    alert("a");
     if(this.cvunica == "325850" && this.contrasena == "123456"){
       alert("Sesi&oacute;n iniciada")
     }else{
