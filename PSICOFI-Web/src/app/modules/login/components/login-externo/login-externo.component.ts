@@ -8,6 +8,7 @@ import { LoginService } from '../../services/login.services';
 export class LoginExternoComponent {
   curp: string = "";
   contrasena: string = "";
+  validation: string = "";
   constructor(private loginService: LoginService) {
   }
   public switchLogin(): void {
@@ -15,6 +16,17 @@ export class LoginExternoComponent {
   }
 
   public onSubmit(): void {
-    
+    this.iniciarSesion();
+  }
+
+  private iniciarSesion(): void {
+    //Validacion.
+    alert("a");
+    if(this.curp == "RAPE011208HSPMDRA0" && this.contrasena == "123456"){
+      this.validation = "Sesion iniciada";
+    }else{
+      this.validation = "is-invalid";
+  
+    }
   }
 }
