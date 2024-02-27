@@ -9,7 +9,9 @@ import { LoginService } from '../../services/login.services';
 export class LoginInternoComponent {
   public cvunica: string = "";
   public contrasena: string = "";
-  public validation: string = "";
+
+  public validarContrasena: string = "";
+  public validarClave: string = "";
 
   constructor(private loginService: LoginService) {
   }
@@ -17,18 +19,45 @@ export class LoginInternoComponent {
     this.loginService.toggleForm();
   }
 
+  //Submit del formulario
   public onSubmit(): void {
-    this.iniciarSesion();
+    if(this.validaFormulario())
+    {
+      this.iniciarSesion();
+    }
   }
 
   private iniciarSesion(): void {
     //Validacion.
     alert("a");
     if(this.cvunica == "325850" && this.contrasena == "123456"){
-      this.validation = "Sesion iniciada";
+      alert("Sesi&oacute;n iniciada")
     }else{
-      this.validation = "is-invalid";
-  
+      alert("Usuario o contrase&ntilde;a incorrecta");  
     }
+  }
+
+  //Validación simple de formato de entrada
+  private validaFormulario(): boolean {
+    if(this.contrasena.length < 8 || this.cvunica.length < 6)
+    {
+      this.validarContrasena = "is-invalid";
+      this.validarClave = "is-invalid";
+      return true;
+    }
+    this.validarContrasena = "";
+    this.validarClave = "";
+    return false;
+  }
+
+
+  //Se reestablece el invalid-input cuando se cambia
+  public onInputChange(): void {
+    if(this.validarContrasena != "")
+    {
+      this.validarContrasena = "";
+      this.validarClave = "";
+    }
+    
   }
 }
