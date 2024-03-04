@@ -6,12 +6,24 @@ import { gestionPsico } from '../../services/gestion-psico.services';
   templateUrl: './gestion-psico.component.html',
   styleUrls: ['./gestion-psico.component.css']
 })
-export class GestionPsicoComponent implements OnInit{
+export class GestionPsicoComponent implements OnInit {
   public psicologos: any = [];
+  psicologo = {
+    "clave": "",
+    "nombre": "",
+    "apePat": "",
+    "apeMat": "",
+    "fecha_inicio": "",
+    "estatus": "1"
+  };
   constructor(private psico: gestionPsico) { }
 
   ngOnInit(): void {
     this.psicologos = this.psico.getPsicologos();
   }
-  
+
+  public verPsico(clave: string): void {
+    this.psicologo = this.psico.getPsicologoById(clave);
+    console.log(this.psicologo);
+  }
 }
