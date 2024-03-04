@@ -1,73 +1,18 @@
-<!-- Nav tabs -->
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button
-            class="nav-link active"
-            id="home-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#home"
-            type="button"
-            role="tab"
-            aria-controls="home"
-            aria-selected="true"
-        >
-            Home
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button
-            class="nav-link"
-            id="profile-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#profile"
-            type="button"
-            role="tab"
-            aria-controls="profile"
-            aria-selected="false"
-        >
-            Profile
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button
-            class="nav-link"
-            id="messages-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#messages"
-            type="button"
-            role="tab"
-            aria-controls="messages"
-            aria-selected="false"
-        >
-            Messages
-        </button>
-    </li>
-</ul>
+<nav>
+  <div class="nav nav-tabs container" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-gestion-tab" data-bs-toggle="tab" data-bs-target="#nav-gestion" type="button"
+      role="tab" aria-controls="nav-home" aria-selected="true">GESTI&Oacute;N DE PSIC&Oacute;LOGOS</button>
+    <button class="nav-link inactive" id="nav-anadir-tab" data-bs-toggle="tab" data-bs-target="#nav-anadir" type="button"
+      role="tab" aria-controls="nav-profile" aria-selected="false">A&Ntilde;ADIR PSIC&Oacute;LOGO</button>
+  </div>
+</nav>
 
-<!-- Tab panes -->
-<div class="tab-content">
-    <div
-        class="tab-pane active"
-        id="home"
-        role="tabpanel"
-        aria-labelledby="home-tab"
-    >
-         home 
-    </div>
-    <div
-        class="tab-pane"
-        id="profile"
-        role="tabpanel"
-        aria-labelledby="profile-tab"
-    >
-         profile 
-    </div>
-    <div
-        class="tab-pane"
-        id="messages"
-        role="tabpanel"
-        aria-labelledby="messages-tab"
-    >
-         messages 
-    </div>
+
+<div class="tab-content container" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-gestion" role="tabpanel" aria-labelledby="nav-gestion-tab" tabindex="0">
+    <app-gestion-psico></app-gestion-psico>
+  </div>
+  <div class="tab-pane fade" id="nav-anadir" role="tabpanel" aria-labelledby="nav-anadir-tab" tabindex="0">
+    <app-anadir-psico></app-anadir-psico>
+  </div>
 </div>

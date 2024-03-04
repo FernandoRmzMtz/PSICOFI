@@ -1,0 +1,47 @@
+<div class="container my-5" style="margin-bottom: 100px!important;">
+  <form>
+    <div class="row">
+      <div class="col">
+        <label for="clave" class="oblig">Clave &uacute;nica/CURP:</label>
+        <input type="text" class="form-control" id="clave" placeholder="Clave &uacute;nica/CURP" required>
+      </div>
+      <div class="col">
+        <label for="nombres" class="oblig">Nombre (s):</label>
+        <input type="text" class="form-control" id="nombres" placeholder="Nombres" required>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="apellidoPat" class="oblig">Apellido Paterno:</label>
+            <input type="text" class="form-control" id="apellidoPat" placeholder="Apellido Paterno" required>
+        </div>
+        <div class="col">
+            <label for="apellidoMat">Apellido Materno:</label>
+            <input type="text" class="form-control" id="apellidoMat" placeholder="Apellido Materno">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="semestre" class="oblig">Semestre:</label>
+            <input type="number" class="form-control" id="semestre" placeholder="Semestre" required>
+        </div>
+        <div class="col">
+            <label for="carrera" class="oblig">Carrera:</label>
+            <select id="carrera" class="form-select" name="carrera" placeholder="Carrera" required>
+                <option selected>Selecciona una carrera</option>
+                <option value="1">Licenciatura en Psicolog&iacute;a</option>
+                <option value="2">Licenciatura en Psicopedagog&iacute;a</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label for="correo" class="oblig">Correo electr&oacute;nico</label>
+            <input type="email" class="form-control" id="correo" placeholder="Correo electr&oacute;nico" required>
+        </div>
+    </div>
+    <div class="container text-center my-5">
+        <button type="submit" class="btn btn-primary pull-center" style="width: 50%;">Guardar</button>
+    </div>
+  </form>
+</div>
