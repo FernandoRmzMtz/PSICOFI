@@ -1,1 +1,40 @@
-<p>gestion-psico works!</p>
+<div class="container">
+    <form>
+        <div class="row my-4">
+            <div class="col-11">
+                <input type="text" class="form-control" placeholder="Buscar psicólogo" />
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive" style="max-height: 460px;">
+        <table class="table table-striped">
+            <thead>
+                <tr> 
+                    <th scope="col">Clave</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Fecha Inicio</th>
+                    <th scope="col">Estatus</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let psicologo of psicologos">
+                    <td scope="row">{{psicologo.clave}}</td>
+                    <td scope="row">{{psicologo.nombre}}</td>
+                    <td scope="row">{{psicologo.fecha_inicio}}</td>
+                    <td scope="row"><i class="bi bi-circle-fill text-success" *ngIf="psicologo.estatus==1"></i><i class="bi bi-circle text-muted" *ngIf="psicologo.estatus==0"></i></td>
+                    <td scope="row" class="d-flex justify-content-around">
+                        <button type="button" class="btn btn-primary"><i class="bi bi-pencil"></i></button>
+                        <button type="button" class="btn btn-secondary"><i class="bi bi-eye"></i></button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</div>
