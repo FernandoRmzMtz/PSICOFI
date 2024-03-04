@@ -1,11 +1,36 @@
 import { Component } from '@angular/core';
 
+interface HeaderRoute {
+  title: string;
+  path: string;
+  tipoUsuario: string[];
+}
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  tipoUsuario: string = '';
+  tipoUsuario: string = 'alumno'; // Este valor eventualmente viene de un servicio de autenticación
 
+  rutas: HeaderRoute[] = [
+    { title: 'Inicio', path: '/inicio', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] },
+    { title: 'Agendar cita', path: '/agendar-cita', tipoUsuario: ['alumno'] },
+    { title: 'Mis citas', path: '/mis-citas', tipoUsuario: ['alumno'] },
+    { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['psicologo', 'psicologo_externo'] },
+    { title: 'Reporte de citas', path: '/reporte-citas', tipoUsuario: ['psicologo', 'psicologo_externo'] },
+    { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['psicologo', 'psicologo_externo'] },
+    { title: 'Alumnos atendidos', path: '/alumnos-atendidos', tipoUsuario: ['psicologo', 'psicologo_externo'] },
+    { title: 'Cambiar contraseña', path: '/cambiar-contraseña', tipoUsuario: ['psicologo_externo'] },
+    { title: 'Añadir psicólogo', path: '/añadir-psicologo', tipoUsuario: ['administrador'] },
+    { title: 'Gestionar psicólogos', path: '/gestionar-psicologos', tipoUsuario: ['administrador'] },
+    { title: 'Generar reporte', path: '/generar-reporte', tipoUsuario: ['administrador'] },
+    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] }
+  ];
+  
+
+  get rutasFiltradas(): HeaderRoute[] {
+    return this.rutas.filter(ruta => ruta.tipoUsuario.includes(this.tipoUsuario));
+  }
 }
