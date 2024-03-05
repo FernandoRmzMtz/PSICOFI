@@ -13,7 +13,10 @@ export class gestionPsico {
         "apePat": "Doe",
         "apeMat": "Smith",
         "fecha_inicio": "2020-01-01",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "234567",
@@ -21,7 +24,10 @@ export class gestionPsico {
         "apePat": "Doe",
         "apeMat": "Johnson",
         "fecha_inicio": "2020-02-15",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "345678",
@@ -29,7 +35,10 @@ export class gestionPsico {
         "apePat": "Smith",
         "apeMat": "Brown",
         "fecha_inicio": "2020-03-10",
-        "estatus": "0"
+        "estatus": "0",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "456789",
@@ -37,7 +46,10 @@ export class gestionPsico {
         "apePat": "Johnson",
         "apeMat": "Davis",
         "fecha_inicio": "2020-04-20",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "567890",
@@ -45,7 +57,10 @@ export class gestionPsico {
         "apePat": "Brown",
         "apeMat": "Wilson",
         "fecha_inicio": "2020-05-05",
-        "estatus": "0"
+        "estatus": "0",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "678901",
@@ -53,7 +68,10 @@ export class gestionPsico {
         "apePat": "Davis",
         "apeMat": "Miller",
         "fecha_inicio": "2020-06-30",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "789012",
@@ -61,7 +79,10 @@ export class gestionPsico {
         "apePat": "Wilson",
         "apeMat": "Anderson",
         "fecha_inicio": "2020-07-12",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "890123",
@@ -69,7 +90,10 @@ export class gestionPsico {
         "apePat": "Miller",
         "apeMat": "Thomas",
         "fecha_inicio": "2020-08-25",
-        "estatus": "0"
+        "estatus": "0",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "901234",
@@ -77,7 +101,10 @@ export class gestionPsico {
         "apePat": "Anderson",
         "apeMat": "Clark",
         "fecha_inicio": "2020-09-18",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       },
       {
         "clave": "012345",
@@ -85,7 +112,10 @@ export class gestionPsico {
         "apePat": "Thomas",
         "apeMat": "White",
         "fecha_inicio": "2020-10-05",
-        "estatus": "1"
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
       }
     ];
 
@@ -97,6 +127,10 @@ export class gestionPsico {
     public getPsicologoById(stringId: string):any
     {
       return this.psicologos.find(psicologo => psicologo.clave === stringId);
+    }
 
+    public agregarPsicologo(nuevoPsicologo: any):void
+    {
+      this.psicologos.push(nuevoPsicologo);
     }
 }
