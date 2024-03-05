@@ -15,7 +15,7 @@ export class HeaderComponent {
   tipoUsuario: string = 'alumno'; // Este valor eventualmente viene de un servicio de autenticación
 
   rutas: HeaderRoute[] = [
-    { title: 'Inicio', path: '/inicio', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] },
+    { title: 'Inicio', path: '/dashboard', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] },
     { title: 'Agendar cita', path: '/agendar-cita', tipoUsuario: ['alumno'] },
     { title: 'Mis citas', path: '/mis-citas', tipoUsuario: ['alumno'] },
     { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['psicologo', 'psicologo_externo'] },

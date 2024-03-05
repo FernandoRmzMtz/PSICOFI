@@ -1,4 +1,16 @@
-<article class="calendar-wrapper">
-    <igx-calendar></igx-calendar>
-</article>
+<div id="calendario">
+    <div class="header">
+      <button (click)="cambiarMes(-1)">&#9666;</button>
+      <span>{{ meses[fechaActual.getMonth()] }} {{ fechaActual.getFullYear() }}</span>
+      <button (click)="cambiarMes(1)">&#9656;</button>
+    </div>
+    <div class="body">
+      <div class="dias-semana">
+        <div *ngFor="let dia of diasAbreviados">{{ dia }}</div>
+      </div>
+      <div class="dias">
+        <div *ngFor="let dia of diasDelMes">{{ dia }}</div>
+      </div>
+    </div>
+  </div>
   

@@ -5,7 +5,7 @@ import { lastValueFrom, map } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CalendarioService {
+export class AgendarCitaService {
   public activos: any = [];
 
   constructor(private _http: HttpClient) { }
