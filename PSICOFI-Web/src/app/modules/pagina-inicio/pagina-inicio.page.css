@@ -1,0 +1,22 @@
+#carouselId
+{
+    max-height: 250px;
+}
+
+#carouselId img
+{
+    max-height: 250px;
+    object-fit: cover;
+}
+
+#carouselId ol li
+{
+    list-style: none;
+}
+
+#buttonCarousel
+{
+    position: relative;
+    top: -50px;
+    left: 50px;
+}
