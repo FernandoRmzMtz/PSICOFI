@@ -10,7 +10,8 @@
 
 <div class="tab-content container" id="nav-tabContent">
   <div class="tab-pane fade show active" id="nav-gestion" role="tabpanel" aria-labelledby="nav-gestion-tab" tabindex="0">
-    <app-gestion-psico></app-gestion-psico>
+    <app-gestion-psico *ngIf="!verPsicoVisible"></app-gestion-psico>
+    <app-ver-psicologo *ngIf="verPsicoVisible"></app-ver-psicologo>
   </div>
   <div class="tab-pane fade" id="nav-anadir" role="tabpanel" aria-labelledby="nav-anadir-tab" tabindex="0">
     <app-anadir-psico></app-anadir-psico>

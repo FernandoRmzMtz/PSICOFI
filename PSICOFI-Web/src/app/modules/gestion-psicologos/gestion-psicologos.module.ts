@@ -4,13 +4,17 @@ import { GestionPsicologosPage } from './gestion-psicologos.page';
 import { GestionPsicoComponent } from './components/gestion-psico/gestion-psico.component';
 import { AnadirPsicoComponent } from './components/anadir-psico/anadir-psico.component';
 import { FormsModule } from '@angular/forms';
+import { VerPsicologoComponent } from './components/ver-psicologo/ver-psicologo.component';
+import { TablaAlumnosAtendidosComponent } from './components/tabla-alumnos-atendidos/tabla-alumnos-atendidos.component';
 
 
 @NgModule({
   declarations: [
     GestionPsicologosPage,
     GestionPsicoComponent,
-    AnadirPsicoComponent
+    AnadirPsicoComponent,
+    VerPsicologoComponent,
+    TablaAlumnosAtendidosComponent
   ],
   imports: [
     CommonModule,

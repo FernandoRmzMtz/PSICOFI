@@ -24,5 +24,6 @@ export class GestionPsicoComponent implements OnInit {
 
   public verPsico(clave: string): void {
     this.psicologo = this.psico.getPsicologoById(clave);
+    this.psico.verPsicoVisible = true;
   }
 }
