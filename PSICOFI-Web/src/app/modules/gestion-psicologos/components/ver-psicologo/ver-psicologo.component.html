@@ -1,0 +1,44 @@
+<div class="container fade-in">
+    <div class="container">
+        <table class="my-4">
+            <tr>
+                <td class="bg-info">Clave &uacute;nica / CURP:&nbsp;</td>
+                <td id="clavePsicoInfo">000000</td>
+            </tr>
+            <tr>
+                <td class="bg-info">Nombre:&nbsp;</td>
+                <td id="nombrePsicoInfo">000000</td>
+            </tr>
+            <tr>
+                <td class="bg-info">Semestre &nbsp;</td>
+                <td id="semestrePsicoInfo">00</td>
+            </tr>
+            <tr>
+                <td class="bg-info">Carrera: &nbsp;</td>
+                <td id="carreraPsicoInfo">00</td>
+            </tr>
+            <tr>
+                <td class="bg-info">Estatus: &nbsp;</td>
+                <td id="estatusPsicoInfo">00</td>
+            </tr>
+            <tr>
+                <td class="bg-info">Correo: &nbsp;</td>
+                <td id="correoPsicoInfo">000000@0000.com</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="container my-2">
+        <div class="row justify-content-around">
+            <div class="col-3">
+                <button class="btn btn-primary" (click)="ocultarVer()">Volver</button>
+            </div>
+            <div class="col-3 ms-start">
+                <button class="btn btn-primary float-end">Editar</button>
+            </div>
+        </div>
+    </div>
+    <h2 class="text-center my-3">ALUMNOS ATENDIDOS POR 000000 NOMBRE</h2>
+    <app-tabla-alumnos-atendidos></app-tabla-alumnos-atendidos>
+</div>
+

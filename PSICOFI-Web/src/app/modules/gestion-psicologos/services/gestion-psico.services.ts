@@ -6,6 +6,7 @@ import { Injectable } from "@angular/core";
 })
 
 export class gestionPsico {
+  public verPsicoVisible: boolean = false;
     public psicologos = [
       {
         "clave": "123456",
