@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class PsicologoExterno extends Model
 {
+    protected $guarded = [];
     protected $table = 'psicologoexterno';
-    public $timestamps = false;
+    public $timestamps = true;
+    protected $primaryKey = 'CURP';
     use HasFactory;
 }

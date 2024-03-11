@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('Carrera');
             $table->string('semestre');
             $table->boolean('activo');
+            $table->string('correo');
             $table->string('contrasena',20);
+            $table->timestamps();
         });
     }
 

@@ -20,12 +20,13 @@ class PsicologoExternoFactory extends Factory
     {
         return [
             'CURP' => $this->faker->regexify('[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}'),
-            'nombres' => $this->faker->name(), 
+            'nombres' => $this->faker->name(),
             'apellidoPaterno' => $this->faker->lastName(), 
             'apellidoMaterno' => $this->faker->lastName(),
             'Carrera' => $this->faker->randomElement(['Licenciatura en psicologia','Licenciatura en psicopedagogia']),
             'semestre' => $this->faker->numberBetween(1,9),
             'activo' => $this->faker->boolean(),
+            'correo' => $this->faker->email(),
             'contrasena' => $this->faker->bothify('###???###???')
         ];
     }

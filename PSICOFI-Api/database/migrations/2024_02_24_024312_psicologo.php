@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('apellidoMaterno',60);
             $table->unsignedBigInteger('idCarrera');
             $table->bigInteger('semestre');
+            $table->string('correo');
             $table->boolean('activo');
-
+            $table->timestamps();
             // Foreign key
             $table->foreign('idCarrera')->references('idCarrera')->on('CarrerasPsico');
         });
