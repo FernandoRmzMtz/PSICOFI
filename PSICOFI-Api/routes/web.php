@@ -3,6 +3,8 @@
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PsicoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,22 +19,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class);
 
-Route::get('cursos', [CursoController::class, 'index'])->name('cursos.index');
+Route::post('login',[AuthController::class,'login'])->name('login');
 
-Route::get('cursos/create', [CursoController::class, 'create'])->name('cursos.create');
+Route::post('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo'])->name('psicologo.searchPsicologo');
 
-Route::get('cursos/get', [CursoController::class, 'getCurso'])->name('cursos.getCurso');
+Route::post('psicologo/registerPsicologo',[PsicoController::class,'registerPsicologo'])->name('psicologo.registerPsicologo');
 
-Route::post('cursos', [CursoController::class, 'store'])->name('cursos.store');
+Route::post('psicologo/getPsicologos',[PsicoController::class,'getPsicologos'])->name('psicologo.getPsicologos');
 
-Route::get('cursos/{curso}', [CursoController::class, 'show'])->name('cursos.show');
+Route::post('psicologo/updatePsicologo',[PsicoController::class,'updatePsicologo'])->name('psicologo.updatePsicologo');
 
-
-
-/*Route::controller(CursoController::class)->group(function(){
-    Route::get('cursos','index');
-    Route::get('cursos/create','create');
-    Route::get('cursos/{curso}','show');
-});*/
 
 
