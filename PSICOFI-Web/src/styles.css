@@ -7,9 +7,13 @@
 }
 
 .btn-primary{
-    background-color: #23488C !important;
-    border-color: #23488C !important;
-    font-weight: bold !important;
+  background-color: #23488C !important;
+  border-color: #23488C !important;
+  font-weight: bold !important;
+}
+
+.btn-danger{
+  font-weight: bold !important;
 }
 
 .text-info{
