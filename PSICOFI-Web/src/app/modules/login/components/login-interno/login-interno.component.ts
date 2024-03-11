@@ -32,7 +32,6 @@ export class LoginInternoComponent {
   private iniciarSesion(): void {
     //Validacion.
     if(this.cvunica == "325850" && this.contrasena == "123456"){
-      alert("Sesi&oacute;n iniciada")
       this._router.navigate(['/dashboard']);
     }else{
       alert("Usuario o contrase&ntilde;a incorrecta");  
