@@ -24,7 +24,7 @@ export class HeaderComponent {
     { title: 'Alumnos atendidos', path: '/alumnos-atendidos', tipoUsuario: ['psicologo', 'psicologo_externo'] },
     { title: 'Cambiar contraseña', path: '/cambiar-contraseña', tipoUsuario: ['psicologo_externo'] },
     { title: 'Añadir psicólogo', path: '/añadir-psicologo', tipoUsuario: ['administrador'] },
-    { title: 'Gestionar psicólogos', path: '/gestionar-psicologos', tipoUsuario: ['administrador'] },
+    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['administrador'] },
     { title: 'Generar reporte', path: '/generar-reporte', tipoUsuario: ['administrador'] },
     { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] }
   ];

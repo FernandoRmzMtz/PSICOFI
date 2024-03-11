@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-calendario',
@@ -6,40 +6,79 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./calendario.component.css']
 })
 export class CalendarioComponent implements OnInit {
-  meses: string[] = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
+  constructor(private el: ElementRef) {}
 
-  diasAbreviados: string[] = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-  fechaActual: Date = new Date();
-  diasDelMes: any[] = [];
+  hoy = new Date();
+  fechaActual = new Date();
 
-  constructor() { }
+  diasDelMes: Date[] = [];
+  diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  tipoUsuario: 'alumno' | 'psicologo' = 'alumno'; 
+  diaSeleccionado: Date = new Date();
+  horasDisponibles: string[] = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
   ngOnInit(): void {
-    this.generarCalendario(this.fechaActual);
+    this.generarDiasDelMes(this.fechaActual);
   }
 
-  generarCalendario(fecha: Date): void {
-    const inicioMes: Date = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
-    const finalMes: Date = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
-    const dias: number[] = [];
+  generarDiasDelMes(fecha: Date) {
+    this.diasDelMes = [];
+    const year = fecha.getFullYear();
+    const month = fecha.getMonth();
 
-    for (let dia = inicioMes.getDay(); dia > 0; dia--) {
-      dias.unshift(new Date(fecha.getFullYear(), fecha.getMonth(), -dia + 1).getDate());
+    const primerDia = new Date(year, month, 1);
+    const ultimoDia = new Date(year, month + 1, 0);
+    
+    for (let i = primerDia.getDay(); i > 0; i--) {
+      this.diasDelMes.push(new Date(year, month, -i + 1));
     }
 
-    for (let dia = 1; dia <= finalMes.getDate(); dia++) {
-      dias.push(dia);
+    for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+      this.diasDelMes.push(new Date(year, month, dia));
     }
 
-    this.diasDelMes = dias;
+    const diasParaCompletar = 7 - ultimoDia.getDay() - 1;
+    for (let i = 1; i <= diasParaCompletar; i++) {
+      this.diasDelMes.push(new Date(year, month + 1, i));
+    }
   }
 
-  cambiarMes(direccion: number): void {
-    this.fechaActual = new Date(this.fechaActual.getFullYear(), this.fechaActual.getMonth() + direccion, 1);
-    this.generarCalendario(this.fechaActual);
+  private aplicarAnimacion(clase: string) {
+    const calendar = this.el.nativeElement.querySelector('.calendar');
+    calendar.classList.add(clase);
+    setTimeout(() => calendar.classList.remove(clase), 500); 
   }
 
+  mesAnterior() {
+    if (!this.esMesActual()) {
+      this.fechaActual = new Date(this.fechaActual.getFullYear(), this.fechaActual.getMonth() - 1, 1);
+      this.generarDiasDelMes(this.fechaActual);
+      this.aplicarAnimacion('animate-prev');
+    }
+  }
+
+  mesSiguiente() {
+    this.fechaActual = new Date(this.fechaActual.getFullYear(), this.fechaActual.getMonth() + 1, 1);
+    this.generarDiasDelMes(this.fechaActual);
+    this.aplicarAnimacion('animate-next');
+  }
+
+  esMesActual(): boolean {
+    const hoy = new Date();
+    return this.fechaActual.getMonth() === hoy.getMonth() && this.fechaActual.getFullYear() === hoy.getFullYear();
+  }
+
+  seleccionarDia(dia: Date): void {
+    this.diaSeleccionado = dia;
+  }
+  agendarCita(hora: string): void {
+    console.log(`Cita agendada a las ${hora} en el día ${this.diaSeleccionado}`);
+  }
+  
+  agregarHoraDisponible(): void {
+    const nuevaHora = `${this.horasDisponibles.length + 13}:00`;
+    this.horasDisponibles.push(nuevaHora);
+    console.log(`Nueva hora disponible agregada: ${nuevaHora}`);
+  }
 }

@@ -1,0 +1,75 @@
+<div class="container">
+    <form>
+        <div class="row my-4">
+            <div class="col-11">
+                <input type="text" class="form-control" placeholder="Buscar psicólogo" />
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive" style="max-height: 460px;">
+        <table class="table table-striped">
+            <thead>
+                <tr> 
+                    <th scope="col">Clave</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Fecha Inicio</th>
+                    <th scope="col" class="text-center">Estatus</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let psicologo of psicologos">
+                    <td scope="row">{{psicologo.clave}}</td>
+                    <td scope="row">{{psicologo.nombre}}</td>
+                    <td scope="row">{{psicologo.fecha_inicio}}</td>
+                    <td scope="row" class="text-center"><i class="bi bi-circle-fill text-success" *ngIf="psicologo.estatus==1"> Activo</i><i class="bi bi-circle text-muted" *ngIf="psicologo.estatus==0"> Inctivo</i></td>
+                    <td scope="row" class="d-flex">
+                        <button type="button" class="btn btn-primary mx-1"><i class="bi bi-pencil"  data-bs-toggle="modal" data-bs-target="#editarpsico" 
+                            (click)="verPsico(psicologo.clave)"></i></button>
+                        <button type="button" class="btn btn-secondary"><i class="bi bi-eye"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    
+
+    <div class="modal fade" id="editarpsico" tabindex="-1" aria-labelledby="editarpsicoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="verpsicoLabel">Editar Informaci&oacute;n del Psic&oacute;logo</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="clave">Clave &uacute;nica / CURP:</label>
+                    <input type="text" class="form-control" id="clave" name="clave" placeholder="Clave &uacute;nica / CURP" [(ngModel)]="psicologo.clave" required readonly
+                        style="background-color: rgba(128, 128, 128, 0.137);">
+                    <label for="nombres">Nombre (s):</label>
+                    <input type="text" class="form-control" id="nombres" name="nombre" placeholder="Nombres" [(ngModel)] = "psicologo.nombre" required>
+                    <label for="apellidoPat">Apellido Paterno:</label>
+                    <input type="text" class="form-control" id="apellidoPat" name="apepat" placeholder="Apellido Paterno" [(ngModel)] = "psicologo.apePat"required>
+                    <label for="apellidoMat">Apellido Materno:</label>
+                    <input type="text" class="form-control" id="apellidoMat" name="apemat" placeholder="Apellido Materno" [(ngModel)] = "psicologo.apeMat">
+                    <label for="estatus">Estatus: </label>
+                    <select class="form-select" aria-label="Default select example" id="estatus" name="estatus" [(ngModel)]="psicologo.estatus" required>
+                        <option value="1" [selected]="psicologo.estatus == '1'">Activo</option>
+                        <option value="0" [selected]="psicologo.estatus == '0'">Inactivo</option>
+                    </select>
+                    <div class="modal-footer mt-4">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                      </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div>
