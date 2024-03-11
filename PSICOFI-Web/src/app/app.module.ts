@@ -5,17 +5,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
+import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent  
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    PaginaInicioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

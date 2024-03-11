@@ -1,15 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaginaInicioPage } from './pagina-inicio.page';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginPage } from '../login/login.page';
+import { ContenidoComponent } from './contenido/contenido.component';
+import { BannerComponent } from './banner/banner.component';
+
+const routes: Routes = [
+  {path: 'login', component: LoginPage}
+];
 
 
 
 @NgModule({
   declarations: [
-    PaginaInicioPage
+    PaginaInicioPage,
+    ContenidoComponent,
+    BannerComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule.forChild(routes)
   ]
 })
 export class PaginaInicioModule { }
