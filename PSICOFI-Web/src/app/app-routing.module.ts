@@ -7,14 +7,17 @@ import { LoginPage } from './modules/login/login.page';
 import { GestionPsicologosPage } from './modules/gestion-psicologos/gestion-psicologos.page';
 import { DashboardComponent } from './modules/dashboard/dashboard.component'; 
 import { AgendarCitaPage } from './modules/agendar-cita/agendar-cita.page';
+import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
+
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginPage },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'agendar-cita', component: AgendarCitaPage },
+  {path: 'login', component: LoginPage},
   {path: 'gestion-psicologos', component: GestionPsicologosPage},
-]
+  {path: 'inicio', component: PaginaInicioPage},
+  {path: '', component: PaginaInicioPage},
+  {path: 'dashboard', component: DashboardComponent},
+  {path: 'agendar-cita', component: AgendarCitaPage },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
