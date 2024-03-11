@@ -120,6 +120,18 @@ export class gestionPsico {
       }
     ];
 
+    public psicologoViendo = {
+      "clave": "012345",
+        "nombre": "Ava",
+        "apePat": "Thomas",
+        "apeMat": "White",
+        "fecha_inicio": "2020-10-05",
+        "estatus": "1",
+        "carrera": "Licenciatura en Psicología",
+        "semestre": "",
+        "correo": ""
+    };
+
     public getPsicologos()
     {
         return this.psicologos;
