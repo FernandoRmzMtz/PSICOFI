@@ -14,4 +14,9 @@ export class GestionPsicologosPage{
   {
     return this.psico.verPsicoVisible;
   }
+
+  public ocultarVer()
+  {
+    this.psico.verPsicoVisible = false;
+  }
 }
