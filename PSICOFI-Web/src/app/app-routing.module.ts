@@ -8,7 +8,6 @@ import { GestionPsicologosPage } from './modules/gestion-psicologos/gestion-psic
 import { DashboardComponent } from './modules/dashboard/dashboard.component'; 
 import { AgendarCitaPage } from './modules/agendar-cita/agendar-cita.page';
 
-
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginPage },
