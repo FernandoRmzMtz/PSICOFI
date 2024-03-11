@@ -26,84 +26,22 @@
                         DAP
                     </p>
                 </div>
-
                 <div
                     class="col-12 col-md-auto flex-grow-1 justify-content-center justify-content-md-end align-items-center pt-md-0 pt-2 d-none d-md-block d-lg-block d-xl-block">
                     <div
                         class="h-75 d-flex flex-column flex-sm-row bd-highlight justify-content-end align-items-sm-end pt-sm-0 pt-5 align-items-center">
-
-                        <div *ngIf="tipoUsuario !== ''" class="p-1 px-1 bd-highlight"><a href="#">Inicio
-                            </a><span class="text-white"> | </span></div>
-                        <!-- Opciones para Alumno -->
-                        <div *ngIf="tipoUsuario === 'alumno'" class="p-1 px-1 bd-highlight"><a href="#">Agendar
-                                cita</a><span class="text-white"> | </span></div>
-                        <div *ngIf="tipoUsuario === 'alumno'" class="p-1 px-1 bd-highlight"><a href="#">Mis
-                                citas</a><span class="text-white"> | </span>
+                        <div *ngFor="let ruta of rutasFiltradas; let i = index" class="p-1 px-1 bd-highlight">
+                            <a *ngIf="ruta.tipoUsuario.includes(tipoUsuario)" [routerLink]="ruta.path">{{ ruta.title }}</a>
+                            <span *ngIf="i < rutasFiltradas.length - 1" class="text-white"> | </span>
                         </div>
-
-                        <!-- Opciones para Psicólogo y Psicólogo Externo (comparten opciones más Cambiar contraseña para Psicólogo Externo) -->
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="p-1 px-1 bd-highlight"><a href="#">Gestión de agenda</a><span class="text-white"> |
-                            </span></div>
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="p-1 px-1 bd-highlight"><a href="#">Reporte de citas</a><span class="text-white"> |
-                            </span></div>
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="p-1 px-1 bd-highlight"><a href="#">Cita urgente</a><span class="text-white"> |
-                            </span></div>
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="p-1 px-1 bd-highlight"><a href="#">Alumnos atendidos</a><span
-                                *ngIf="tipoUsuario === 'psicologo'" class="text-white"> | </span></div>
-                        <div *ngIf="tipoUsuario === 'psicologo_externo'" class="p-1 px-1 bd-highlight"><a
-                                href="#">Cambiar contraseña</a><span class="text-white"> | </span></div>
-
-                        <!-- Opciones para Administrador -->
-                        <div *ngIf="tipoUsuario === 'administrador'" class="p-1 px-1 bd-highlight"><a href="#">Añadir
-                                psicólogo</a><span class="text-white"> | </span></div>
-                        <div *ngIf="tipoUsuario === 'administrador'" class="p-1 px-1 bd-highlight"><a href="#">Gestionar
-                                psicólogos</a><span class="text-white"> | </span></div>
-                        <div *ngIf="tipoUsuario === 'administrador'" class="p-1 px-1 bd-highlight"><a href="#">Generar
-                                reporte</a><span class="text-white"> | </span></div>
-                        <div *ngIf="tipoUsuario !== ''" class="p-1 px-1 bd-highlight"><a href="#">Cerrar sesión</a>
-                        </div>
-
-
-
                     </div>
                 </div>
-
                 <div class="col-12 col-md-auto d-block d-sm-none">
                     <div class="row">
-                        <!-- Opción de Inicio para cualquier usuario que no sea una cadena vacía -->
-                        <div *ngIf="tipoUsuario !== ''" class="col px-1"><a href="#">Inicio</a></div>
-
-                        <!-- Opciones para Alumno -->
-                        <div *ngIf="tipoUsuario === 'alumno'" class="col px-1"><a href="#">Agendar cita</a></div>
-                        <div *ngIf="tipoUsuario === 'alumno'" class="col px-1"><a href="#">Mis citas</a></div>
-
-                        <!-- Opciones para Psicólogo y Psicólogo Externo  -->
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="col px-1"><a href="#">Gestión de agenda</a></div>
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="col px-1"><a href="#">Reporte de citas</a></div>
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="col px-1"><a href="#">Cita urgente</a></div>
-                        <div *ngIf="tipoUsuario === 'psicologo' || tipoUsuario === 'psicologo_externo'"
-                            class="col px-1"><a href="#">Alumnos atendidos</a></div>
-                        <div *ngIf="tipoUsuario === 'psicologo_externo'" class="col px-1"><a href="#">Cambiar
-                                contraseña</a></div>
-
-                        <!-- Opciones para Administrador -->
-                        <div *ngIf="tipoUsuario === 'administrador'" class="col px-1"><a href="#">Añadir psicólogo</a>
+                        <div *ngFor="let ruta of rutasFiltradas; let i = index" class="col px-1">
+                            <a *ngIf="ruta.tipoUsuario.includes(tipoUsuario)" [routerLink]="ruta.path">{{ ruta.title }}</a>
+                            <span *ngIf="i < rutasFiltradas.length - 1" class="text-white"> | </span>
                         </div>
-                        <div *ngIf="tipoUsuario === 'administrador'" class="col px-1"><a href="#">Gestionar
-                                psicólogos</a></div>
-                        <div *ngIf="tipoUsuario === 'administrador'" class="col px-1"><a href="#">Generar reporte</a>
-                        </div>
-
-                        <!-- Opción de Cerrar sesión para cualquier usuario -->
-                        <div *ngIf="tipoUsuario !== ''" class="col px-1"><a href="#">Cerrar sesión</a></div>
-
                     </div>
                 </div>
             </div>

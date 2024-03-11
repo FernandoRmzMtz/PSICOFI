@@ -1,0 +1,52 @@
+<div class="container my-5" style="margin-bottom: 100px!important;">
+  <div class="row justify-content-center">
+    <!-- Simbología -->
+    <div class="col-md-2">
+      <div class="simbologia">
+        <ul class="list-unstyled">
+          <li class="mb-2"><span class="color-box color-box-blue"></span> Día seleccionado</li>
+          <li class="mb-2"><span class="color-box color-box-green"></span> Alta disponibilidad</li>
+          <li class="mb-2"><span class="color-box color-box-yellow"></span> Baja disponibilidad</li>
+          <li class="mb-2"><span class="color-box color-box-red"></span> Muy baja disponibilidad</li>
+        </ul>
+      </div>
+    </div>
+    <!-- Calendario -->
+    <div class="col-md-6 mb-sm-4">
+      <div class="calendario">
+        <div class="mes">
+          <a href="#" class="nav" [class.disabled]="esMesActual()" (click)="mesAnterior(); $event.preventDefault()">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+          <div>{{ meses[fechaActual.getMonth()] }} <span class="year">{{ fechaActual.getFullYear() }}</span></div>
+          <a href="#" class="nav" (click)="mesSiguiente(); $event.preventDefault()">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+        <div class="dias">
+          <span *ngFor="let dia of diasDeLaSemana">{{ dia }}</span>
+        </div>
+        <div class="cita">
+          <button *ngFor="let dia of diasDelMes; let i = index" (click)="seleccionarDia(dia)"
+            [class.otro-mes]="dia.getMonth() !== fechaActual.getMonth()"
+            [class.today]="dia.toDateString() === hoy.toDateString()">
+            <time>{{ dia.getDate() }}</time>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Menú de horas -->
+    <div class="col-md-4 mt-sm-2 p-3" *ngIf="diaSeleccionado">
+      <div *ngIf="tipoUsuario === 'alumno'">
+        <h4>Horas disponibles</h4>
+        <div class="horas-contenedor">
+          <button class="btn btn-outline-primary hora-btn" *ngFor="let hora of horasDisponibles">{{ hora }}</button>
+        </div>
+      </div>
+      <div *ngIf="tipoUsuario === 'psicologo'">
+        <h4>Agregar hora disponible</h4>
+        <button class="btn btn-outline-secondary btn-block" (click)="agregarHoraDisponible()">Agregar hora</button>
+      </div>
+    </div>
+  </div>
+</div>

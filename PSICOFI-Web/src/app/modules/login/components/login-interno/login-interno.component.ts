@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginService } from '../../services/login.services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-interno',
@@ -13,8 +14,9 @@ export class LoginInternoComponent {
   public validarContrasena: string = "";
   public validarClave: string = "";
 
-  constructor(private loginService: LoginService) {
-  }
+  constructor(
+    private loginService: LoginService,
+    private _router: Router,) {}
   public  switchLogin() : void {
     this.loginService.toggleForm();
   }
@@ -31,6 +33,7 @@ export class LoginInternoComponent {
     //Validacion.
     if(this.cvunica == "325850" && this.contrasena == "123456"){
       alert("Sesi&oacute;n iniciada")
+      this._router.navigate(['/dashboard']);
     }else{
       alert("Usuario o contrase&ntilde;a incorrecta");  
     }

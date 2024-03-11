@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -11,7 +10,7 @@ import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent  
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -19,6 +18,6 @@ import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module
     PaginaInicioModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

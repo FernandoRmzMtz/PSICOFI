@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
 
 export const routes: Routes = [
     {
@@ -6,5 +7,6 @@ export const routes: Routes = [
         redirectTo: 'login',
         pathMatch: 'full',
     }, 
-    //Se agregaran las rutas del admin layout aqui
+    {   path: 'dashboard', 
+        component: DashboardComponent }
 ];
