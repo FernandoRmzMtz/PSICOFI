@@ -3,13 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Alumno;
-use App\Models\CarrerasPsico;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
 
 class PsicoController extends Controller
 {
+    public function updatePassword(Request $request){
+        $curp = $request->input('curp',null);
+        $old = $request->input('contrasena',null);
+        $new = $request->input('nuevaContrasena',null);
+
+        if($old == null || $new == null){
+            $respuesta = ['Error' => 'No se realizo el cambio de contrasena'];
+            return json_encode($respuesta);
+        }else{
+            $psicologoMod = PsicologoExterno::find($curp);
+
+            if(strcmp($old,$psicologoMod->contrasena)){
+                $psicologoMod->contrasena = $new;
+                try {
+                    if ($psicologoMod->save()) {
+                        return true;
+                    }else{
+                        return 0;
+                    }
+                } catch (\Exception $e) {
+                    return 0;
+                }
+            }
+        }
+    }
+
     public function searchPsicologo(Request $request){
         $clave = $request->input('clave',null);
         $curp = $request->input('curp',null);
@@ -104,8 +128,6 @@ class PsicoController extends Controller
 
         $resultados = array_merge($psicologosExternos->toArray(), $psicologosInternos->toArray());
 
-        return json_encode($resultados);
-    
         return json_encode($resultados);
     }
 
