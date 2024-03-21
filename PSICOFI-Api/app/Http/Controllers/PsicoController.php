@@ -14,22 +14,26 @@ class PsicoController extends Controller
         $new = $request->input('nuevaContrasena',null);
 
         if($old == null || $new == null){
-            $respuesta = ['Error' => 'No se realizo el cambio de contrasena'];
-            return json_encode($respuesta);
+            return 0;
         }else{
             $psicologoMod = PsicologoExterno::find($curp);
-
-            if(strcmp($old,$psicologoMod->contrasena)){
-                $psicologoMod->contrasena = $new;
-                try {
-                    if ($psicologoMod->save()) {
-                        return true;
-                    }else{
+            if($psicologoMod != null){
+                if($old == $psicologoMod->contrasena){
+                    $psicologoMod->contrasena = $new;
+                    try {
+                        if ($psicologoMod->save()) {
+                            return true;
+                        }else{
+                            return 0;
+                        }
+                    } catch (\Exception $e) {
                         return 0;
                     }
-                } catch (\Exception $e) {
+                }else{
                     return 0;
                 }
+            }else{
+                return $psicologoMod;
             }
         }
     }
