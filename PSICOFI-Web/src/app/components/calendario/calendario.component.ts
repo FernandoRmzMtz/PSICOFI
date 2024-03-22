@@ -35,8 +35,6 @@ export class CalendarioComponent implements OnInit {
   
   actualizarHorariosDelDiaSeleccionado(): void {
     if (this.citaAgendada) {
-      // Aquí deberías recargar o actualizar la lista de citas disponibles para el día seleccionado.
-      // Esto es solo un ejemplo, ajusta según tu lógica de negocio.
       this.horariosDelDiaSeleccionado = [];
     }
   }
@@ -121,7 +119,7 @@ export class CalendarioComponent implements OnInit {
 
   
   seleccionarDia(dia: Date, evento?: Event): void {
-    if (this.citaAgendada) return; // Prevenir la selección de otro día si ya hay una cita agendada.
+    if (this.citaAgendada) return; 
     this.diaSeleccionado = dia;
     this.horaSeleccionada = null;
   
@@ -147,7 +145,6 @@ export class CalendarioComponent implements OnInit {
     if (!this.citaAgendada) {
       this.citaAgendada = true;
       console.log(`Cita agendada a las ${hora} en el día ${this.diaSeleccionado}`);
-      // Aquí iría el resto de tu lógica para agendar la cita
       this.actualizarHorariosDelDiaSeleccionado();
     }
   }
@@ -161,12 +158,9 @@ export class CalendarioComponent implements OnInit {
 
   confirmarCita(): void {
     if (!this.horaSeleccionada) return;
-  
     this.citaAgendada = true;
     console.log(`Cita confirmada a las ${this.horaSeleccionada} en el día ${this.diaSeleccionado}`);
-    
-    // Aquí deberías agregar la lógica para efectivamente confirmar la cita en tu backend o servicio
-    this.actualizarHorariosDelDiaSeleccionado();
+        this.actualizarHorariosDelDiaSeleccionado();
   }
   
 }
