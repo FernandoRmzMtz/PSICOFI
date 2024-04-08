@@ -9,6 +9,7 @@ import { GestionPsicologosPage } from './modules/gestion-psicologos/gestion-psic
 import { DashboardComponent } from './modules/dashboard/dashboard.component'; 
 import { AgendarCitaPage } from './modules/agendar-cita/agendar-cita.page';
 import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
+import { CambioContrasenaPage } from './modules/cambio-contrasena/cambio-contrasena.page';
 import { GestionAgendaPage } from './modules/gestion-agenda/gestion-agenda.page';
 
 
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: '', component: PaginaInicioPage},
   {path: 'dashboard', component: DashboardComponent},
   {path: 'agendar-cita', component: AgendarCitaPage },
+  {path: 'cambio-contrasena', component: CambioContrasenaPage}
 ];
 
 @NgModule({

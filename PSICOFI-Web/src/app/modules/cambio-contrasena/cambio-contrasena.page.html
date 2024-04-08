@@ -1,0 +1,39 @@
+<nav>
+    <div class="nav nav-tabs container" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-gestion-tab" data-bs-toggle="tab" data-bs-target="#nav-gestion" type="button"
+          role="tab" aria-controls="nav-home" aria-selected="true">CAMBIO DE CONTRASE&Ntilde;A</button>
+    </div>
+  </nav>
+  
+  
+  <div class="tab-content container mb-5" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-gestion" role="tabpanel" aria-labelledby="nav-gestion-tab" tabindex="0">
+
+      <div class="container d-flex justify-content-center my-5" id="imageContainer">
+        <img src="assets/default_pp.jpg">
+      </div>
+
+      <div class="container" style="width:500px">
+        <form>
+          <input type="text" class="form-control my-2" readonly>
+          <label for="contrasenaActual" class="form-control-label">Contrase&ntilde;a actual</label>
+          <input type="password" class="form-control" id="contrasenaActual" name="contrasenaActual" placeholder="Contrase&ntilde;a actual" required>
+          <label for="nuevaContrasena" class="form-control-label">Nueva contrase&ntilde;a</label>
+          <input type="password" class="form-control" id="nuevaContrasena" name="nuevaContrasena" placeholder="Nueva contrase&ntilde;a" required>
+          <label for="confirmarContrasena" class="form-control-label">Confirmar contrase&ntilde;a</label>
+          <input type="password" class="form-control" id="confirmarContrasena" name="confirmarContrasena" placeholder="Confirmar contrase&ntilde;a" required>
+          <div class="container my-4">
+            <div class="row justify-content-around">
+              <div class="col-3">
+                <button type="button" class="btn btn-danger" id="cancelar">Cancelar</button>
+              </div>
+              <div class="col-3">
+                <button type="button" class="btn btn-primary" id="guardar">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>

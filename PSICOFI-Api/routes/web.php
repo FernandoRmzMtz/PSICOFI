@@ -4,6 +4,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DateController;
 use App\Http\Controllers\PsicoController;
 
 /*
@@ -30,6 +31,12 @@ Route::get('psicologo/getPsicologos',[PsicoController::class,'getPsicologos'])->
 Route::put('psicologo/updatePsicologo',[PsicoController::class,'updatePsicologo'])->name('psicologo.updatePsicologo');
 
 Route::put('psicologo/updatePassword',[PsicoController::class,'updatePassword'])->name('psicologo.updatePassword');
+
+Route::post('cita/generateDates',[DateController::class,'generateDates'])->name('cita.generateDates');
+
+Route::put('cita/scheduleDate',[DateController::class,'scheduleDate'])->name('cita.scheduleDate');
+
+Route::get('cita/getDates',[DateController::class,'getDates'])->name('cita.getDates');
 
 
 
