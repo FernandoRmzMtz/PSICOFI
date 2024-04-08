@@ -139,15 +139,12 @@ export class CalendarioComponent implements OnInit {
       cita.clavePsicologo === this.psicologoSeleccionadoId &&
       cita.estadoCita === 'Disponible'
     ).map(cita => cita.fechaHora.split('T')[1]);
-    // Dentro de tu método de seleccionar día, después de filtrar las citas para ese día:
     const citasDelDia = this.citas.filter(cita => 
       cita.fechaHora.startsWith(fechaSeleccionada) && 
       cita.clavePsicologo === this.psicologoSeleccionadoId);
 
-    // Citas agendadas para el día seleccionado
     this.citasAgendadas = citasDelDia.filter(cita => cita.estadoCita === 'Agendado');
 
-    // Citas disponibles para el día seleccionado
     this.citasDisponibles = citasDelDia.filter(cita => cita.estadoCita === 'Disponible');
 
     if (this.diaSeleccionadoElemento) {
@@ -182,32 +179,21 @@ export class CalendarioComponent implements OnInit {
         this.actualizarHorariosDelDiaSeleccionado();
   }
 
-  // Nuevo: Función para confirmar la cancelación de una cita disponible
   confirmarCancelacion(cita: Cita): void {
-    // Aquí se implementaría la lógica para marcar la cita como no disponible o eliminarla
     console.log(`Cita cancelada: ${cita.idCita}`);
-    // Actualizar las citas luego de la cancelación
     this.cargarCitas();
   }
   cancelarCita(cita: Cita): void {
-    // Implementa la lógica para cancelar la cita aquí
     console.log(`Cancelando cita: ${cita.idCita}`);
-    // Podrías llamar a un servicio para actualizar el estado de la cita en el backend
   }
   
 
-  // Nuevo: Función para mostrar los datos del alumno de una cita agendada
   mostrarDatosAlumno(cita: Cita): void {
-    // Esta función podría mostrar un modal o cambiar un estado para mostrar los datos en la plantilla
     console.log(`Mostrando datos del alumno para la cita: ${cita.idCita}`);
-    // Por ejemplo, podrías almacenar la cita seleccionada en una propiedad y usarla en el HTML
   }
 
-  // Nuevo: Función para abrir el modal de agregar una nueva hora
   abrirModalAgregarHora(): void {
-    // Aquí se abriría un modal para que el psicólogo agregue una nueva hora disponible
     console.log("Abriendo modal para agregar una nueva hora.");
-    // La implementación específica dependerá de cómo manejes los modales en tu aplicación
   }
   
 }
