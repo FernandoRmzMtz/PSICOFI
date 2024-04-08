@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('Agenda',function(Blueprint $table){
-            $table->bigInteger('idAgenda')->primary();
+            $table->id('idAgenda');
             $table->dateTime('fechaHoraDisponible');
             $table->boolean('reservada');
             $table->bigInteger('clavePsicologo');

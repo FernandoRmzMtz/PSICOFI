@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('idNotaCita');
             $table->unsignedBigInteger('tipoIntevencion');
             $table->text('notas');
-            $table->bigInteger('idCita');
+            $table->unsignedBigInteger('idCita');
 
             // Foreign keys
             $table->foreign('tipoIntevencion')->references('idTipoIntervencion')->on('TipoIntervencion');
