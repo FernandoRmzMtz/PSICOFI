@@ -3,16 +3,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginModule } from './modules/login/login.module';
 import { GestionPsicologosModule } from './modules/gestion-psicologos/gestion-psicologos.module';
 import { AgendarCitaModule } from './modules/agendar-cita/agendar-cita.module';
+import { GestionAgendaModule } from './modules/gestion-agenda/gestion-agenda.module';
 import { LoginPage } from './modules/login/login.page';
 import { GestionPsicologosPage } from './modules/gestion-psicologos/gestion-psicologos.page';
 import { DashboardComponent } from './modules/dashboard/dashboard.component'; 
 import { AgendarCitaPage } from './modules/agendar-cita/agendar-cita.page';
 import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
+import { GestionAgendaPage } from './modules/gestion-agenda/gestion-agenda.page';
 
 
 const routes: Routes = [
   {path: 'login', component: LoginPage},
   {path: 'gestion-psicologos', component: GestionPsicologosPage},
+  {path: 'gestion-agenda', component: GestionAgendaPage},
   {path: 'inicio', component: PaginaInicioPage},
   {path: '', component: PaginaInicioPage},
   {path: 'dashboard', component: DashboardComponent},

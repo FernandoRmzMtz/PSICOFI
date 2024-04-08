@@ -28,46 +28,89 @@
         </div>
         <div class="cita">
           <button *ngFor="let dia of diasDelMes; let i = index" (click)="seleccionarDia(dia, $event)"
-          [class.otro-mes]="dia.getMonth() !== fechaActual.getMonth()"
-          [class.today]="dia.toDateString() === hoy.toDateString()"
-          [class.dia-seleccionado]="diaSeleccionado && dia.toDateString() === diaSeleccionado.toDateString()"
-          [ngClass]="getDisponibilidadClase(dia)">
-          <time>{{ dia.getDate() }}</time>
-        </button>
-        
+            [class.otro-mes]="dia.getMonth() !== fechaActual.getMonth()"
+            [class.today]="dia.toDateString() === hoy.toDateString()"
+            [class.dia-seleccionado]="diaSeleccionado && dia.toDateString() === diaSeleccionado.toDateString()"
+            [ngClass]="getDisponibilidadClase(dia)">
+            <time>{{ dia.getDate() }}</time>
+          </button>
         </div>
-        
       </div>
     </div>
     <!-- Menú de horas -->
-    <div class="col-md-4 mt-sm-2 p-3" *ngIf="diaSeleccionado">     
+    <div class="col-md-4 mt-sm-2 p-3" *ngIf="diaSeleccionado">
       <div *ngIf="diaSeleccionado">
-        <div *ngIf="citaAgendada">
-          <h4>Ya tienes una cita agendada</h4>
-        </div>
-        <div *ngIf="horariosDelDiaSeleccionado.length > 0 && !citaAgendada">
-          <h4>Horas disponibles</h4>
-          <div class="horas-contenedor">
-            <button class="btn btn-outline-primary hora-btn" *ngFor="let hora of horariosDelDiaSeleccionado"
-            (click)="horaSeleccionada = hora">
-            {{ hora }}
-          </button>
-          
+        <h2>{{ diaSeleccionado | date: 'EEEE, d MMMM y' }}</h2>
+        <!-- Esta parte permanece visible solo para alumnos -->
+        <div *ngIf="tipoUsuario === 'alumno'">
+          <div *ngIf="citaAgendada">
+            <h4>Ya tienes una cita agendada</h4>
           </div>
-          <!-- Botón de agendar cita -->
-          <button class="btn btn-primary btn-block mt-3" (click)="confirmarCita()" *ngIf="horaSeleccionada && !citaAgendada">Confirmar Cita</button>
-        </div>
-        <div *ngIf="horariosDelDiaSeleccionado.length == 0 && !citaAgendada">
-          <h4>No hay citas disponibles para este día</h4>
+          <div *ngIf="horariosDelDiaSeleccionado.length > 0 && !citaAgendada">
+            <h4>Horas disponibles</h4>
+            <div class="horas-contenedor">
+              <button class="btn btn-outline-primary hora-btn" *ngFor="let hora of horariosDelDiaSeleccionado"
+                (click)="horaSeleccionada = hora">
+                {{ hora }}
+              </button>
+            </div>
+            <!-- Botón de agendar cita -->
+            <button class="btn btn-primary btn-block mt-3" (click)="confirmarCita()"
+              *ngIf="horaSeleccionada && !citaAgendada">Confirmar Cita</button>
+          </div>
+          <div *ngIf="horariosDelDiaSeleccionado.length == 0 && !citaAgendada">
+            <h4>No hay citas disponibles para este día</h4>
+          </div>
         </div>
 
-      </div>
-     
-    
-    
-      <div *ngIf="tipoUsuario === 'psicologo'">
-        <h4>Agregar hora disponible</h4>
-        <button class="btn btn-outline-secondary btn-block" (click)="agregarHoraDisponible()">Agregar hora</button>
+        <!-- Secciones específicas para psicólogos -->
+        <div *ngIf="tipoUsuario === 'psicologo'">
+          <!-- Horarios sin cita agendada (Disponibles para cancelar) -->
+          <div>
+            <h4>Horario sin cita agendada</h4>
+            <div *ngIf="citasDisponibles.length > 0; else noDisponibles">
+              <div class="horas-contenedor">
+                <button class="btn btn-outline-danger hora-btn" *ngFor="let cita of citasDisponibles"
+                  (click)="confirmarCancelacion(cita)">
+                  {{ cita.fechaHora.split('T')[1] }} <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+            <ng-template #noDisponibles>
+              <p>Por el momento no hay horarios habilitados.</p>
+            </ng-template>
+          </div>
+
+          <!-- Horarios con citas ya agendadas -->
+          <div>
+            <h4>Horarios con citas ya agendadas</h4>
+            <div *ngIf="citasAgendadas.length > 0; else noAgendadas">
+              <div class="horas-contenedor">
+                <ng-container *ngFor="let cita of citasAgendadas; let i = index">
+                  <button class="btn btn-outline-info hora-btn"
+                    (click)="mostrarDetallesCita = mostrarDetallesCita === i ? null : i">
+                    {{ cita.fechaHora.split('T')[1] }}
+                  </button>
+                  <div *ngIf="mostrarDetallesCita === i" class="detalles-cita">
+                    <p>Alumno: {{ cita.claveUnica }}</p>
+                    <button class="btn btn-danger" (click)="cancelarCita(cita)">Cancelar cita</button>
+                    <button class="btn btn-secondary">Datos del alumno</button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <ng-template #noAgendadas>
+              <p>Por el momento no hay citas agendadas.</p>
+            </ng-template>
+          </div>
+
+          <!-- Agregar nueva hora disponible -->
+          <div>
+            <h4>Agregar hora disponible</h4>
+            <button class="btn btn-outline-secondary btn-block" (click)="abrirModalAgregarHora()">Agregar hora</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
