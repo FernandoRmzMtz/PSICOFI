@@ -9,15 +9,17 @@ import { CitasService, Cita } from '../servicios/citas.service';
 export class CalendarioComponent implements OnInit {
   citas: Cita[] = [];
 
-  constructor(private el: ElementRef,
-    private citasService: CitasService) {}
+  constructor(
+      private el: ElementRef,
+      private citasService: CitasService
+    ) {}
 
   hoy = new Date();
   fechaActual = new Date();
   diasDelMes: Date[] = [];
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  tipoUsuario: 'alumno' | 'psicologo' = 'alumno'; 
+  tipoUsuario: 'psicologo' | 'alumno' = 'psicologo'; 
   diaSeleccionado: Date = new Date();
   horasDisponibles: string[] = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
   psicologoSeleccionadoId = 1; 
@@ -26,6 +28,10 @@ export class CalendarioComponent implements OnInit {
   diaSeleccionadoElemento: HTMLElement | null = null; 
   horaSeleccionada: string | null = null;
   citaAgendada: boolean = false;
+  citasAgendadas: Cita[] = [];
+  citasDisponibles: Cita[] = [];
+  mostrarDetallesCita: number | null = null;
+
 
 
   ngOnInit(): void {
@@ -38,17 +44,20 @@ export class CalendarioComponent implements OnInit {
       this.horariosDelDiaSeleccionado = [];
     }
   }
+
   cargarCitas(): void {
     this.citas = this.citasService.obtenerCitas();
     
     this.citas.forEach(cita => {
-      const fecha = cita.fechaHora.split('T')[0];
-      if (!this.disponibilidadPorDia[fecha]) {
-        this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
-      }
-      this.disponibilidadPorDia[fecha].total++;
-      if (cita.estadoCita === 'Disponible') {
-        this.disponibilidadPorDia[fecha].disponibles++;
+      if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
+        const fecha = cita.fechaHora.split('T')[0];
+        if (!this.disponibilidadPorDia[fecha]) {
+          this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+        }
+        this.disponibilidadPorDia[fecha].total++;
+        if (cita.estadoCita === 'Disponible') {
+          this.disponibilidadPorDia[fecha].disponibles++;
+        }
       }
     });
   
@@ -130,6 +139,13 @@ export class CalendarioComponent implements OnInit {
       cita.clavePsicologo === this.psicologoSeleccionadoId &&
       cita.estadoCita === 'Disponible'
     ).map(cita => cita.fechaHora.split('T')[1]);
+    const citasDelDia = this.citas.filter(cita => 
+      cita.fechaHora.startsWith(fechaSeleccionada) && 
+      cita.clavePsicologo === this.psicologoSeleccionadoId);
+
+    this.citasAgendadas = citasDelDia.filter(cita => cita.estadoCita === 'Agendado');
+
+    this.citasDisponibles = citasDelDia.filter(cita => cita.estadoCita === 'Disponible');
 
     if (this.diaSeleccionadoElemento) {
       this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
@@ -161,6 +177,23 @@ export class CalendarioComponent implements OnInit {
     this.citaAgendada = true;
     console.log(`Cita confirmada a las ${this.horaSeleccionada} en el día ${this.diaSeleccionado}`);
         this.actualizarHorariosDelDiaSeleccionado();
+  }
+
+  confirmarCancelacion(cita: Cita): void {
+    console.log(`Cita cancelada: ${cita.idCita}`);
+    this.cargarCitas();
+  }
+  cancelarCita(cita: Cita): void {
+    console.log(`Cancelando cita: ${cita.idCita}`);
+  }
+  
+
+  mostrarDatosAlumno(cita: Cita): void {
+    console.log(`Mostrando datos del alumno para la cita: ${cita.idCita}`);
+  }
+
+  abrirModalAgregarHora(): void {
+    console.log("Abriendo modal para agregar una nueva hora.");
   }
   
 }
