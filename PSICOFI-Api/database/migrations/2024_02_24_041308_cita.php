@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('Cita',function(Blueprint $table){
-            $table->bigInteger('idCita')->primary();
-            $table->dateTime('fechaHora');
-            $table->bigInteger('claveUnica');
-            $table->integer('estadoCita');
-            $table->bigInteger('clavePsicologo');
-            $table->string('clavePsicologoExterno',18);
+            $table->id('idCita');
+            $table->date('fecha');
+            $table->time('hora');
+            $table->bigInteger('claveUnica')->nullable()->default(null);
+            $table->unsignedBigInteger('estadoCita');
+            $table->bigInteger('clavePsicologo')->nullable()->default(null);
+            $table->string('clavePsicologoExterno',18)->nullable()->default(null);
 
             // Foreign keys
+            $table->foreign('claveUnica')->references('claveUnica')->on('Alumno');
             $table->foreign('estadoCita')->references('idEstadoCita')->on('EstadoCita');
             $table->foreign('clavePsicologo')->references('claveUnica')->on('Psicologo');
             $table->foreign('clavePsicologoExterno')->references('CURP')->on('PsicologoExterno');
