@@ -12,6 +12,7 @@ import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
 import { CambioContrasenaPage } from './modules/cambio-contrasena/cambio-contrasena.page';
 import { GestionAgendaPage } from './modules/gestion-agenda/gestion-agenda.page';
 import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
+import { CitaUrgentePage } from './modules/cita-urgente/cita-urgente.page';
 
 const routes: Routes = [
   {path: 'login', component: LoginPage},
@@ -22,7 +23,8 @@ const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
   {path: 'agendar-cita', component: AgendarCitaPage },
   {path: 'cambio-contrasena', component: CambioContrasenaPage},
-  {path: 'reporte-citas', component: ReporteCitasPage}
+  {path: 'reporte-citas', component: ReporteCitasPage},
+  {path: 'cita-urgente', component: CitaUrgentePage}
 ];
 
 @NgModule({
