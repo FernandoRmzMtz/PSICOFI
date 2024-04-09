@@ -6,6 +6,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module';
 import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
+import { CitaUrgentePage } from './modules/cita-urgente/cita-urgente.page';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
     HeaderComponent,
     FooterComponent,
     ReporteCitasPage,
+    CitaUrgentePage,
     
   ],
   imports: [
