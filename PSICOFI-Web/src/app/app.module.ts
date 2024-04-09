@@ -5,12 +5,14 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module';
+import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
+    ReporteCitasPage,
     
   ],
   imports: [

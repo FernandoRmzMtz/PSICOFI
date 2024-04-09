@@ -27,6 +27,9 @@ export class LoginInternoComponent {
     {
       this.iniciarSesion();
     }
+    else{
+      alert("No se valido el formulario");
+    }
   }
 
   private iniciarSesion(): void {
