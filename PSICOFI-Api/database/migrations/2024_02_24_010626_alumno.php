@@ -20,12 +20,14 @@ return new class extends Migration
             $table->char('sexo',1);
             $table->string('area',50);
             $table->string('carrera',50);
+            $table -> string('psicologoAsociado',18)->nullable()->default(null);
             $table->integer('semestre');
             $table->string('condicionAcademica',50);
             $table->integer('creditosAprobados');
             $table->integer('creditosInscritos');
             $table->float('promedioGral');
             $table->string('asesor',100);
+            $table->string('contrasena',20)->nullable()->default(null);
             $table->boolean('habilitado');
         });
     }

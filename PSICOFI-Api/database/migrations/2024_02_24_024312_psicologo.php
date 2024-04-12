@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('idCarrera');
             $table->bigInteger('semestre');
             $table->string('correo');
+            $table->string('contrasena',20);
             $table->boolean('activo');
             $table->timestamps();
             // Foreign key

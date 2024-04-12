@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Auth;
 use RicorocksDigitalAgency\Soap\Facades\Soap;
 use App\Models\Alumno;
+use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
 
 class AuthController extends Controller
@@ -48,35 +49,95 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
-        $clave = $request->input('clave',null);
-        $curp = $request->input('curp',null);
+        $id = $request->input('id',null);
         $password = $request->input('password');
 
-        if($curp == null){
-            $jsonResult = $this->authUser($clave,$password);
+        if(strlen($id) == 6){
+            $alumno = Alumno::where('claveUnica', $id)
+            ->where('contrasena', $password)
+            ->select('alumno.claveUnica',
+                    'alumno.nombres',
+                    'alumno.apellidoPaterno',
+                    'alumno.apellidoMaterno',
+                    'alumno.condicionAcademica',
+            )
+            ->first();
 
-            $arrayDatos = json_decode($jsonResult, true);
+            $psicologo = Psicologo::where('claveUnica', $id)
+            ->where('contrasena', $password)
+            ->select('psicologo.claveUnica',
+                    'psicologo.nombres',
+                    'psicologo.apellidoPaterno',
+                    'psicologo.apellidoMaterno',
+            )
+            ->first();
 
-            if($arrayDatos['validacion'] == 'USUARIO-INVALIDO'){
-                $respuesta = ['validacion' => $arrayDatos['validacion']];
-                return json_encode($respuesta);
+            if($alumno || $psicologo){
+                $token = csrf_token();
+                if($alumno){
+                    $jsonArray = [
+                        'clave_unica' => $alumno->claveUnica,
+                        'nombre_alumno' => $alumno->nombres . ' ' . $alumno->apellidoPaterno . ' ' . $alumno->apellidoMaterno,
+                        'validacion' => "USUARIO-VALIDO",
+                        'situacion_alumno' => $alumno->condicionAcademica,
+                        'token' => $token
+                    ];
+                }else if($psicologo){
+                    $jsonArray = [
+                        'clave_unica' => $psicologo->claveUnica,
+                        'nombre_psicologo' => $psicologo->nombres . ' ' . $psicologo->apellidoPaterno . ' ' . $psicologo->apellidoMaterno,
+                        'validacion' => "USUARIO-VALIDO",
+                        'token' => $token
+                    ];
+                }
+                
+                return json_encode($jsonArray);
             }else{
+                $jsonResult = $this->authUser($id,$password);
+
                 $arrayDatos = json_decode($jsonResult, true);
 
-                $token = csrf_token();
+                if($arrayDatos['validacion'] == 'USUARIO-INVALIDO'){
+                    $respuesta = ['validacion' => $arrayDatos['validacion']];
+                    return json_encode($respuesta);
+                }else{
+                    $arrayDatos = json_decode($jsonResult, true);
 
-                $arrayDatos['token'] = $token;
+                    $token = csrf_token();
 
-                $jsonResult = json_encode($arrayDatos);
-                
-                return $jsonResult;
+                    $arrayDatos['token'] = $token;
+
+                    $jsonResult = json_encode($arrayDatos);
+                    
+                    return $jsonResult;
+                }
             }
-        }else if($clave == null){
-            $psicologo = PsicologoExterno::where('CURP', $curp)
+        }else if(strlen($id) == 18){
+            $psicologoexterno = PsicologoExterno::where('CURP', $id)
             ->where('contrasena', $password)
+            ->select('psicologoexterno.curp',
+                    'psicologoexterno.nombres',
+                    'psicologoexterno.apellidoPaterno',
+                    'psicologoexterno.apellidoMaterno',
+            )
             ->first();
-            return json_encode($psicologo);
-        }else if($clave !== null && $curp !== null){
+
+            if($psicologoexterno){
+                $token = csrf_token();
+                $jsonArray = [
+                    'curp' => $psicologoexterno->curp,
+                    'nombre_psicologo' => $psicologoexterno->nombres . ' ' . $psicologoexterno->apellidoPaterno . ' ' . $psicologoexterno->apellidoMaterno,
+                    'validacion' => "USUARIO-VALIDO",
+                    'token' => $token
+                ];
+
+                return json_encode($jsonArray);
+            }else{
+                $respuesta['validacion'] = 'USUARIO-INVALIDO';
+                return json_encode($respuesta);
+            }
+
+        }else if($id != 6 || $id != 18){
             $respuesta = ['validacion' => 'USUARIO-INVALIDO'];
             return json_encode($respuesta);
         }
