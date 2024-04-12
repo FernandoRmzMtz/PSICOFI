@@ -46,11 +46,12 @@ class AlumnoFactory extends Factory
                                                 "Mecanica administrativa",
                                                 "Electricidad y automatización"]),
             'semestre' => $this->faker->numberBetween(1,9),
-            'condicionAcademica' => $this->faker->randomElement(["Inscrito","Baja"]),
+            'condicionAcademica' => $this->faker->randomElement(["INSCRITO","BAJA"]),
             'creditosAprobados' => $this->faker->numberBetween(0,405),
             'creditosInscritos' => $this->faker->numberBetween(0,50),
             'promedioGral' => $this->faker->randomFloat(2,4,10),
             'asesor' => $this->faker->name(),
+            'contrasena' => $this->faker->bothify('###???###???'),
             'habilitado' => $this->faker->boolean()
         ];
     }
