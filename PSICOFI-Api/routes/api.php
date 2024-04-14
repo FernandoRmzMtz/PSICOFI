@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlumnoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -23,4 +24,7 @@ use App\Http\Controllers\TipoIntervencionController;
 Route::post('alumno',[AuthController::class,'getAlumno'])->name('function.obtainAlumno');
 
 Route::get('/tipos-intervencion', [TipoIntervencionController::class, 'index']);
+Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
+
+// Route::get('alumno/{claveUnica}', 'AlumnoController@obtenerAlumno');
 
