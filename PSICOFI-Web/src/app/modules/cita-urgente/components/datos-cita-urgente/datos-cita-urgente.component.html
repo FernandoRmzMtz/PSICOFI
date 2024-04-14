@@ -1,0 +1,25 @@
+<div class="container fade-in">
+    <div class="container">
+        <div class="mb-3">
+            <!-- <div *ngIf="!encontrado && buscado" class="text-danger mt-2">No se encontró ningún alumno con la clave única ingresada.</div> -->
+            <table class="my-4">
+                <tr>
+                    <td class="bg-info">Clave &uacute;nica:</td>
+                    <td class="input-td">
+                        <input type="number" class="form-control" id="claveUnica" [(ngModel)]="claveUnica"
+                            (keyup.enter)="buscarAlumno()" (blur)="buscarAlumno()">
+                    </td>
+                </tr>
+                <tr *ngIf="alumno">
+                    <td class="bg-info">Nombre:</td>
+                    <td *ngIf="encontrado==true">{{alumno.nombres}} {{alumno.apellidoPaterno}} {{alumno.apellidoMaterno}}</td>
+                    <td *ngIf="encontrado==false"></td>
+                </tr>
+                <tr *ngIf="alumno">
+                    <td class="bg-info">Fecha:</td>
+                    <td *ngIf="encontrado">{{cita.fecha}} {{cita.hora}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
