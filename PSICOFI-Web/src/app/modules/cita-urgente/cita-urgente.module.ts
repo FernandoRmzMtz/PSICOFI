@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CitaUrgentePage } from './cita-urgente.page';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    CitaUrgentePage,
+  ],
   imports: [
     CommonModule
   ]

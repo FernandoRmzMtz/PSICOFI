@@ -11,6 +11,7 @@ use App\Models\CarrerasPsico;
 use App\Models\EstadoCita;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
+use App\Models\TipoIntervencion;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,5 +29,43 @@ class DatabaseSeeder extends Seeder
         EstadoCita::create(['estado' => 'Cancelada']);
         EstadoCita::create(['estado' => 'Libre']);
         Psicologo::factory(3)->create();
+
+        $tiposIntervencion = [
+            ['tipoIntervencion' => 'Emocional'],
+            ['tipoIntervencion' => 'Social'],
+            ['tipoIntervencion' => 'Academica'],
+        ];
+
+        // Inserta los datos en la tabla TipoIntervencion
+        foreach ($tiposIntervencion as $tipoIntervencionData) {
+            TipoIntervencion::create($tipoIntervencionData);
+        }
+
+        $alumnos = [
+            [
+                'claveUnica' => '324109',
+                'nombres' => 'Fernando Antonio',
+                'apellidoPaterno' => 'Ramírez',
+                'apellidoMaterno' => 'Martínez',
+                'edad' => 21,
+                'sexo' => 'M',
+                'area' => 'Ciencias de la computación',
+                'carrera' => 'Ing. en sistemas inteligentes',
+                // 'psicologoAsociado' => '',
+                'semestre' => 8,
+                'condicionAcademica' => 'INSCRITO',
+                'creditosAprobados' => 345,
+                'creditosInscritos' => 48,
+                'promedioGral' => 9.4,
+                'asesor' => 'Dra. Sandra Edith Nava Muñoz',
+                'contrasena' => '1234567890',
+                'habilitado' => true,
+            ],
+        ];
+
+        // Inserta los datos en la tabla alumno
+        foreach ($alumnos as $alumnoData) {
+            Alumno::create($alumnoData);
+        }
     }
 }
