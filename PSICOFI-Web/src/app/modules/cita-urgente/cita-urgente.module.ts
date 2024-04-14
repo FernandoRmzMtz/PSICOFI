@@ -4,6 +4,7 @@ import { CitaUrgentePage } from './cita-urgente.page';
 import { DatosCitaUrgenteComponent } from './components/datos-cita-urgente/datos-cita-urgente.component';
 import { FormularioCitaUrgenteComponent } from './components/formulario-cita-urgente/formulario-cita-urgente.component';
 import { FormsModule } from '@angular/forms';
+import { CitaUrgenteService } from './services/cita-urgente.service';
 
 
 
@@ -17,6 +18,9 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+  ],
+  providers: [
+    CitaUrgenteService
   ]
 })
 export class CitaUrgenteModule { }
