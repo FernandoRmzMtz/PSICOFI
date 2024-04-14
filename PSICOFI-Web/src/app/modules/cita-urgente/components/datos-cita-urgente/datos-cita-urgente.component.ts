@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
 
 @Component({
