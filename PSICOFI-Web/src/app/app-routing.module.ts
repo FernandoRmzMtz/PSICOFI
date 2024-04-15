@@ -25,7 +25,7 @@ const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
   {path: 'agendar-cita', component: AgendarCitaPage },
   {path: 'cambio-contrasena', component: CambioContrasenaPage},
-  {path: 'historial-alumnos', component: HistorialAlumnosPage}
+  {path: 'historial-alumnos', component: HistorialAlumnosPage},
   {path: 'reporte-citas', component: ReporteCitasPage},
   {path: 'cita-urgente', component: CitaUrgentePage}
 ];
