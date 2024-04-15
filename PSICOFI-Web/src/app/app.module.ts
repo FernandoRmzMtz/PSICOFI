@@ -10,8 +10,7 @@ import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent,
-    
+    FooterComponent
   ],
   imports: [
     BrowserModule,
