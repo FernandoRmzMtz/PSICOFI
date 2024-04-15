@@ -13,7 +13,8 @@ import { CambioContrasenaPage } from './modules/cambio-contrasena/cambio-contras
 import { GestionAgendaPage } from './modules/gestion-agenda/gestion-agenda.page';
 import { HistorialAlumnosPage } from './modules/historial-alumnos/historial-alumnos.page';
 import { HistorialAlumnosModule } from './modules/historial-alumnos/historial-alumnos.module';
-
+import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
+import { CitaUrgentePage } from './modules/cita-urgente/cita-urgente.page';
 
 const routes: Routes = [
   {path: 'login', component: LoginPage},
@@ -25,7 +26,8 @@ const routes: Routes = [
   {path: 'agendar-cita', component: AgendarCitaPage },
   {path: 'cambio-contrasena', component: CambioContrasenaPage},
   {path: 'historial-alumnos', component: HistorialAlumnosPage}
-
+  {path: 'reporte-citas', component: ReporteCitasPage},
+  {path: 'cita-urgente', component: CitaUrgentePage}
 ];
 
 @NgModule({

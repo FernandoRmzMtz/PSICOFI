@@ -5,17 +5,20 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module';
-
+import { ReporteCitasModule } from './modules/reporte-citas/reporte-citas.module';
+import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    PaginaInicioModule
+    PaginaInicioModule,
+    ReporteCitasModule,
+    CitaUrgenteModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

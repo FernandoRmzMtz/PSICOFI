@@ -23,6 +23,7 @@ class PsicologoFactory extends Factory
             'semestre' => $this->faker->numberBetween(1,9),
             'correo' => $this->faker->email(),
             'activo' => $this->faker->boolean(),
+            'contrasena' => $this->faker->bothify('###???###???')
         ];
     }
 }
