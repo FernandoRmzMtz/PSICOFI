@@ -217,6 +217,7 @@ class PsicoController extends Controller
             $psicologo -> semestre = $request->semestre;
             $psicologo -> activo = $request->activo;
             $psicologo -> correo = $request->correo;
+            $psicologo -> contrasena = $request->contrasena;
 
             try {
                 if ($psicologo->save()) {
