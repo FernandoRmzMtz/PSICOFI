@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LoginService } from '../login/services/login.services';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,15 +12,16 @@ export class DashboardComponent implements OnInit {
   welcomeMessage: string | undefined;
   user: { name: string; role: string; };
 
-  constructor() {
-  this.welcomeMessage = 'Bienvenido al Dashboard';
-  this.user = { name: '', role: '' }; }
-  
+    constructor(private loginService: LoginService) {
+    this.welcomeMessage = 'Bienvenido al Dashboard';
+    this.user = { name: '', role: '' };
+  }
+    
 
   ngOnInit(): void {
     this.user = {
-      name: 'Usuario Ejemplo',
-      role: 'Administrador'
+      name: this.loginService.getActiveUser() || 'Usuario no encontrado',
+      role: "rol"
     };
   }
 

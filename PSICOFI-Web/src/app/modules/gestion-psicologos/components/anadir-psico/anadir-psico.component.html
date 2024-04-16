@@ -3,21 +3,21 @@
     <div class="row">
       <div class="col">
         <label for="clave" class="oblig">Clave &uacute;nica/CURP:</label>
-        <input type="text" class="form-control" id="clave" name="clave" placeholder="Clave &uacute;nica/CURP" [(ngModel)]="nuevoPsicologo.clave" required>
+        <input type="text" class="form-control" id="clave" name="clave" placeholder="Clave &uacute;nica/CURP" [(ngModel)]="claveNuevo" required>
       </div>
       <div class="col">
         <label for="nombres" class="oblig">Nombre (s):</label>
-        <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombres" [(ngModel)]="nuevoPsicologo.nombre" required>
+        <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombres" [(ngModel)]="nuevoPsicologo.nombres" required>
       </div>
     </div>
     <div class="row">
         <div class="col">
             <label for="apellidoPat" class="oblig">Apellido Paterno:</label>
-            <input type="text" class="form-control" id="apellidoPat" name="apePat" placeholder="Apellido Paterno" [(ngModel)]="nuevoPsicologo.apePat" required>
+            <input type="text" class="form-control" id="apellidoPat" name="apePat" placeholder="Apellido Paterno" [(ngModel)]="nuevoPsicologo.apellidoPaterno" required>
         </div>
         <div class="col">
             <label for="apellidoMat">Apellido Materno:</label>
-            <input type="text" class="form-control" id="apellidoMat" name="apeMat" placeholder="Apellido Materno" [(ngModel)]="nuevoPsicologo.apeMat" >
+            <input type="text" class="form-control" id="apellidoMat" name="apeMat" placeholder="Apellido Materno" [(ngModel)]="nuevoPsicologo.apellidoMaterno" >
         </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@
         </div>
         <div class="col">
             <label for="carrera" class="oblig">Carrera:</label>
-            <select id="carrera" class="form-select" name="carrera" name="carrera" placeholder="Carrera" [(ngModel)]="nuevoPsicologo.carrera" required>
+            <select id="carrera" class="form-select" name="carrera" name="carrera" placeholder="Carrera" [(ngModel)]="nuevoPsicologo.idCarrera" required>
                 <option value="1">Licenciatura en Psicolog&iacute;a</option>
                 <option value="2">Licenciatura en Psicopedagog&iacute;a</option>
             </select>
