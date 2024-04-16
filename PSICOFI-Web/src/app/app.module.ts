@@ -7,6 +7,10 @@ import { FooterComponent } from './components/footer/footer.component';
 import { PaginaInicioModule } from './modules/pagina-inicio/pagina-inicio.module';
 import { ReporteCitasModule } from './modules/reporte-citas/reporte-citas.module';
 import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
+import { FormsModule } from '@angular/forms'; 
+import { ReactiveFormsModule } from '@angular/forms';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -15,6 +19,8 @@ import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     PaginaInicioModule,
     ReporteCitasModule,

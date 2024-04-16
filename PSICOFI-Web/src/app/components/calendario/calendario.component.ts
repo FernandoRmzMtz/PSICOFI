@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { CitasService, Cita } from '../servicios/citas.service';
-
+import { FormGroup, FormControl } from '@angular/forms';
 @Component({
   selector: 'app-calendario',
   templateUrl: './calendario.component.html',
@@ -8,37 +8,71 @@ import { CitasService, Cita } from '../servicios/citas.service';
 })
 export class CalendarioComponent implements OnInit {
   citas: Cita[] = [];
+  form: FormGroup;
+  horasDisponibles: string[] = this.generarHoras();
+
 
   constructor(
-      private el: ElementRef,
-      private citasService: CitasService
-    ) {}
+    private el: ElementRef,
+    private citasService: CitasService
+  ) {
+    this.form = new FormGroup({
+      diasSeleccionados: new FormGroup(this.generarDiasControl()),
+      horasSeleccionadas: new FormGroup(this.generarHorasControl()),
+    });
+  }
 
+  dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+  mostrarModalDetalles = false;
+  citaSeleccionada: Cita | null = null;
   hoy = new Date();
   fechaActual = new Date();
   diasDelMes: Date[] = [];
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  tipoUsuario: 'psicologo' | 'alumno' = 'psicologo'; 
+  tipoUsuario: 'psicologo' | 'alumno' = 'psicologo';
   diaSeleccionado: Date = new Date();
-  horasDisponibles: string[] = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-  psicologoSeleccionadoId = 1; 
+  //horasDisponibles: string[] = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+  psicologoSeleccionadoId = 1;
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
   horariosDelDiaSeleccionado: string[] = [];
-  diaSeleccionadoElemento: HTMLElement | null = null; 
+  diaSeleccionadoElemento: HTMLElement | null = null;
   horaSeleccionada: string | null = null;
   citaAgendada: boolean = false;
   citasAgendadas: Cita[] = [];
   citasDisponibles: Cita[] = [];
   mostrarDetallesCita: number | null = null;
+  mostrarModalCancelacion = false;
+  mostrarModalAgregarHora = false;
 
+  diasParaSeleccionar = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
 
   ngOnInit(): void {
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
   }
-  
+  generarHoras(): string[] {
+    return Array.from({ length: 10 }, (_, i) => `${8 + i}:00`);
+  }
+
+  generarDiasControl(): { [key: string]: FormControl } {
+    let controls: { [key: string]: FormControl } = {};
+    ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'].forEach(dia => {
+      controls[dia] = new FormControl(false);
+    });
+    return controls;
+  }
+
+  generarHorasControl(): { [key: string]: FormControl } {
+    let controls: { [key: string]: FormControl } = {};
+    this.horasDisponibles.forEach(hora => {
+      controls[hora] = new FormControl(false);
+    });
+    return controls;
+  }
+
+
   actualizarHorariosDelDiaSeleccionado(): void {
     if (this.citaAgendada) {
       this.horariosDelDiaSeleccionado = [];
@@ -47,7 +81,7 @@ export class CalendarioComponent implements OnInit {
 
   cargarCitas(): void {
     this.citas = this.citasService.obtenerCitas();
-    
+
     this.citas.forEach(cita => {
       if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
         const fecha = cita.fechaHora.split('T')[0];
@@ -60,22 +94,22 @@ export class CalendarioComponent implements OnInit {
         }
       }
     });
-  
+
     this.generarDiasDelMes(this.fechaActual);
   }
-  
+
   getDisponibilidadClase(dia: Date): string {
     const fecha = dia.toISOString().split('T')[0];
     const disponibilidad = this.disponibilidadPorDia[fecha];
-  
+
     if (!disponibilidad) {
-      return ''; 
+      return '';
     } else if (disponibilidad.disponibles > 3) {
       return 'color-box-green';
     } else if (disponibilidad.disponibles > 0) {
       return 'color-box-yellow';
     } else {
-      return 'color-box-red'; 
+      return 'color-box-red';
     }
   }
 
@@ -86,7 +120,7 @@ export class CalendarioComponent implements OnInit {
 
     const primerDia = new Date(year, month, 1);
     const ultimoDia = new Date(year, month + 1, 0);
-    
+
     for (let i = primerDia.getDay(); i > 0; i--) {
       this.diasDelMes.push(new Date(year, month, -i + 1));
     }
@@ -104,7 +138,7 @@ export class CalendarioComponent implements OnInit {
   private aplicarAnimacion(clase: string) {
     const calendar = this.el.nativeElement.querySelector('.calendario');
     calendar.classList.add(clase);
-    setTimeout(() => calendar.classList.remove(clase), 500); 
+    setTimeout(() => calendar.classList.remove(clase), 500);
   }
 
   mesAnterior() {
@@ -126,21 +160,21 @@ export class CalendarioComponent implements OnInit {
     return this.fechaActual.getMonth() === hoy.getMonth() && this.fechaActual.getFullYear() === hoy.getFullYear();
   }
 
-  
+
   seleccionarDia(dia: Date, evento?: Event): void {
-    if (this.citaAgendada) return; 
+    if (this.citaAgendada) return;
     this.diaSeleccionado = dia;
     this.horaSeleccionada = null;
-  
+
 
     const fechaSeleccionada = dia.toISOString().split('T')[0];
-    this.horariosDelDiaSeleccionado = this.citas.filter(cita => 
-      cita.fechaHora.startsWith(fechaSeleccionada) && 
+    this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
+      cita.fechaHora.startsWith(fechaSeleccionada) &&
       cita.clavePsicologo === this.psicologoSeleccionadoId &&
       cita.estadoCita === 'Disponible'
     ).map(cita => cita.fechaHora.split('T')[1]);
-    const citasDelDia = this.citas.filter(cita => 
-      cita.fechaHora.startsWith(fechaSeleccionada) && 
+    const citasDelDia = this.citas.filter(cita =>
+      cita.fechaHora.startsWith(fechaSeleccionada) &&
       cita.clavePsicologo === this.psicologoSeleccionadoId);
 
     this.citasAgendadas = citasDelDia.filter(cita => cita.estadoCita === 'Agendado');
@@ -164,8 +198,8 @@ export class CalendarioComponent implements OnInit {
       this.actualizarHorariosDelDiaSeleccionado();
     }
   }
-  
-  
+
+
   agregarHoraDisponible(): void {
     const nuevaHora = `${this.horasDisponibles.length + 13}:00`;
     this.horasDisponibles.push(nuevaHora);
@@ -176,24 +210,68 @@ export class CalendarioComponent implements OnInit {
     if (!this.horaSeleccionada) return;
     this.citaAgendada = true;
     console.log(`Cita confirmada a las ${this.horaSeleccionada} en el día ${this.diaSeleccionado}`);
-        this.actualizarHorariosDelDiaSeleccionado();
+    this.actualizarHorariosDelDiaSeleccionado();
   }
+  confirmarCancelacion(): void {
+    if (!this.citaSeleccionada) {
+      console.error('No hay cita seleccionada para cancelar.');
+      return;
+    }
 
-  confirmarCancelacion(cita: Cita): void {
-    console.log(`Cita cancelada: ${cita.idCita}`);
+    console.log(`Cita cancelada: ${this.citaSeleccionada.idCita}`);
+    this.cerrarModal();
     this.cargarCitas();
   }
-  cancelarCita(cita: Cita): void {
-    console.log(`Cancelando cita: ${cita.idCita}`);
-  }
-  
 
-  mostrarDatosAlumno(cita: Cita): void {
-    console.log(`Mostrando datos del alumno para la cita: ${cita.idCita}`);
-  }
+
+
 
   abrirModalAgregarHora(): void {
     console.log("Abriendo modal para agregar una nueva hora.");
+    this.mostrarModalAgregarHora = true;
+
   }
-  
+
+  abrirModalCancelacion(cita: Cita) {
+    this.citaSeleccionada = cita;
+    this.mostrarModalCancelacion = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModalCancelacion = false;
+  }
+
+  cerrarModalAgregarHora() {
+    this.mostrarModalAgregarHora = false;
+  }
+
+  agregarHora() {
+    console.log("Hora agregada");
+    this.cerrarModalAgregarHora();
+  }
+
+
+  agregarHoras() {
+    this.cerrarModalAgregarHora();
+  }
+
+  onSubmit() {
+    console.log(this.form.value);
+  }
+
+  abrirModalDetalles(cita: Cita) {
+    this.citaSeleccionada = cita;
+    this.mostrarModalDetalles = true;
+  }
+
+  cerrarModalDetalles() {
+    this.mostrarModalDetalles = false;
+    this.citaSeleccionada = null;
+  }
+
+  cancelarCita(cita: Cita) {
+    console.log(`Cancelando cita: ${cita.idCita}`);
+    // Añade aquí la lógica para cancelar la cita realmente
+    this.cerrarModalDetalles();
+  }
 }
