@@ -1,4 +1,8 @@
 import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+
+
 
 
 @Injectable({
@@ -6,6 +10,13 @@ import { Injectable } from "@angular/core";
 })
 
 export class gestionPsico {
+
+  constructor (private http:HttpClient) {
+    this.fetchPsicologos().subscribe((data) => {
+      this.fetchedPsico = data;
+    });
+  }
+
   public verPsicoVisible: boolean = false;
     public psicologos = [
       {
@@ -132,9 +143,14 @@ export class gestionPsico {
         "correo": ""
     };
 
-    public getPsicologos()
-    {
-        return this.psicologos;
+    fetchedPsico = [];
+  
+    fetchPsicologos(): Observable<any> {
+      return this.http.get('http://localhost/psicofi-api/public/index.php/psicologo/getPsicologos');
+    }
+
+    public getPsicologos() {
+      return this.psicologos;
     }
 
     public getPsicologoById(stringId: string):any
@@ -146,4 +162,6 @@ export class gestionPsico {
     {
       this.psicologos.push(nuevoPsicologo);
     }
+
+
 }
