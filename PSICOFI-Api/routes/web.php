@@ -22,7 +22,7 @@ Route::get('/', HomeController::class);
 
 Route::post('login',[AuthController::class,'login'])->name('login');
 
-Route::get('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo'])->name('psicologo.searchPsicologo');
+Route::post('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo'])->name('psicologo.searchPsicologo');
 
 Route::post('psicologo/registerPsicologo',[PsicoController::class,'registerPsicologo'])->name('psicologo.registerPsicologo');
 

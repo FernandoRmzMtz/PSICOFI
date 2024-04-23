@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Output } from '@angular/core';
+import { HistorialAlumnosService } from '../../services/historial-alumnos.service'
 
 @Component({
   selector: 'app-tabla-alumnos',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class TablaAlumnosComponent {
 
+  constructor(private histo: HistorialAlumnosService){}
+
+  public verAlumnoAtendido(clave: number): void {
+    this.histo.verAlumno(clave);
+  }
 }

@@ -1,4 +1,10 @@
 import { Injectable } from "@angular/core";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { Observable, of } from "rxjs";
+import { catchError } from 'rxjs/operators';
+import { LoginService } from "../../login/services/login.services";
+
+
 
 
 @Injectable({
@@ -6,144 +12,71 @@ import { Injectable } from "@angular/core";
 })
 
 export class gestionPsico {
+
+  constructor (private http:HttpClient, private loginService: LoginService) {
+    this.fetchPsicologos().subscribe((data) => {
+      this.fetchedPsico = data;
+      console.log(this.fetchedPsico);
+    });
+  }
+
   public verPsicoVisible: boolean = false;
-    public psicologos = [
-      {
-        "clave": "123456",
-        "nombre": "John",
-        "apePat": "Doe",
-        "apeMat": "Smith",
-        "fecha_inicio": "2020-01-01",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "234567",
-        "nombre": "Jane",
-        "apePat": "Doe",
-        "apeMat": "Johnson",
-        "fecha_inicio": "2020-02-15",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "345678",
-        "nombre": "Michael",
-        "apePat": "Smith",
-        "apeMat": "Brown",
-        "fecha_inicio": "2020-03-10",
-        "estatus": "0",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "456789",
-        "nombre": "Emily",
-        "apePat": "Johnson",
-        "apeMat": "Davis",
-        "fecha_inicio": "2020-04-20",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "567890",
-        "nombre": "Daniel",
-        "apePat": "Brown",
-        "apeMat": "Wilson",
-        "fecha_inicio": "2020-05-05",
-        "estatus": "0",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "678901",
-        "nombre": "Sophia",
-        "apePat": "Davis",
-        "apeMat": "Miller",
-        "fecha_inicio": "2020-06-30",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "789012",
-        "nombre": "Matthew",
-        "apePat": "Wilson",
-        "apeMat": "Anderson",
-        "fecha_inicio": "2020-07-12",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "890123",
-        "nombre": "Olivia",
-        "apePat": "Miller",
-        "apeMat": "Thomas",
-        "fecha_inicio": "2020-08-25",
-        "estatus": "0",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "901234",
-        "nombre": "James",
-        "apePat": "Anderson",
-        "apeMat": "Clark",
-        "fecha_inicio": "2020-09-18",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      },
-      {
-        "clave": "012345",
-        "nombre": "Ava",
-        "apePat": "Thomas",
-        "apeMat": "White",
-        "fecha_inicio": "2020-10-05",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-      }
-    ];
 
-    public psicologoViendo = {
-      "clave": "012345",
-        "nombre": "Ava",
-        "apePat": "Thomas",
-        "apeMat": "White",
-        "fecha_inicio": "2020-10-05",
-        "estatus": "1",
-        "carrera": "Licenciatura en Psicología",
-        "semestre": "",
-        "correo": ""
-    };
+  psicologoViendo = {
+    "claveUnica": 172383,
+    "nombres": "Elias Osinski",
+    "apellidoPaterno": "Reinger",
+    "apellidoMaterno": "Mertz",
+    "semestre": 6,
+    "correo": "flegros@gmail.com",
+    "activo": 1,
+    "carrera": "Licenciatura en psicologia"
+  }
 
-    public getPsicologos()
-    {
-        return this.psicologos;
+    fetchedPsico = [];
+  
+    fetchPsicologos(): Observable<any> {
+      return this.http.get('http://psicofi-api.test/psicologo/getPsicologos').pipe(
+        catchError(error => {
+          console.error('Error fetching psychologists:', error);
+          // Puedes retornar un valor por defecto o lanzar el error para que lo maneje otro componente
+          return of([]);
+        })
+      );
     }
 
-    public getPsicologoById(stringId: string):any
-    {
-      return this.psicologos.find(psicologo => psicologo.clave === stringId);
+    getPsicologos(): Observable<any> {
+      return this.fetchPsicologos();
     }
 
-    public agregarPsicologo(nuevoPsicologo: any):void
-    {
-      this.psicologos.push(nuevoPsicologo);
+    getPsicologoById(clave: string): Observable<any> {
+      const body = { clave: clave };
+
+      return this.http.post('http://psicofi-api.test/psicologo/searchPsicologo', body);
     }
+
+    agregarPsicologoInterno(psicologoNuevo: any): Observable<any>{  
+      console.log(this.loginService.getToken());
+      console.log(psicologoNuevo);
+      return this.http.post('http://psicofi-api.test/psicologo/registerPsicologo',
+      {
+        "nombres": psicologoNuevo.nombres,
+        "apellidoPaterno": psicologoNuevo.apellidoPaterno,
+        "apellidoMaterno": psicologoNuevo.apellidoMaterno,
+        "activo": "1",
+        "semestre": psicologoNuevo.semestre,
+        "correo": psicologoNuevo.correo,
+        "contrasena": "contrasena123!",
+        "claveUnica": psicologoNuevo.claveUnica
+      },
+        { 
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': (this.loginService.getToken() ?? "token").trim()
+          } 
+        }
+      );
+    }
+
+
 }

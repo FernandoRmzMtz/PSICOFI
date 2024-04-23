@@ -23,22 +23,12 @@ export class LoginInternoComponent {
 
   //Submit del formulario
   public onSubmit(): void {
-    if(this.validaFormulario())
-    {
       this.iniciarSesion();
-    }
-    else{
-      alert("No se valido el formulario");
-    }
   }
 
   private iniciarSesion(): void {
     //Validacion.
-    if(this.cvunica == "325850" && this.contrasena == "123456"){
-      this._router.navigate(['/dashboard']);
-    }else{
-      alert("Usuario o contrase&ntilde;a incorrecta");  
-    }
+    this.validaUsuarioInterno();
   }
 
   //Validación simple de formato de entrada
@@ -62,6 +52,27 @@ export class LoginInternoComponent {
       this.validarContrasena = "";
       this.validarClave = "";
     }
-    
+  }
+
+  public validaUsuarioInterno(): void {
+    this.loginService.loginInterno(this.cvunica, this.contrasena).subscribe((data) => {
+      if(data){
+        console.log(data);
+        if(data.validacion=="USUARIO-INVALIDO")
+          {
+            alert("Usuario o contraseña incorrecta");
+          }
+          else{
+            this.loginService.setToken(data.token);
+            this.loginService.setActiveUser(data.nombre_alumno);
+            // this.loginService.claveUnica = data.clave_unica;
+            // this.loginService.nombre = data.nombre_alumno;
+            this._router.navigate(['/dashboard']);
+          }
+        
+      }else{
+        alert("Usuario o contraseña incorrecta");
+      }
+    });
   }
 }

@@ -9,16 +9,15 @@ import { gestionPsico } from '../../services/gestion-psico.services';
 export class VerPsicologoComponent implements OnInit{
 
   public psicologoViendo = {
-    "clave": "012345",
-    "nombre": "Ava",
-    "apePat": "Thomas",
-    "apeMat": "White",
-    "fecha_inicio": "2020-10-05",
-    "estatus": "1",
-    "carrera": "Licenciatura en Psicología",
-    "semestre": "",
-    "correo": ""
-  };
+    "claveUnica": 172383,
+    "nombres": "Elias Osinski",
+    "apellidoPaterno": "Reinger",
+    "apellidoMaterno": "Mertz",
+    "semestre": 6,
+    "correo": "flegros@gmail.com",
+    "activo": 1,
+    "carrera": "Licenciatura en psicologia"
+  }
 
   constructor (private psico: gestionPsico)
   {}

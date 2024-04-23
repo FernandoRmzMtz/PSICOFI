@@ -6,6 +6,7 @@ import { AnadirPsicoComponent } from './components/anadir-psico/anadir-psico.com
 import { FormsModule } from '@angular/forms';
 import { VerPsicologoComponent } from './components/ver-psicologo/ver-psicologo.component';
 import { TablaAlumnosAtendidosComponent } from './components/tabla-alumnos-atendidos/tabla-alumnos-atendidos.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { TablaAlumnosAtendidosComponent } from './components/tabla-alumnos-atend
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     [FormsModule]
   ]
 })

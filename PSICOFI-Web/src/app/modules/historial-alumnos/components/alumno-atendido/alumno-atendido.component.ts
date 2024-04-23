@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HistorialAlumnosService } from '../../services/historial-alumnos.service';
 
 @Component({
   selector: 'app-alumno-atendido',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./alumno-atendido.component.css']
 })
 export class AlumnoAtendidoComponent {
+
+  constructor(private histo: HistorialAlumnosService){}
+  
 
 }
