@@ -30,21 +30,21 @@ export class CalendarioComponent implements OnInit {
   diasDelMes: Date[] = [];
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  tipoUsuario: 'psicologo' | 'alumno' = 'psicologo';
+  tipoUsuario: 'alumno' | 'psicologo' = 'alumno';
   diaSeleccionado: Date = new Date();
-  //horasDisponibles: string[] = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-  psicologoSeleccionadoId = 1;
+  psicologoSeleccionadoId = 159572;
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
   horariosDelDiaSeleccionado: string[] = [];
   diaSeleccionadoElemento: HTMLElement | null = null;
-  horaSeleccionada: string | null = null;
+  horaSeleccionada: string = "";
   citaAgendada: boolean = false;
+  usuarioActualId: number = 130266; //cambiar referencias por el auth
   citasAgendadas: Cita[] = [];
   citasDisponibles: Cita[] = [];
   mostrarDetallesCita: number | null = null;
   mostrarModalCancelacion = false;
   mostrarModalAgregarHora = false;
-
+  mostrarModalConfirmacion = false;
   diasParaSeleccionar = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
 
@@ -52,6 +52,7 @@ export class CalendarioComponent implements OnInit {
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
   }
+
   generarHoras(): string[] {
     return Array.from({ length: 10 }, (_, i) => `${8 + i}:00`);
   }
@@ -80,28 +81,39 @@ export class CalendarioComponent implements OnInit {
   }
 
   cargarCitas(): void {
-    this.citas = this.citasService.obtenerCitas();
+    this.citasService.obtenerCitas(this.psicologoSeleccionadoId).subscribe({
+      next: (citas) => {
+        this.citas = citas;
+        if(this.tipoUsuario==='alumno' && this.citas.some(cita => cita.claveUnica === this.usuarioActualId && cita.estado === 'Asistencia sin confirmar'))
+          this.citaAgendada=true;
+        if (this.tipoUsuario === 'alumno') {
+          this.citas = this.citas.filter(cita => cita.estado === "Libre");
+        }
+        this.citas.forEach(cita => {
+          if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
+            const fecha = cita.fecha;
+            if (!this.disponibilidadPorDia[fecha]) {
+              this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+            }
+            this.disponibilidadPorDia[fecha].total++;
+            if (cita.estado === "Libre") {
+              this.disponibilidadPorDia[fecha].disponibles++;
+            }
+          }
+        });
+        this.generarDiasDelMes(this.fechaActual);
+      },
+      error: (error) => {
+        console.error('Error al cargar citas:', error);
+      },
 
-    this.citas.forEach(cita => {
-      if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
-        const fecha = cita.fechaHora.split('T')[0];
-        if (!this.disponibilidadPorDia[fecha]) {
-          this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
-        }
-        this.disponibilidadPorDia[fecha].total++;
-        if (cita.estadoCita === 'Disponible') {
-          this.disponibilidadPorDia[fecha].disponibles++;
-        }
-      }
     });
-
-    this.generarDiasDelMes(this.fechaActual);
   }
+
 
   getDisponibilidadClase(dia: Date): string {
     const fecha = dia.toISOString().split('T')[0];
     const disponibilidad = this.disponibilidadPorDia[fecha];
-
     if (!disponibilidad) {
       return '';
     } else if (disponibilidad.disponibles > 3) {
@@ -161,25 +173,24 @@ export class CalendarioComponent implements OnInit {
   }
 
 
+  
+
   seleccionarDia(dia: Date, evento?: Event): void {
     if (this.citaAgendada) return;
     this.diaSeleccionado = dia;
-    this.horaSeleccionada = null;
-
-
+    this.horaSeleccionada = "";
     const fechaSeleccionada = dia.toISOString().split('T')[0];
     this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
-      cita.fechaHora.startsWith(fechaSeleccionada) &&
-      cita.clavePsicologo === this.psicologoSeleccionadoId &&
-      cita.estadoCita === 'Disponible'
-    ).map(cita => cita.fechaHora.split('T')[1]);
+      cita.fecha == fechaSeleccionada &&
+      cita.estado === "Libre"
+    ).map(cita => cita.hora);
     const citasDelDia = this.citas.filter(cita =>
-      cita.fechaHora.startsWith(fechaSeleccionada) &&
+      cita.hora.startsWith(fechaSeleccionada) &&
       cita.clavePsicologo === this.psicologoSeleccionadoId);
 
-    this.citasAgendadas = citasDelDia.filter(cita => cita.estadoCita === 'Agendado');
+    this.citasAgendadas = citasDelDia.filter(cita => cita.estado === "Asistencia sin confirmar");
 
-    this.citasDisponibles = citasDelDia.filter(cita => cita.estadoCita === 'Disponible');
+    this.citasDisponibles = citasDelDia.filter(cita => cita.estado === "Libre");
 
     if (this.diaSeleccionadoElemento) {
       this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
@@ -191,27 +202,45 @@ export class CalendarioComponent implements OnInit {
     }
   }
 
-  agendarCita(hora: string): void {
-    if (!this.citaAgendada) {
-      this.citaAgendada = true;
-      console.log(`Cita agendada a las ${hora} en el día ${this.diaSeleccionado}`);
-      this.actualizarHorariosDelDiaSeleccionado();
-    }
+  abrirModalConfirmacion() {
+    this.mostrarModalConfirmacion = true;
+  }
+
+  cerrarModalConfirmacion() {
+    this.mostrarModalConfirmacion = false;
   }
 
 
+
+  confirmarCita() {
+    const cita = {
+      id: '159572',
+      claveUnica: 130266,
+      fecha:  this.diaSeleccionado.toISOString().split('T')[0],  
+      hora: this.horaSeleccionada  
+    };
+    this.citasService.agendarCita(cita).subscribe(
+      resultado => {
+        if (resultado === 1) {
+          console.log('Cita agendada con éxito.');
+        } else {
+          console.error('Error al intentar agendar la cita.');
+        }
+      },
+      error => {
+        console.error('Error al agendar la cita:', error);
+      }
+    );
+      this.cerrarModalConfirmacion();
+  }
+  
   agregarHoraDisponible(): void {
     const nuevaHora = `${this.horasDisponibles.length + 13}:00`;
     this.horasDisponibles.push(nuevaHora);
     console.log(`Nueva hora disponible agregada: ${nuevaHora}`);
   }
 
-  confirmarCita(): void {
-    if (!this.horaSeleccionada) return;
-    this.citaAgendada = true;
-    console.log(`Cita confirmada a las ${this.horaSeleccionada} en el día ${this.diaSeleccionado}`);
-    this.actualizarHorariosDelDiaSeleccionado();
-  }
+
   confirmarCancelacion(): void {
     if (!this.citaSeleccionada) {
       console.error('No hay cita seleccionada para cancelar.');
@@ -223,13 +252,8 @@ export class CalendarioComponent implements OnInit {
     this.cargarCitas();
   }
 
-
-
-
   abrirModalAgregarHora(): void {
-    console.log("Abriendo modal para agregar una nueva hora.");
     this.mostrarModalAgregarHora = true;
-
   }
 
   abrirModalCancelacion(cita: Cita) {
@@ -270,8 +294,6 @@ export class CalendarioComponent implements OnInit {
   }
 
   cancelarCita(cita: Cita) {
-    console.log(`Cancelando cita: ${cita.idCita}`);
-    // Añade aquí la lógica para cancelar la cita realmente
     this.cerrarModalDetalles();
   }
 }

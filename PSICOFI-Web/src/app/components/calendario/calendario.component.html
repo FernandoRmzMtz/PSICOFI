@@ -50,18 +50,17 @@
             <h4>Horas disponibles</h4>
             <div class="horas-contenedor">
               <button class="btn btn-outline-primary hora-btn" *ngFor="let hora of horariosDelDiaSeleccionado"
-                (click)="horaSeleccionada = hora">
-                {{ hora }}
+                (click)="horaSeleccionada = hora; abrirModalConfirmacion()">
+                {{ hora | slice:0:5 }}
               </button>
             </div>
-            <!-- Botón de agendar cita -->
-            <button class="btn btn-primary btn-block mt-3" (click)="confirmarCita()"
-              *ngIf="horaSeleccionada && !citaAgendada">Confirmar Cita</button>
+            <!-- Botón que abre modal de confirmación -->
           </div>
           <div *ngIf="horariosDelDiaSeleccionado.length == 0 && !citaAgendada">
             <h4>No hay citas disponibles para este día</h4>
           </div>
         </div>
+
 
         <!-- Secciones específicas para psicólogos -->
         <div *ngIf="tipoUsuario === 'psicologo'">
@@ -72,7 +71,7 @@
               <div class="horas-contenedor">
                 <button class="btn btn-outline-danger hora-btn" *ngFor="let cita of citasDisponibles"
                   (click)="abrirModalCancelacion(cita)">
-                  {{ cita.fechaHora.split('T')[1] }} <i class="bi bi-trash"></i>
+                  {{ cita.hora }} <i class="bi bi-trash"></i>
                 </button>
               </div>
             </div>
@@ -89,7 +88,7 @@
               <div class="horas-contenedor">
                 <ng-container *ngFor="let cita of citasAgendadas; let i = index">
                   <button class="btn btn-outline-info hora-btn" (click)="abrirModalDetalles(cita)">
-                    {{ cita.fechaHora.split('T')[1] }}
+                    {{ cita.hora }}
                   </button>
                 </ng-container>
               </div>
@@ -104,7 +103,29 @@
             <button class="btn btn-outline-secondary btn-block" (click)="abrirModalAgregarHora()">Agregar hora</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- Modal para Confirmar Cita -->
+<div class="modal-backdrop" *ngIf="mostrarModalConfirmacion">
+  <div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar Cita</h5>
+          <button type="button" class="close" aria-label="Cerrar" (click)="cerrarModalConfirmacion()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ¿Quieres agendar una cita el día: {{ diaSeleccionado | date:'dd-MM-yyyy' }} a las: {{ horaSeleccionada | slice:0:5 }}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModalConfirmacion()">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="confirmarCita()">Confirmar Cita</button>
+        </div>
       </div>
     </div>
   </div>
