@@ -37,7 +37,6 @@ export class GestionPsicoComponent implements OnInit {
       },
       (error) => {
         console.error('Error al obtener psicólogo:', error);
-        // Maneja el error según tus necesidades
       }
     );
   }

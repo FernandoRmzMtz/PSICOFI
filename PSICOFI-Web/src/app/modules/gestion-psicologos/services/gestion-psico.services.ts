@@ -64,6 +64,7 @@ export class gestionPsico {
         "apellidoPaterno": psicologoNuevo.apellidoPaterno,
         "apellidoMaterno": psicologoNuevo.apellidoMaterno,
         "activo": "1",
+        "idCarrera": psicologoNuevo.idCarrera,
         "semestre": psicologoNuevo.semestre,
         "correo": psicologoNuevo.correo,
         "contrasena": "contrasena123!",
@@ -72,7 +73,7 @@ export class gestionPsico {
         { 
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': (this.loginService.getToken() ?? "token").trim()
+            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           } 
         }
       );
