@@ -51,7 +51,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form (ngSubmit)="GuardarEditarPsicologo()" >
           <label for="clave">Clave &uacute;nica / CURP:</label>
           <input type="text" class="form-control" id="clave" name="clave" placeholder="Clave &uacute;nica / CURP"
             [(ngModel)]="psicologoEditar.claveUnica" required readonly
@@ -73,7 +73,7 @@
           </select>
           <div class="modal-footer mt-4">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary" (click)="GuardarEditarPsicologo()">Guardar cambios</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
           </div>
         </form>
       </div>

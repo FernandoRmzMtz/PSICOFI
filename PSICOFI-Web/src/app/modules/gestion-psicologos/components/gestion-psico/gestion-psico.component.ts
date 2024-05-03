@@ -60,7 +60,7 @@ export class GestionPsicoComponent implements OnInit {
   public GuardarEditarPsicologo(): void {
     this.psico.editarPsicologo().subscribe(
       (psicologo) => {
-        console.log('Psicólogo editado:', psicologo);},
+        window.location.reload();      },
       (error) => {
         console.error('Error al editar psicólogo:', error);
       }
