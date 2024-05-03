@@ -33,6 +33,17 @@ export class gestionPsico {
     "carrera": "Licenciatura en psicologia"
   }
 
+  psicologoEditar = {
+    "claveUnica": 172383,
+    "nombres": "Elias Osinski",
+    "apellidoPaterno": "Reinger",
+    "apellidoMaterno": "Mertz",
+    "semestre": 6,
+    "correo": "flegros@gmail.com",
+    "activo": 1,
+    "carrera": "Licenciatura en psicologia"
+  }
+
     fetchedPsico = [];
   
     fetchPsicologos(): Observable<any> {
@@ -86,5 +97,23 @@ export class gestionPsico {
       );
     }
 
+
+    editarPsicologo() {
+      return this.http.put('http://psicofi-api.test/psicologo/updatePsicologo',
+        {
+          "clave": this.psicologoEditar.claveUnica,
+          "nombres": this.psicologoEditar.nombres,
+          "apellidoPaterno": this.psicologoEditar.apellidoPaterno,
+          "apellidoMaterno": this.psicologoEditar.apellidoMaterno,
+          "activo": this.psicologoEditar.activo,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          }
+        }
+      )
+    }
 
 }

@@ -41,4 +41,29 @@ export class GestionPsicoComponent implements OnInit {
       }
     );
   }
+
+  public editarPsicologo(clave: string): void {
+    this.psico.getPsicologoById(clave).subscribe(
+      (psicologo) => {
+        this.psico.psicologoEditar = psicologo;
+      },
+      (error) => {
+        console.error('Error al obtener psicólogo:', error);
+      }
+    );
+  }
+
+  get psicologoEditar() {
+    return this.psico.psicologoEditar;
+  }
+
+  public GuardarEditarPsicologo(): void {
+    this.psico.editarPsicologo().subscribe(
+      (psicologo) => {
+        console.log('Psicólogo editado:', psicologo);},
+      (error) => {
+        console.error('Error al editar psicólogo:', error);
+      }
+    );
+  }
 }
