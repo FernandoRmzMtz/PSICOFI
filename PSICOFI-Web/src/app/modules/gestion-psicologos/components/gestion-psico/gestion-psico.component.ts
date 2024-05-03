@@ -34,6 +34,7 @@ export class GestionPsicoComponent implements OnInit {
     this.psico.getPsicologoById(clave).subscribe(
       (psicologo) => {
         this.psico.psicologoViendo = psicologo;
+        this.psico.verPsicoVisible = true;
       },
       (error) => {
         console.error('Error al obtener psicólogo:', error);

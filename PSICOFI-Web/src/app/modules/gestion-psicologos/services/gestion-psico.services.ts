@@ -52,7 +52,14 @@ export class gestionPsico {
     getPsicologoById(clave: string): Observable<any> {
       const body = { clave: clave };
 
-      return this.http.post('http://psicofi-api.test/psicologo/searchPsicologo', body);
+      return this.http.post('http://psicofi-api.test/psicologo/searchPsicologo', body,
+      { 
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+        } 
+      }
+      );
     }
 
     agregarPsicologoInterno(psicologoNuevo: any): Observable<any>{  
