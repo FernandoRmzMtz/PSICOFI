@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('NotaCita',function(Blueprint $table){
             $table->id('idNotaCita');
-            $table->unsignedBigInteger('tipoIntevencion');
+            $table->unsignedBigInteger('tipoIntervencion');
             $table->text('notas');
             $table->string('departamento');
             $table->text('detalleCanalizacion')->nullable();
             $table->unsignedBigInteger('idCita');
 
             // Foreign keys
-            $table->foreign('tipoIntevencion')->references('idTipoIntervencion')->on('TipoIntervencion');
+            $table->foreign('tipoIntervencion')->references('idTipoIntervencion')->on('TipoIntervencion');
             $table->foreign('idCita')->references('idCita')->on('Cita');
         });
     }
@@ -31,7 +31,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('NotaCita', function (Blueprint $table) {
-            $table->dropForeign(['tipoIntevencion']);
+            $table->dropForeign(['tipoIntervencion']);
             $table->dropForeign(['idCita']);
         });
         Schema::dropIfExists('NotaCita');

@@ -28,3 +28,4 @@ Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
 
 // Route::get('alumno/{claveUnica}', 'AlumnoController@obtenerAlumno');
 
+

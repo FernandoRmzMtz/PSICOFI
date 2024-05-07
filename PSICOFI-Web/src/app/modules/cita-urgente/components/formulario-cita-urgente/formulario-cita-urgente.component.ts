@@ -14,6 +14,12 @@ export class FormularioCitaUrgenteComponent implements OnInit {
 
   constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService) { }
 
+  // Propiedades para los datos del formulario
+  tipoIntervencion: number | null = null;
+  notas: string = '';
+  departamento: string = '';
+  detalleCanalizacion: string = '';
+
   ngOnInit(): void {
     this.http.get<any[]>('http://localhost:8000/api/tipos-intervencion').subscribe(
       response => {
@@ -30,7 +36,27 @@ export class FormularioCitaUrgenteComponent implements OnInit {
     });
   }
   submitForm(): void {
-    console.log('Formulario enviado');
+    // Crear el objeto con los datos del formulario
+    const formData = {
+      tipoIntervencion: this.tipoIntervencion,
+      notas: this.notas,
+      departamento: this.departamento,
+      detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : null, // Si necesita canalización, incluir los detalles
+      // Agregar otros campos según sea necesario
+      idCita: 1
+    };
+
+    // Enviar los datos al servidor
+    this.http.post<any>('http://localhost:8000/api/nota-cita', formData).subscribe(
+      response => {
+        console.log('Datos enviados correctamente:', response);
+        // Aquí podrías realizar alguna acción adicional, como mostrar un mensaje de éxito o redirigir a otra página
+      },
+      error => {
+        console.error('Error al enviar los datos:', error);
+        // Aquí podrías manejar el error de alguna manera, como mostrar un mensaje de error al usuario
+      }
+    );
   }
   toggleCanalizacion(): void {
     this.necesitaCanalizacion = !this.necesitaCanalizacion; // Invierte el valor de necesitaCanalizacion
