@@ -8,7 +8,7 @@ import { CitaUrgenteService } from '../../services/cita-urgente.service';
 })
 export class DatosCitaUrgenteComponent {
 
-  claveUnica: number = 0;
+  claveUnica: number | null = null;
   alumno: any = {};
   buscado: boolean = false;
   encontrado: boolean = false;
@@ -23,16 +23,26 @@ export class DatosCitaUrgenteComponent {
     if(this.claveUnica) {
       this.citaUrgenteService.obtenerAlumno(this.claveUnica).subscribe(
         response => {
-          this.alumno = response;
-          this.encontrado = true;
+          if(response.claveUnica){
+            this.alumno = response;
+            this.encontrado = true;
+          }
+          else{
+            this.encontrado = false;
+            this.claveUnica = null;
+            this.citaUrgenteService.setDatosCitaLlenos(false);
+            console.error('No se encontró el alumno con la clave unica introducida.');
+          }
+          console.log('Alumno encontrado: ',this.alumno);
         },
         error => {
           this.encontrado = false;
-          console.error('Error al obtener alumno:', error);
+          this.claveUnica = null;
+          console.error('Error al intentar obtener alumno:', error);
         }
       );
     } else {
-      this.claveUnica = 0;
+      this.claveUnica = null;
       this.alumno = {};
       this.encontrado = false;
     }
@@ -40,11 +50,20 @@ export class DatosCitaUrgenteComponent {
   }
 
 public cita = {
-    'fecha': '16/04/2024',
-    'hora': '12:00',
-    'claveUnica': 1,
+    'fecha': '',
+    'hora': '',
+    'claveUnica': null,
     'estadoCita': 1,
     'clavePsicologo': 1,
     'clavePsicologoExterno': null,
 };
+
+
+  actualizarCita() {
+    if (this.cita.fecha && this.cita.hora && this.cita.claveUnica) {
+      this.citaUrgenteService.setDatosCitaLlenos(true); // Si todos los campos están llenos, actualiza datosCitaLlenos a true
+    } else {
+      this.citaUrgenteService.setDatosCitaLlenos(false); 
+    }
+  }
 }

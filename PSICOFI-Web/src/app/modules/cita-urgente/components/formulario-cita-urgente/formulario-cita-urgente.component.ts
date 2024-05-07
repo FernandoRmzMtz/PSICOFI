@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { CitaUrgenteService } from '../../services/cita-urgente.service';
 
 @Component({
   selector: 'app-formulario-cita-urgente',
@@ -9,8 +9,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class FormularioCitaUrgenteComponent implements OnInit {
   tiposIntervencion: any[] = [];
+  datosCitaLlenos: boolean = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService) { }
 
   ngOnInit(): void {
     this.http.get<any[]>('http://localhost:8000/api/tipos-intervencion').subscribe(
@@ -21,6 +22,11 @@ export class FormularioCitaUrgenteComponent implements OnInit {
         console.error('Error al obtener tipos de intervención:', error);
       }
     );
+
+    // Suscribe al observable para mantenerse actualizado sobre el estado de los datos de la cita
+    this.citaUrgenteService.datosCitaLlenos$.subscribe(value => {
+      this.datosCitaLlenos = value;
+    });
   }
   submitForm(): void {
     console.log('Formulario enviado');

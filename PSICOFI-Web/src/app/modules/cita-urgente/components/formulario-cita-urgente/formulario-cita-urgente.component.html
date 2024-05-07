@@ -5,14 +5,14 @@
                 <div class="row">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectTipoIntervencionRepCit" class="form-label mb-3">Motivo de la intervención:</label>
-                        <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionCitaUrg">
+                        <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionCitaUrg" [disabled]="!datosCitaLlenos">
                             <option selected></option>
                             <option *ngFor="let tipo of tiposIntervencion" [value]="tipo.idTipoIntervencion">{{ tipo.tipoIntervencion }}</option>
                         </select>
                     </div>
                     <div class="col-md-6 d-flex align-items-center justify-content-center">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="alumnoForaneoCitaUrg">
+                            <input class="form-check-input" type="checkbox" value="" id="alumnoForaneoCitaUrg" [disabled]="!datosCitaLlenos">
                             <label class="form-check-label" for="alumnoForaneoCitaUrg">
                                 Alumno foráneo
                             </label>
@@ -22,13 +22,14 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="observacionesRepCcita" class="form-label">Observaciones:</label>
-                        <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3"></textarea>
+                        <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3" [disabled]="!datosCitaLlenos">
+                        </textarea>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="canalizacionCitaUrg">
+                            <input class="form-check-input" type="checkbox" value="" id="canalizacionCitaUrg" [disabled]="!datosCitaLlenos">
                             <label class="form-check-label" for="canalizacionCitaUrg">
                                 Necesita canalización
                             </label>
@@ -38,7 +39,7 @@
                 <div class="row mt-3">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectDepartamentoCitaUrg" class="form-label mb-3">Departamento:</label>
-                        <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoCitaUrg">
+                        <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoCitaUrg" [disabled]="!datosCitaLlenos">
                             <option value=""></option>
                         </select>
                     </div>
@@ -46,12 +47,15 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="detallesCitaUrg" class="form-label">Detalles:</label>
-                        <textarea class="form-control" id="detallesCitaUrg" name="detalles" rows="3"></textarea>
+                        <textarea class="form-control" id="detallesCitaUrg" name="detalles" rows="3" [disabled]="!datosCitaLlenos">
+                        </textarea>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary btn-lg px-5">Guardar</button>
+                        <button type="submit" class="btn btn-primary btn-lg px-5" [disabled]="!datosCitaLlenos">
+                            Guardar
+                        </button>
                     </div>
                 </div>
             </form>

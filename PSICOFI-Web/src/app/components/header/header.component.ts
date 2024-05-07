@@ -12,7 +12,7 @@ interface HeaderRoute {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  tipoUsuario: string = 'alumno'; 
+  tipoUsuario: string = 'psicologo'; 
 
   rutas: HeaderRoute[] = [
     { title: 'Inicio', path: '/dashboard', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] },
