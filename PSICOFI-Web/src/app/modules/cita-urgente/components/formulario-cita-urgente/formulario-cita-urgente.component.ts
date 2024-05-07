@@ -10,6 +10,7 @@ import { CitaUrgenteService } from '../../services/cita-urgente.service';
 export class FormularioCitaUrgenteComponent implements OnInit {
   tiposIntervencion: any[] = [];
   datosCitaLlenos: boolean = false;
+  necesitaCanalizacion: boolean = false;
 
   constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService) { }
 
@@ -30,5 +31,8 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   }
   submitForm(): void {
     console.log('Formulario enviado');
+  }
+  toggleCanalizacion(): void {
+    this.necesitaCanalizacion = !this.necesitaCanalizacion; // Invierte el valor de necesitaCanalizacion
   }
 }
