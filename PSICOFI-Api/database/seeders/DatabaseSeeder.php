@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Cita;
+use App\Models\Departamento;
 use Illuminate\Database\Seeder;
 use App\Models\Curso;
 use App\Models\Alumno;
@@ -67,5 +69,26 @@ class DatabaseSeeder extends Seeder
         foreach ($alumnos as $alumnoData) {
             Alumno::create($alumnoData);
         }
+
+        Cita::create([
+            'idCita' => 1,
+            'fecha' => '2024-05-07', // Coloca la fecha deseada
+            'hora' => '10:00:00', // Coloca la hora deseada
+            'claveUnica' => 324109, // Coloca el valor deseado o null si es nullable
+            'estadoCita' => 1, // Coloca el ID del estado de cita deseado
+            'clavePsicologo' => null, // Coloca el valor deseado o null si es nullable
+            'clavePsicologoExterno' => null, // Coloca el valor deseado o null si es nullable
+            // Puedes añadir más columnas si es necesario
+        ]);
+
+        Departamento::create([
+            'departamento' => "Psiquiatría",
+        ]);
+        Departamento::create([
+            'departamento' => "Neurología",
+        ]);
+        Departamento::create([
+            'departamento' => "TrabajoSocial",
+        ]);
     }
 }
