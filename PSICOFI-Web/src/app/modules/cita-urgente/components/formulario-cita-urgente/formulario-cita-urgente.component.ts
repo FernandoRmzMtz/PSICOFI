@@ -22,8 +22,12 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   departamento: string = '';
   detalleCanalizacion: string = '';
   alumnoForaneo: boolean | null = null;
+  datosCita: Array<any> = [];
 
   ngOnInit(): void {
+
+
+
     this.http.get<any[]>('http://localhost:8000/api/tipos-intervencion').subscribe(
       response => {
         this.tiposIntervencion = response;
@@ -49,39 +53,75 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   }
   submitForm(): void {
 
-    
+    this.datosCita = this.citaUrgenteService.getDatosCita();
+    console.log(this.datosCita);
+    console.log(this.datosCita[0]);
+    console.log(this.datosCita[1]);
+    console.log(this.datosCita[2]);
+    console.log(this.datosCita[3]);
+    console.log(this.datosCita[4]);
+    console.log(this.datosCita[5]);
 
-    // Crear el objeto con los datos del formulario
-    const formData = {
-      tipoIntervencion: this.tipoIntervencion ? this.tipoIntervencion:1,
-      notas: this.notas,
-      departamento: this.departamento ? this.departamento: "",
-      detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : "", // Si necesita canalización, incluir los detalles
-      // Agregar otros campos según sea necesario
-      idCita: 1
+
+    // Crear la cita
+    const citaData = {
+      // this.fecha,
+      // this.hora,
+      // this.claveUnica,
+      // this.estadoCita,
+      // this.clavePsicologo,
+      // this.clavePsicologoExterno
+      fecha: this.datosCita[0],
+      hora: this.datosCita[1],
+      claveUnica: this.datosCita[2],
+      estadoCita: this.datosCita[3],
+      clavePsicologo: this.datosCita[4],
+      clavePsicologoExterno: this.datosCita[5],
     };
 
-    console.log(formData);
+    console.log(citaData);
 
-    // Enviar los datos al servidor
-    this.http.post<any>('http://localhost:8000/api/nota-cita', 
-    formData,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-      }
+    this.citaUrgenteService.crearCita(citaData).subscribe(
+      (response: any) => {
+        const idCita = response.idCita;
+
+        // Crear el objeto con los datos del formulario
+        const formData = {
+          tipoIntervencion: this.tipoIntervencion,
+          notas: this.notas,
+          departamento: this.departamento ? this.departamento: "",
+          detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : "", // Si necesita canalización, incluir los detalles
+          idCita: idCita
+          // Agregar otros campos según sea necesario
+        };
+
+        console.log(formData);
+
+        // Enviar los datos al servidor
+        this.http.post<any>('http://localhost:8000/api/nota-cita', 
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          }
+        },
+        ).subscribe(
+          response => {
+            console.log('Datos enviados correctamente:', response);
+            // Aquí podrías realizar alguna acción adicional, como mostrar un mensaje de éxito o redirigir a otra página
+          },
+          error => {
+            console.error('Error al enviar los datos:', error);
+            // Aquí podrías manejar el error de alguna manera, como mostrar un mensaje de error al usuario
+          }
+        );
     },
-    ).subscribe(
-      response => {
-        console.log('Datos enviados correctamente:', response);
-        // Aquí podrías realizar alguna acción adicional, como mostrar un mensaje de éxito o redirigir a otra página
-      },
-      error => {
-        console.error('Error al enviar los datos:', error);
-        // Aquí podrías manejar el error de alguna manera, como mostrar un mensaje de error al usuario
-      }
-    );
+    (error: any) => {
+      console.error('Error al crear la cita:', error);
+      // Aquí podrías manejar el error de alguna manera, como mostrar un mensaje de error al usuario
+    }
+  );
   }
   toggleCanalizacion(): void {
     this.necesitaCanalizacion = !this.necesitaCanalizacion; // Invierte el valor de necesitaCanalizacion

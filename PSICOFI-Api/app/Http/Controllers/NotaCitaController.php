@@ -2,11 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cita;
 use App\Models\NotaCita;
 use Illuminate\Http\Request;
 
 class NotaCitaController extends Controller
 {
+
+    public function crearCita(Request $request)
+    {
+        // Crea una nueva cita
+        $cita = new Cita();
+        $cita->fecha = $request->fecha;
+        $cita->hora = $request->hora;
+        $cita->estadoCita = $request->estadoCita;
+        $cita->claveUnica = $request->claveUnica;
+        if($request->clavePsicologo != -1)
+            $cita->clavePsicologo = $request->clavePsicologo;
+        if($request->clavePsicologoExterno != "-1")
+            $cita->clavePsicologoExterno = $request->clavePsicologoExterno;
+        // Guarda la cita en la base de datos
+        $cita->save();
+
+        // Devuelve la cita creada
+        return response()->json(['idCita' => $cita->id], 201);
+    }
+
     public function store(Request $request)
     {
         // // Validación de datos

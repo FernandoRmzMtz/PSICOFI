@@ -12,6 +12,7 @@ export class LoginService {
     public token: string = "";
     public claveUnica: string = "";
     public nombre: string = "";
+    public clave: string | null = null;
 
     private readonly TOKEN_KEY = 'auth_token';
     private readonly USER_ACTIVE = 'active_user';
@@ -55,8 +56,14 @@ export class LoginService {
     setToken(token: string): void {
         localStorage.setItem(this.TOKEN_KEY, token);
     } 
-    getClave(): string | null {
-            return localStorage.getItem(this.CLAVEUNICA);
+    getClave(): string {
+        this.clave = localStorage.getItem(this.CLAVEUNICA);
+        if(this.clave != null){
+            return this.clave;
+        }
+        else{
+            return "";
+        }
     }
 
     setClave(claveUnica: string): void {

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
+import { LoginService } from 'src/app/modules/login/services/login.services';
+import { Cita } from 'src/app/components/servicios/citas.service';
 
 @Component({
   selector: 'app-datos-cita-urgente',
@@ -12,10 +14,25 @@ export class DatosCitaUrgenteComponent {
   alumno: any = {};
   buscado: boolean = false;
   encontrado: boolean = false;
+  clavePsico: number | string = "";
+  cita =  {
+    'fecha': '',
+    'hora': '',
+    'claveUnica': null,
+    'estado': 4,
+    'clavePsicologo': -1,
+    'clavePsicologoExterno': "-1",
+};
 
-  constructor(private citaUrgenteService: CitaUrgenteService) {}
+  constructor(private citaUrgenteService: CitaUrgenteService, private loginService: LoginService) {}
 
   ngOnInit(): void {
+    this.clavePsico = this.loginService.getClave();
+    if(this.clavePsico.length > 6){
+      this.cita.clavePsicologoExterno= this.clavePsico.toString();
+    }else{
+      this.cita.clavePsicologo= parseInt(this.clavePsico);
+    }
   }
 
   buscarAlumno() {
@@ -49,19 +66,13 @@ export class DatosCitaUrgenteComponent {
     
   }
 
-public cita = {
-    'fecha': '',
-    'hora': '',
-    'claveUnica': null,
-    'estadoCita': 1,
-    'clavePsicologo': 1,
-    'clavePsicologoExterno': null,
-};
+
 
 
   actualizarCita() {
     if (this.cita.fecha && this.cita.hora && this.cita.claveUnica) {
-      this.citaUrgenteService.setDatosCitaLlenos(true); // Si todos los campos están llenos, actualiza datosCitaLlenos a true
+      this.citaUrgenteService.setDatosCita(this.cita.fecha,this.cita.hora,this.cita.claveUnica,this.cita.clavePsicologo,this.cita.clavePsicologoExterno);
+      this.citaUrgenteService.setDatosCitaLlenos(true);
     } else {
       this.citaUrgenteService.setDatosCitaLlenos(false); 
     }
