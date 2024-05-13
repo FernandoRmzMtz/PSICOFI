@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Cita;
+use App\Models\Departamento;
 use Illuminate\Database\Seeder;
 use App\Models\Curso;
 use App\Models\Alumno;
@@ -78,6 +79,16 @@ class DatabaseSeeder extends Seeder
             'clavePsicologo' => null, // Coloca el valor deseado o null si es nullable
             'clavePsicologoExterno' => null, // Coloca el valor deseado o null si es nullable
             // Puedes añadir más columnas si es necesario
+        ]);
+
+        Departamento::create([
+            'departamento' => "Psiquiatría",
+        ]);
+        Departamento::create([
+            'departamento' => "Neurología",
+        ]);
+        Departamento::create([
+            'departamento' => "TrabajoSocial",
         ]);
     }
 }

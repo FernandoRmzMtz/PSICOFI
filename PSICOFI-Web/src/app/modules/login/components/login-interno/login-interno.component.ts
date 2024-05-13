@@ -65,6 +65,7 @@ export class LoginInternoComponent {
           else{
             this.loginService.setToken(data.token);
             this.loginService.setActiveUser(data.nombre_alumno);
+            this.loginService.setClave(data.clave_unica);
             // this.loginService.claveUnica = data.clave_unica;
             // this.loginService.nombre = data.nombre_alumno;
             this._router.navigate(['/dashboard']);

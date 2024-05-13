@@ -15,6 +15,7 @@ export class LoginService {
 
     private readonly TOKEN_KEY = 'auth_token';
     private readonly USER_ACTIVE = 'active_user';
+    private readonly CLAVEUNICA = 'clave_user';
 
 
     constructor(private http: HttpClient){}
@@ -29,7 +30,8 @@ export class LoginService {
 
     loginInterno(clave: string, contrasena: string): Observable<any>
     {
-        console.log("clave: " + clave + " contrasena: " + contrasena);
+        // console.log("clave: " + clave + " contrasena: " + contrasena);
+        console.log("clave: " + clave);
         return this.http.post('http://localhost:8000/login', 
         {
             id: clave,
@@ -52,6 +54,13 @@ export class LoginService {
 
     setToken(token: string): void {
         localStorage.setItem(this.TOKEN_KEY, token);
+    } 
+    getClave(): string | null {
+            return localStorage.getItem(this.CLAVEUNICA);
+    }
+
+    setClave(claveUnica: string): void {
+        localStorage.setItem(this.CLAVEUNICA, claveUnica);
     } 
 
     setActiveUser(user: string): void {

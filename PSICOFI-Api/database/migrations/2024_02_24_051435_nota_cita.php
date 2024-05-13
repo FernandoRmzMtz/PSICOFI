@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('idNotaCita');
             $table->unsignedBigInteger('tipoIntervencion');
             $table->text('notas');
-            $table->string('departamento');
+            $table->string('departamento')->nullable();
             $table->text('detalleCanalizacion')->nullable();
             $table->unsignedBigInteger('idCita');
 
