@@ -6,28 +6,12 @@ import { Observable, BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CitaUrgenteService {
-  // $table->id('idCita');
-  // $table->date('fecha');
-  // $table->time('hora');
-  // $table->bigInteger('claveUnica')->nullable()->default(null);
-  // $table->unsignedBigInteger('estadoCita');
-  // $table->bigInteger('clavePsicologo')->nullable()->default(null);
-  // $table->string('clavePsicologoExterno',18)->nullable()->default(null);
-
   private fecha: string = "";
   private hora: string = "";
   private claveUnica: number = -1;
   private estadoCita: number = 4;
   private clavePsicologo: null| number = -1;
   private clavePsicologoExterno: null| string = "-1";
-//   cita =  {
-//     'fecha': '',
-//     'hora': '',
-//     'claveUnica': 0,
-//     'estado': 4,
-//     'clavePsicologo': -1,
-//     'clavePsicologoExterno': "-1",
-// };
 
   constructor(private http: HttpClient) { }
 

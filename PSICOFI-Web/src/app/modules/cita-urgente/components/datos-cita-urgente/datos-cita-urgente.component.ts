@@ -66,9 +66,6 @@ export class DatosCitaUrgenteComponent {
     
   }
 
-
-
-
   actualizarCita() {
     if (this.cita.fecha && this.cita.hora && this.cita.claveUnica) {
       this.citaUrgenteService.setDatosCita(this.cita.fecha,this.cita.hora,this.cita.claveUnica,this.cita.clavePsicologo,this.cita.clavePsicologoExterno);
