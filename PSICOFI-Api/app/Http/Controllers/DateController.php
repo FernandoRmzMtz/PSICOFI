@@ -36,6 +36,8 @@ class DateController extends Controller
                         'cita.claveUnica',
                 )
                 ->get();
+            } else {
+                return response()->json(['error' => 'ID inválido'], 400);
             }
             return json_encode($citas);
         }catch(\Exception $e){
