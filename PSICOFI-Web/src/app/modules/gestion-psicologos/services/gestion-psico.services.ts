@@ -12,11 +12,12 @@ import { environment } from "environments/enviroment";
 })
 
 export class gestionPsico {
+  
+  fetchedPsico = [];
 
   constructor(private http: HttpClient, private loginService: LoginService) {
     this.fetchPsicologos().subscribe((data) => {
       this.fetchedPsico = data;
-      console.log(this.fetchedPsico);
     });
   }
 
@@ -44,7 +45,6 @@ export class gestionPsico {
     "carrera": "Licenciatura en psicologia"
   }
 
-  fetchedPsico = [];
 
   fetchPsicologos(): Observable<any> {
     return this.http.get(environment.api + '/psicologo/getPsicologos').pipe(
@@ -136,4 +136,9 @@ export class gestionPsico {
     )
   }
 
+
+  filtrarPsicologos()
+  {
+    this.fetchedPsico = this.fetchedPsico;
+  }
 }
