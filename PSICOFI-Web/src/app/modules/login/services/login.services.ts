@@ -31,9 +31,7 @@ export class LoginService {
 
     loginInterno(clave: string, contrasena: string): Observable<any>
     {
-        // console.log("clave: " + clave + " contrasena: " + contrasena);
-        console.log("clave: " + clave);
-        return this.http.post('http://localhost:8000/login', 
+        return this.http.post('http://psicofi-api.test/login', 
         {
             id: clave,
             password: contrasena

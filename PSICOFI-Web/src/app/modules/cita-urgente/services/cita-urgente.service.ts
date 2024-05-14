@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { environment } from 'environments/enviroment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class CitaUrgenteService {
   constructor(private http: HttpClient) { }
 
   obtenerAlumno(claveUnica: number): Observable<any> {
-    return this.http.get<any>(`http://localhost:8000/api/alumno/${claveUnica}`);
+    return this.http.get<any>(environment.api+`/environment.apialumno/${claveUnica}`);
   }
   private datosCitaLlenosSource = new BehaviorSubject<boolean>(false);
   datosCitaLlenos$ = this.datosCitaLlenosSource.asObservable();
@@ -46,7 +47,7 @@ export class CitaUrgenteService {
   }
 
   crearCita(citaData: any): Observable<any> {
-    return this.http.post<any>('http://localhost:8000/api/crear-cita', citaData);
+    return this.http.post<any>(environment.api+'/crear-cita', citaData);
   }
 
 }

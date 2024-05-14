@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/enviroment';
 
 
 @Component({
@@ -13,7 +14,7 @@ export class FormularioReporteCitaComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.http.get<any[]>('http://localhost:8000/api/tipos-intervencion').subscribe(
+    this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
       response => {
         this.tiposIntervencion = response;
       },

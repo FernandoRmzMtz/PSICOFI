@@ -3,7 +3,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError } from 'rxjs/operators';
 import { LoginService } from "../../login/services/login.services";
-
+import { environment } from "environments/enviroment";
 
 
 
@@ -47,8 +47,7 @@ export class gestionPsico {
     fetchedPsico = [];
   
     fetchPsicologos(): Observable<any> {
-      return this.http.get('http://localhost:8000/psicologo/getPsicologos').pipe(
-      // return this.http.get('http://psicofi-api.test/psicologo/getPsicologos').pipe(
+      return this.http.get(environment.api+'/psicologo/getPsicologos').pipe(
         catchError(error => {
           console.error('Error fetching psychologists:', error);
           // Puedes retornar un valor por defecto o lanzar el error para que lo maneje otro componente
@@ -64,7 +63,7 @@ export class gestionPsico {
     getPsicologoById(clave: string): Observable<any> {
       const body = { clave: clave };
 
-      return this.http.post('http://localhost:8000/psicologo/searchPsicologo', body,
+      return this.http.post(environment.api+'/psicologo/searchPsicologo', body,
       { 
         headers: {
           'Content-Type': 'application/json',
