@@ -9,6 +9,9 @@ import { ReporteCitasModule } from './modules/reporte-citas/reporte-citas.module
 import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
 import { FormsModule } from '@angular/forms'; 
 import { ReactiveFormsModule } from '@angular/forms';
+import { FacultadComponent } from './modules/reporte/component/facultad/facultad.component';
+import { AreaComponent } from './modules/reporte/component/area/area.component';
+import { CarreraComponent } from './modules/reporte/component/carrera/carrera.component';
 
 
 @NgModule({
@@ -16,6 +19,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppComponent,
     HeaderComponent,
     FooterComponent,
+    FacultadComponent,
+    AreaComponent,
+    CarreraComponent,
   ],
   imports: [
     BrowserModule,
