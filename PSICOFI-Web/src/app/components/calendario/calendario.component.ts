@@ -89,6 +89,7 @@ export class CalendarioComponent implements OnInit {
         if (this.tipoUsuario === 'alumno') {
           this.citas = this.citas.filter(cita => cita.estado === "Libre");
         }
+
         this.citas.forEach(cita => {
           if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
             const fecha = cita.fecha;
@@ -110,7 +111,6 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
-
   getDisponibilidadClase(dia: Date): string {
     const fecha = dia.toISOString().split('T')[0];
     const disponibilidad = this.disponibilidadPorDia[fecha];
@@ -129,7 +129,6 @@ export class CalendarioComponent implements OnInit {
     this.diasDelMes = [];
     const year = fecha.getFullYear();
     const month = fecha.getMonth();
-
     const primerDia = new Date(year, month, 1);
     const ultimoDia = new Date(year, month + 1, 0);
 
@@ -172,9 +171,6 @@ export class CalendarioComponent implements OnInit {
     return this.fechaActual.getMonth() === hoy.getMonth() && this.fechaActual.getFullYear() === hoy.getFullYear();
   }
 
-
-  
-
   seleccionarDia(dia: Date, evento?: Event): void {
     if (this.citaAgendada) return;
     this.diaSeleccionado = dia;
@@ -187,15 +183,11 @@ export class CalendarioComponent implements OnInit {
     const citasDelDia = this.citas.filter(cita =>
       cita.hora.startsWith(fechaSeleccionada) &&
       cita.clavePsicologo === this.psicologoSeleccionadoId);
-
     this.citasAgendadas = citasDelDia.filter(cita => cita.estado === "Asistencia sin confirmar");
-
     this.citasDisponibles = citasDelDia.filter(cita => cita.estado === "Libre");
-
     if (this.diaSeleccionadoElemento) {
       this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
     }
-
     if (evento) {
       this.diaSeleccionadoElemento = (evento.target as HTMLElement);
       this.diaSeleccionadoElemento.classList.add('dia-seleccionado');
@@ -209,8 +201,6 @@ export class CalendarioComponent implements OnInit {
   cerrarModalConfirmacion() {
     this.mostrarModalConfirmacion = false;
   }
-
-
 
   confirmarCita() {
     const cita = {
@@ -273,7 +263,6 @@ export class CalendarioComponent implements OnInit {
     console.log("Hora agregada");
     this.cerrarModalAgregarHora();
   }
-
 
   agregarHoras() {
     this.cerrarModalAgregarHora();

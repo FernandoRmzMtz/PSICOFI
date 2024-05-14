@@ -11,7 +11,6 @@ export interface Cita {
   clavePsicologo: number;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
