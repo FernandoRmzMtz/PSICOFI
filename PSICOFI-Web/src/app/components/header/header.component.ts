@@ -12,7 +12,7 @@ interface HeaderRoute {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  tipoUsuario: string = 'alumno'; 
+  tipoUsuario: string = 'administrador'; 
 
   rutas: HeaderRoute[] = [
     { title: 'Inicio', path: '/dashboard', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] },
@@ -26,7 +26,7 @@ export class HeaderComponent {
     { title: 'Cambiar contraseña', path: '/cambiar-contraseña', tipoUsuario: ['psicologo_externo'] },
     { title: 'Añadir psicólogo', path: '/añadir-psicologo', tipoUsuario: ['administrador'] },
     { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['administrador'] },
-    { title: 'Generar reporte', path: '/generar-reporte', tipoUsuario: ['administrador'] },
+    { title: 'Reportes', path: '/reportes', tipoUsuario: ['administrador'] },
     { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] }
   ];
   

@@ -14,3 +14,8 @@ label.oblig::after {
     margin-left: 4px; /* Ajusta el margen según sea necesario */
     font-size: small;
 }
+
+
+form input{
+    text-transform: uppercase;
+}

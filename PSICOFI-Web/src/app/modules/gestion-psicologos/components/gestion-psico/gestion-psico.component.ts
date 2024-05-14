@@ -8,6 +8,8 @@ import { gestionPsico } from '../../services/gestion-psico.services';
 })
 export class GestionPsicoComponent implements OnInit {
   public psicologos: any = [];
+  public psicologosBackup: any = [];
+  public inputBuscar = "";
   psicologo = {
     "activo": 0,
     "apellidoMaterno": "Nikolaus",
@@ -23,6 +25,7 @@ export class GestionPsicoComponent implements OnInit {
     this.psico.getPsicologos().subscribe(
       (data) => {
         this.psicologos = data;
+        this.psicologosBackup = [...data];
       },
       (error) => {
         console.error('Error al obtener psicólogos:', error);
@@ -34,11 +37,47 @@ export class GestionPsicoComponent implements OnInit {
     this.psico.getPsicologoById(clave).subscribe(
       (psicologo) => {
         this.psico.psicologoViendo = psicologo;
+        this.psico.verPsicoVisible = true;
       },
       (error) => {
         console.error('Error al obtener psicólogo:', error);
-        // Maneja el error según tus necesidades
       }
     );
   }
+
+  public editarPsicologo(clave: string): void {
+    this.psico.getPsicologoById(clave).subscribe(
+      (psicologo) => {
+        this.psico.psicologoEditar = psicologo;
+      },
+      (error) => {
+        console.error('Error al obtener psicólogo:', error);
+      }
+    );
+  }
+
+  get psicologoEditar() {
+    return this.psico.psicologoEditar;
+  }
+
+  public GuardarEditarPsicologo(): void {
+    this.psico.editarPsicologo().subscribe(
+      (psicologo) => {
+        window.location.reload();      },
+      (error) => {
+        console.error('Error al editar psicólogo:', error);
+      }
+    );
+  }
+
+  public buscarChange() {
+    this.psicologos = this.psicologosBackup.filter((res: any) => {
+      if (typeof res.nombres === 'string') {
+        return res.nombres.toLocaleLowerCase().includes(this.inputBuscar.toLocaleLowerCase());
+      } else {
+        return true;
+      }
+    });
+  }
+  
 }

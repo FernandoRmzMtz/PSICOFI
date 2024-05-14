@@ -9,13 +9,14 @@ import { ReporteCitasModule } from './modules/reporte-citas/reporte-citas.module
 import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
 import { FormsModule } from '@angular/forms'; 
 import { ReactiveFormsModule } from '@angular/forms';
+import { ReportesModule } from './modules/reportes/reportes.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

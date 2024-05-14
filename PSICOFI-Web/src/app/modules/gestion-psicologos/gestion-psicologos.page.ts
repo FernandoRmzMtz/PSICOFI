@@ -18,5 +18,6 @@ export class GestionPsicologosPage{
   public ocultarVer()
   {
     this.psico.verPsicoVisible = false;
+    
   }
 }

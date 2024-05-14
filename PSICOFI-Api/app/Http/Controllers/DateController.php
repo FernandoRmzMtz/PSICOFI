@@ -153,4 +153,79 @@ class DateController extends Controller
             return $e;
         }
     }
+
+    public function createDates(Request $request){
+        $id = $request->input('id',null);
+        $fecha = $request->input('fecha',null);
+        $horas = $request->input('horas', []);
+
+        try{
+            if(strlen($id) == 18){
+                if($fecha != null && $horas != null){
+                    try{
+                        foreach($horas as $hora){
+                            // Comprobación para verificar que la cita no existe
+                            $citaExistente = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                            ->where('hora', $hora)
+                            ->where('clavePsicologoExterno', $id)
+                            ->exists();
+                            
+                            if(!$citaExistente){
+                                $cita = new Cita;
+
+                                $cita->fecha = date('Y-m-d', strtotime($fecha));
+                                $cita->hora = $hora;
+                                $cita->estadoCita = 7;
+                                $cita->clavePsicologo = null;
+                                $cita->clavePsicologoExterno = $id;
+
+                                $cita->save();
+                            }
+                        }
+
+                        $respuesta = ['Citas creadas correctamente'];
+                        return json_encode($respuesta);
+                    }catch(\Exception $e){
+                        $respuesta = ['Error' => 'Citas NO creadas'];
+                        return json_encode($respuesta);
+                    }
+                }
+            }else if(strlen($id) == 6){
+                if($fecha != null && $horas != null){
+                    try{
+                        foreach($horas as $hora){
+                            // Comprobación para verificar que la cita no existe
+                            $citaExistente = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                            ->where('hora', $hora)
+                            ->where('clavePsicologo', $id)
+                            ->exists();
+                            
+                            if(!$citaExistente){
+                                $cita = new Cita;
+
+                                $cita->fecha = date('Y-m-d', strtotime($fecha));
+                                $cita->hora = $hora;
+                                $cita->estadoCita = 7;
+                                $cita->clavePsicologo = $id;
+                                $cita->clavePsicologoExterno = null;
+
+                                $cita->save();
+                            }
+                        }
+                        $respuesta = ['Citas creadas correctamente'];
+                        return json_encode($respuesta);
+                    }catch(\Exception $e){
+                        $respuesta = ['Error' => 'Citas NO creadas'];
+                        return json_encode($respuesta);
+                    }
+                }
+            }else if(strlen($id) != 18 && strlen($id) != 6){
+                $respuesta = ['Error' => 'ID incorrecto'];
+                return json_encode($respuesta);
+            }
+        }catch(\Exception $e){
+            $respuesta = ['Error' => 'Citas NO creadas'];
+            return json_encode($respuesta);
+        }
+    }
 }
