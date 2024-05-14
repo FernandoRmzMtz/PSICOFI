@@ -47,7 +47,8 @@ export class gestionPsico {
     fetchedPsico = [];
   
     fetchPsicologos(): Observable<any> {
-      return this.http.get('http://psicofi-api.test/psicologo/getPsicologos').pipe(
+      return this.http.get('http://localhost:8000/psicologo/getPsicologos').pipe(
+      // return this.http.get('http://psicofi-api.test/psicologo/getPsicologos').pipe(
         catchError(error => {
           console.error('Error fetching psychologists:', error);
           // Puedes retornar un valor por defecto o lanzar el error para que lo maneje otro componente
@@ -63,7 +64,7 @@ export class gestionPsico {
     getPsicologoById(clave: string): Observable<any> {
       const body = { clave: clave };
 
-      return this.http.post('http://psicofi-api.test/psicologo/searchPsicologo', body,
+      return this.http.post('http://localhost:8000/psicologo/searchPsicologo', body,
       { 
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +77,8 @@ export class gestionPsico {
     agregarPsicologoInterno(psicologoNuevo: any): Observable<any>{  
       console.log(this.loginService.getToken());
       console.log(psicologoNuevo);
-      return this.http.post('http://psicofi-api.test/psicologo/registerPsicologo',
+      return this.http.post('http://localhost:8000/psicologo/registerPsicologo',
+      // return this.http.post('http://psicofi-api.test/psicologo/registerPsicologo',
       {
         "nombres": psicologoNuevo.nombres,
         "apellidoPaterno": psicologoNuevo.apellidoPaterno,

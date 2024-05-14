@@ -6,8 +6,8 @@
                 <tr>
                     <td class="bg-info">Clave &uacute;nica:</td>
                     <td class="input-td">
-                        <input type="number" class="form-control" id="claveUnica" [(ngModel)]="claveUnica"
-                            (keyup.enter)="buscarAlumno()" (blur)="buscarAlumno()">
+                        <input type="number" placeholder="Introduce una clave única válida" class="form-control" id="claveUnica" [(ngModel)]="claveUnica"
+                        [(ngModel)]="cita.claveUnica" (change)="actualizarCita()" (keyup.enter)="buscarAlumno()" (blur)="buscarAlumno()" autofocus>
                     </td>
                 </tr>
                 <tr *ngIf="alumno">
@@ -17,7 +17,9 @@
                 </tr>
                 <tr *ngIf="alumno">
                     <td class="bg-info">Fecha:</td>
-                    <td *ngIf="encontrado">{{cita.fecha}} {{cita.hora}}</td>
+                    <!-- <td *ngIf="encontrado">{{cita.fecha}} {{cita.hora}}</td> -->
+                    <input type="date" [(ngModel)]="cita.fecha" placeholder="Introduce la fecha de la cita" (change)="actualizarCita()">
+                    <input type="time" [(ngModel)]="cita.hora" placeholder="Selecciona la hora" (change)="actualizarCita()">
                 </tr>
             </table>
         </div>

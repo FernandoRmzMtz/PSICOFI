@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotaCitaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DateController;
@@ -38,7 +39,10 @@ Route::put('cita/scheduleDate',[DateController::class,'scheduleDate'])->name('ci
 
 Route::get('cita/getDates',[DateController::class,'getDates'])->name('cita.getDates');
 
+Route::post('/api/nota-cita', [NotaCitaController::class, 'store']);
 
-
+Route::get('/csrf-token', function() {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
 
 
