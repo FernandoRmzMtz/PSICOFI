@@ -41,6 +41,8 @@ Route::get('cita/getDates',[DateController::class,'getDates'])->name('cita.getDa
 
 Route::post('/api/nota-cita', [NotaCitaController::class, 'store']);
 
+// aa
+
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);
 });
