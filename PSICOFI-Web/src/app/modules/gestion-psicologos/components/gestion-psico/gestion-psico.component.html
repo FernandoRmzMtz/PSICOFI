@@ -3,7 +3,7 @@
     <form>
       <div class="row my-4">
         <div class="col-11">
-          <input type="text" class="form-control" placeholder="Buscar psicólogo" />
+          <input type="text" class="form-control" placeholder="Buscar psicólogo" name="buscarInput" [(ngModel)]="inputBuscar" (ngModelChange)="buscarChange()"/>
         </div>
         <div class="col-1">
           <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
@@ -11,7 +11,7 @@
       </div>
     </form>
 
-    <div class="table-responsive" style="max-height: 460px;">
+    <div class="table-responsive" style="max-height: 460px; min-height: 460px;">
       <table class="table table-striped">
         <thead>
           <tr>

@@ -32,7 +32,7 @@ export class AnadirPsicoComponent {
     else if (this.claveNuevo.length == 18) {
       //Es externo
       tipo = 2;
-      (this.nuevoPsicologo as any)['CURP'] = this.claveNuevo;
+      (this.nuevoPsicologo as any)['curp'] = this.claveNuevo;
     }
     else {
       alert("La clave no tiene el formato correcto Curp = 18 caracteres y clave única = 6")
@@ -44,7 +44,7 @@ export class AnadirPsicoComponent {
       this.registraPsicologoInterno(this.nuevoPsicologo);
     }
     else if (tipo == 2) {
-      // registraPsicologoExterno();
+      this.registraPsicologoExterno(this.nuevoPsicologo);
     }
     this.claveNuevo = '';
     this.nuevoPsicologo = {
@@ -66,8 +66,19 @@ export class AnadirPsicoComponent {
   }
 
   public registraPsicologoInterno(psicologo: any): void {
-    console.log(psicologo);
     this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
+      (psicologo) => {
+        console.log("Psicologo agregado", psicologo);
+      },
+      (error) => {
+        console.log(error);
+        console.log("ERROR!");
+      }
+    )
+  }
+
+  public registraPsicologoExterno(psicologo: any): void {
+    this.gestionPsicoService.agregarPsicologoExterno(psicologo).subscribe(
       (psicologo) => {
         console.log("Psicologo agregado", psicologo);
       },

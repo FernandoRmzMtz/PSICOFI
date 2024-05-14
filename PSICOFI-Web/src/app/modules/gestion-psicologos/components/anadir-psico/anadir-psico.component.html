@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col">
             <label for="semestre" class="oblig">Semestre:</label>
-            <input type="number" class="form-control" id="semestre" name="semestre" placeholder="Semestre" [(ngModel)]="nuevoPsicologo.semestre" required>
+            <input type="number" class="form-control" id="semestre" name="semestre" placeholder="Semestre" [(ngModel)]="nuevoPsicologo.semestre" required min="1" max="12">
         </div>
         <div class="col">
             <label for="carrera" class="oblig">Carrera:</label>
