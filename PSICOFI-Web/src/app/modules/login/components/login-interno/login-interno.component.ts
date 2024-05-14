@@ -57,7 +57,6 @@ export class LoginInternoComponent {
   public validaUsuarioInterno(): void {
     this.loginService.loginInterno(this.cvunica, this.contrasena).subscribe((data) => {
       if(data){
-        console.log(data);
         if(data.validacion=="USUARIO-INVALIDO")
           {
             alert("Usuario o contraseña incorrecta");
@@ -66,8 +65,6 @@ export class LoginInternoComponent {
             this.loginService.setToken(data.token);
             this.loginService.setActiveUser(data.nombre_alumno);
             this.loginService.setClave(data.clave_unica);
-            // this.loginService.claveUnica = data.clave_unica;
-            // this.loginService.nombre = data.nombre_alumno;
             this._router.navigate(['/dashboard']);
           }
         

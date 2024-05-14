@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
 import { LoginService } from 'src/app/modules/login/services/login.services';
+import { environment } from 'environments/enviroment';
 
 @Component({
   selector: 'app-formulario-cita-urgente',
@@ -28,7 +29,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
 
 
 
-    this.http.get<any[]>('http://localhost:8000/api/tipos-intervencion').subscribe(
+    this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
       response => {
         this.tiposIntervencion = response;
       },
@@ -37,7 +38,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
       }
     );
 
-    this.http.get<any[]>('http://localhost:8000/api/departamentos').subscribe(
+    this.http.get<any[]>(environment.api+'/departamentos').subscribe(
       response => {
         this.departamentos = response;
       },
@@ -84,7 +85,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
         console.log(formData);
 
         // Enviar los datos al servidor
-        this.http.post<any>('http://localhost:8000/api/nota-cita', 
+        this.http.post<any>(environment.api+'/nota-cita', 
         formData,
         {
           headers: {

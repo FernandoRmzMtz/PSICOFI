@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
+import { environment } from 'environments/enviroment';
+
 @Component({
   selector: 'app-cita-urgente',
   templateUrl: './cita-urgente.page.html',
@@ -22,7 +24,7 @@ export class CitaUrgentePage {
 
   onSubmit(data: any) {
     const headers = { 'X-CSRF-TOKEN': this.csrfToken };
-    this.http.post('http://localhost:8000/api/nota-cita', data, { headers }).subscribe(response => {
+    this.http.post(environment.api+'/nota-cita', data, { headers }).subscribe(response => {
       console.log('Respuesta del servidor:', response);
       // Manejar la respuesta del servidor aquí
     }, error => {
