@@ -15,6 +15,7 @@ import { HistorialAlumnosPage } from './modules/historial-alumnos/historial-alum
 import { HistorialAlumnosModule } from './modules/historial-alumnos/historial-alumnos.module';
 import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
 import { CitaUrgentePage } from './modules/cita-urgente/cita-urgente.page';
+import { ReportesPage } from './modules/reportes/reportes.page';
 
 const routes: Routes = [
   {path: 'login', component: LoginPage},
@@ -27,7 +28,8 @@ const routes: Routes = [
   {path: 'cambio-contrasena', component: CambioContrasenaPage},
   {path: 'historial-alumnos', component: HistorialAlumnosPage},
   {path: 'reporte-citas', component: ReporteCitasPage},
-  {path: 'cita-urgente', component: CitaUrgentePage}
+  {path: 'cita-urgente', component: CitaUrgentePage},
+  {path: 'reportes', component: ReportesPage},
 ];
 
 @NgModule({
