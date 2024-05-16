@@ -4,15 +4,13 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Cita;
-use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
 use App\Models\Alumno;
-use Psy\Readline\Hoa\Console;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cita>
  */
-class CitaFactory extends Factory
+class CitaExternosFactory extends Factory
 {
     protected $model = Cita::class;
     /**
@@ -28,31 +26,20 @@ class CitaFactory extends Factory
         $indice = array_search($horaElegida, $horasDisponibles);
         unset($horasDisponibles[$indice]);
 
-        $alumnosDisponibles = Alumno::distinct()->pluck('claveUnica')->toArray();
+        $alumnosDisponibles = Alumno::pluck('claveUnica')->toArray();
         $claveElegida = $this->faker->randomElement($alumnosDisponibles);
         $indice = array_search($claveElegida, $alumnosDisponibles);
         unset($alumnosDisponibles[$indice]);
 
-        $elegirPsicologoExterno = $this->faker->randomElement([1,2]); 
-
-        if ($elegirPsicologoExterno == 1) {
-            $psicologoExterno = PsicologoExterno::select('curp')
-            ->inRandomOrder()
-            ->first();
-            $psicologo = null;
-            $psicologoExterno = $psicologoExterno["curp"];
-        } else {
-            $psicologo = Psicologo::inRandomOrder()->first()->claveUnica;
-            $psicologoExterno = null;
-        }
+        PsicologoExterno::inRandomOrder()->first()->CURP;
 
         return [
             'fecha' => $this->faker->randomElement(['2024-05-16', '2024-05-17', '2024-05-18', '2024-05-19', '2024-05-20']),
             'hora' => $horaElegida,
             'claveUnica' => $claveElegida,
             'estadoCita' => $this->faker->randomElement([2,4]),
-            'clavePsicologo' => $psicologo,
-            'clavePsicologoExterno' => $psicologoExterno,
+            'clavePsicologo' => PsicologoExterno::inRandomOrder()->first()->CURP, 
+            'clavePsicologoExterno' => null, 
         ];
     }
 }

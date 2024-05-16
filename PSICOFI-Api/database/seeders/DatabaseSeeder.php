@@ -78,7 +78,6 @@ class DatabaseSeeder extends Seeder
             'estadoCita' => 1, // Coloca el ID del estado de cita deseado
             'clavePsicologo' => null, // Coloca el valor deseado o null si es nullable
             'clavePsicologoExterno' => null, // Coloca el valor deseado o null si es nullable
-            // Puedes añadir más columnas si es necesario
         ]);
 
         Departamento::create([
@@ -90,5 +89,7 @@ class DatabaseSeeder extends Seeder
         Departamento::create([
             'departamento' => "TrabajoSocial",
         ]);
+
+        Cita::factory(7)->create();
     }
 }

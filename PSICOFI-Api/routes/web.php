@@ -23,11 +23,15 @@ Route::get('/', HomeController::class);
 
 Route::post('login',[AuthController::class,'login'])->name('login');
 
+Route::post('obtainAlumno',[AuthController::class,'obtainAlumno'])->name('obtainAlumno');
+
 Route::post('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo'])->name('psicologo.searchPsicologo');
 
 Route::post('psicologo/registerPsicologo',[PsicoController::class,'registerPsicologo'])->name('psicologo.registerPsicologo');
 
 Route::get('psicologo/getPsicologos',[PsicoController::class,'getPsicologos'])->name('psicologo.getPsicologos');
+
+Route::post('psicologo/getPatients',[PsicoController::class,'getPatients'])->name('psicologo.getPatients');
 
 Route::put('psicologo/updatePsicologo',[PsicoController::class,'updatePsicologo'])->name('psicologo.updatePsicologo');
 
@@ -40,6 +44,10 @@ Route::put('cita/scheduleDate',[DateController::class,'scheduleDate'])->name('ci
 Route::get('cita/getDates',[DateController::class,'getDates'])->name('cita.getDates');
 
 Route::post('cita/createDates',[DateController::class,'createDates'])->name('cita.createDates');
+
+Route::post('cita/cancelDate',[DateController::class,'cancelDate'])->name('cita.cancelDate');
+
+Route::post('cita/confirmDate',[DateController::class,'confirmDate'])->name('cita.confirmDate');
 
 Route::post('/api/nota-cita', [NotaCitaController::class, 'store']);
 

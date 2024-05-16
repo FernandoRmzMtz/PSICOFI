@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
+use App\Models\Cita;
 
 class PsicoController extends Controller
 {
@@ -230,6 +231,49 @@ class PsicoController extends Controller
             }
         }else if($clave !== null && $curp !== null){
             return 0;
+        }
+    }
+
+    public function getPatients(Request $request){
+        $id = $request->input('id',null);
+        
+        try{
+            if(strlen($id) == 18){
+                $alumnos = Cita::select('claveUnica')
+                    ->where('clavePsicologoExterno', $id)
+                    ->where('estadoCita', 4)
+                    ->distinct()
+                    ->get();
+                
+                if($alumnos){
+                    return json_encode($alumnos);
+                }else{
+                    $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
+                    return json_encode($respuesta);
+                }
+            }else if(strlen($id) == 6){
+                $alumnos = Cita::select('claveUnica')
+                    ->where('clavePsicologo', $id)
+                    ->where('estadoCita', 4)
+                    ->distinct()
+                    ->get();
+                
+                if($alumnos){
+                    foreach($alumnos as $alumno){
+                        $claves[] = $alumno->claveUnica;
+                    }
+                    return json_encode($claves);
+                }else{
+                    $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
+                    return json_encode($respuesta);
+                }
+            }else{
+                $respuesta = ['Error' => 'ID incorrecto'];
+                return json_encode($respuesta);
+            }
+        }catch(\Exception $e){
+            $respuesta = ['Error' => 'Algo salio mal'];
+            return json_encode($respuesta);
         }
     }
 }

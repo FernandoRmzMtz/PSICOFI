@@ -18,7 +18,9 @@ class DateController extends Controller
                 $citas = Cita::where('clavePsicologoExterno', $id)
                 ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
                 ->where('cita.clavePsicologoExterno', $id)
-                ->select('cita.clavePsicologoExterno',
+                ->where('cita.estadoCita', 7)
+                ->select('idCita',
+                        'cita.clavePsicologoExterno',
                         'cita.hora',
                         'cita.fecha',
                         'estadocita.estado AS estado',
@@ -29,7 +31,9 @@ class DateController extends Controller
                 $citas = Cita::where('clavePsicologo', $id)
                 ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
                 ->where('cita.clavePsicologo', $id)
-                ->select('cita.clavePsicologo',
+                ->where('cita.estadoCita', 7)
+                ->select('idCita',
+                        'cita.clavePsicologo',
                         'cita.hora',
                         'cita.fecha',
                         'estadocita.estado AS estado',
@@ -223,6 +227,135 @@ class DateController extends Controller
             }
         }catch(\Exception $e){
             $respuesta = ['Error' => 'Citas NO creadas'];
+            return json_encode($respuesta);
+        }
+    }
+
+    public function cancelDate(Request $request){
+        $id = $request->input('id',null);
+        // $fecha = $request->input('fecha',null);
+        // $hora = $request->input('hora', null);
+        $idCita = $request->input('idCita', null);
+
+        try{
+            if(strlen($id) == 18){
+                // $cita = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                // ->where('hora', $hora)
+                // ->where('clavePsicologoExterno', $id)
+                // ->value('estadoCita');
+
+                $cita = Cita::where('idCita', $idCita)
+                ->where('clavePsicologoExterno', $id)
+                ->value('estadoCita');
+
+                if($cita == 2){
+                    // $confirm = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                    // ->where('hora', $hora)
+                    // ->where('clavePsicologoExterno', $id)
+                    // ->update(['estadoCita' => '6']);
+
+                    $confirm = Cita::where('idCita', $idCita)
+                    ->update(['estadoCita' => '6']);
+
+                    if($confirm > 0){
+                        $respuesta = ['Cita cancelada correctamente'];
+                        return json_encode($respuesta);
+                    }
+                }else{
+                    $respuesta = ['Error' => 'Cita NO cancelada'];
+                    return json_encode($respuesta);
+                }
+            }else if(strlen($id) == 6){
+                // $cita = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                // ->where('hora', $hora)
+                // ->where('clavePsicologo', $id)
+                // ->value('estadoCita');
+
+                $cita = Cita::where('idCita', $idCita)
+                ->where('clavePsicologo', $id)
+                ->value('estadoCita');
+
+                if($cita == 2){
+                    $confirm = Cita::where('idCita', $idCita)
+                    ->where('clavePsicologo', $id)
+                    ->update(['estadoCita' => '6']);
+
+                    if($confirm > 0){
+                        $respuesta = ['Cita cancelada correctamente'];
+                        return json_encode($respuesta);
+                    }
+                }else{
+                    $cita = Cita::where('idCita', $idCita)
+                    ->where('claveUnica', $id)
+                    ->value('estadoCita');
+
+                    // $confirm = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                    // ->where('hora', $hora)
+                    // ->where('claveUnica', $id)
+                    // ->update(['estadoCita' => '7',
+                    //         'claveUnica' => null]);
+                    
+                    if($cita == 2){
+                        $confirm = Cita::where('idCita', $idCita)
+                        ->where('claveUnica', $id)
+                        ->update(['estadoCita' => '7',
+                                'claveUnica' => null]);
+
+                        if($confirm > 0){
+                            $respuesta = ['Cita cancelada correctamente'];
+                            return json_encode($respuesta);
+                        }else{
+                            $respuesta = ['Error' => 'Cita NO cancelada'];
+                            return json_encode($respuesta);
+                        }
+                    }else{
+                        $respuesta = ['Error' => 'Cita NO cancelada'];
+                        return json_encode($respuesta);
+                    }
+                }
+            }else if(strlen($id) != 18 && strlen($id) != 6){
+                $respuesta = ['Error' => 'ID incorrecto'];
+                return json_encode($respuesta);
+            }
+        }catch(\Exception $e){
+            $respuesta = ['Error' => 'Cita NO cancelada'];
+            return json_encode($respuesta);
+        }
+    }
+
+    public function confirmDate(Request $request){
+        $id = $request->input('id',null);
+        // $fecha = $request->input('fecha',null);
+        // $hora = $request->input('hora', null);
+        $idCita = $request->input('idCita', null);
+
+        try{
+            if(strlen($id) == 6){
+                // $cita = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
+                // ->where('hora', $hora)
+                // ->where('clavePsicologo', $id)
+                // ->value('estadoCita');
+
+                $cita = Cita::where('idCita', $idCita)
+                ->where('claveUnica', $id)
+                ->value('estadoCita');
+
+                if($cita == 2){
+                    $confirm = Cita::where('idCita', $idCita)
+                    ->where('claveUnica', $id)
+                    ->update(['estadoCita' => '1']);
+
+                    if($confirm > 0){
+                        $respuesta = ['Cita confirmada correctamente'];
+                        return json_encode($respuesta);
+                    }
+                }else{
+                    $respuesta = ['Error' => 'Cita NO confirmada'];
+                    return json_encode($respuesta);
+                }
+            }
+        }catch(\Exception $e){
+            $respuesta = ['Error' => 'Cita NO confirmada'];
             return json_encode($respuesta);
         }
     }
