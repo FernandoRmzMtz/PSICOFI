@@ -146,8 +146,6 @@ class AuthController extends Controller
     public function obtainAlumno(Request $request){
         $clave = $request->input('clave');
 
-        echo $clave;
-
         $clave_unica = (int) $clave; 
         $location = 'https://servicios.ing.uaslp.mx/ws_psico/ws_psico.svc';
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
@@ -177,10 +175,11 @@ class AuthController extends Controller
         $response = curl_exec($ch);
         $err_status = curl_error($ch);
 
-        $xml = simplexml_load_string($response);
-        $json = json_encode($response, JSON_PRETTY_PRINT);
+        $xml = new \SimpleXMLElement($response);
+        $datos = $xml->xpath('//TablaMensaje');
+        $jsonResult = json_encode($datos[0]);
 
-        return $json;
+        return $jsonResult;
     }
 
     public function getAlumno(Request $request){
