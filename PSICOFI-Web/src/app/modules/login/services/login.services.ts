@@ -53,6 +53,9 @@ export class LoginService {
 
     setToken(token: string): void {
         localStorage.setItem(this.TOKEN_KEY, token);
+        console.log("TOKEN:");
+        console.log(this.TOKEN_KEY);
+
     } 
     getClave(): string {
         this.clave = localStorage.getItem(this.CLAVEUNICA);

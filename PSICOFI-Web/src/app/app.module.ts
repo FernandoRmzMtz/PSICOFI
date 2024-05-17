@@ -16,7 +16,7 @@ import { ReportesModule } from './modules/reportes/reportes.module';
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

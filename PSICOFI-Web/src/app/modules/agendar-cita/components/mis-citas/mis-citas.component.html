@@ -48,22 +48,20 @@
         </div>
     </ng-template>
     <p class="mt-5">Historial de citas:</p>
-    <div class="table-responsive">
+    <div class="table-responsive" style="max-height: 460px;">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Psicólogo</th>
-                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let cita of historialCitas">
-                    <td>{{cita.fecha}}</td>
-                    <td>{{cita.hora}}</td>
-                    <td>{{cita.psicologo}}</td>
-                    <td>{{cita.estado}}</td>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td class="col-auto">{{ cita['Nombres psicologo'] }} {{ cita['Apellido Pat psicologo'] }} {{ cita['Apellido Mat psicologo'] }}</td>
                 </tr>
             </tbody>
         </table>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AgendarCita } from '../../services/agendar-cita.service';
 
 @Component({
   selector: 'app-mis-citas',
@@ -12,17 +13,27 @@ export class MisCitasComponent implements OnInit {
   citasProceso: any[] = [
     { fecha: '10/03/2024', hora: '10:00', psicologo: 'Psicólogo 1' }
   ];
-  historialCitas: any[] = [
-    { fecha: '01/03/2024', hora: '10:00', psicologo: 'Psicólogo 1', estado: 'Realizada' },
-    { fecha: '05/02/2024', hora: '11:00', psicologo: 'Psicólogo 2', estado: 'Cancelada' }
-  ];
-  
+  historialCitas: any[] = [];
 
-  constructor() { }
+  constructor(private agendarCitaService: AgendarCita) { }
 
   ngOnInit(): void {
+    this.obtenerHistorialCitas();
   }
-  cancelarCita(){
+
+  obtenerHistorialCitas(): void {
+    const id = 167565; // Asigna el ID correspondiente
+    this.agendarCitaService.obtenerHistorialCitas(id).subscribe(
+      (data) => {
+        this.historialCitas = data;
+      },
+      (error) => {
+        console.error('Error al obtener el historial de citas:', error);
+      }
+    );
+  }
+
+  cancelarCita(): void {
     this.tieneCita = false;
   }
 }
