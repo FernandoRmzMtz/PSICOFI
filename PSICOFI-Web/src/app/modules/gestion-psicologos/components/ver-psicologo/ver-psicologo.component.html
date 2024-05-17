@@ -3,8 +3,10 @@
         <table class="my-4">
             <tr>
                 <td class="bg-info">Clave &uacute;nica / CURP:&nbsp;</td>
-                <td id="clavePsicoInfo">{{psicologoViendo.claveUnica}}</td>
+                <td *ngIf="!psicologoViendo.curp" id="clavePsicoInfo">{{ psicologoViendo.claveUnica }}</td>
+                <td *ngIf="psicologoViendo.curp" id="curpPsicoInfo">{{ psicologoViendo.curp }}</td>
             </tr>
+            
             <tr>
                 <td class="bg-info">Nombre:&nbsp;</td>
                 <td id="nombrePsicoInfo">{{psicologoViendo.nombres}}</td>
@@ -41,7 +43,7 @@
             </div>
         </div>
     </div>
-    <h2 class="text-center my-3">ALUMNOS ATENDIDOS POR 000000 NOMBRE</h2>
+    <h2 class="text-center my-3">ALUMNOS ATENDIDOS POR {{psicologoViendo.claveUnica}} {{psicologoViendo.nombres}}</h2>
     <app-tabla-alumnos-atendidos></app-tabla-alumnos-atendidos>
 </div>
 
