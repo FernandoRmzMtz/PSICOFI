@@ -39,7 +39,6 @@ export class AnadirPsicoComponent {
       return;
     }
     this.nuevoPsicologo.activo = 1;
-    console.log(this.nuevoPsicologo);
     if (tipo == 1) {
       this.registraPsicologoInterno(this.nuevoPsicologo);
     }
@@ -71,7 +70,6 @@ export class AnadirPsicoComponent {
         console.log("Psicologo agregado", psicologo);
       },
       (error) => {
-        console.log(error);
         console.log("ERROR!");
       }
     )
