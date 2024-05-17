@@ -26,6 +26,8 @@ Route::post('login',[AuthController::class,'login'])->name('login');
 
 Route::post('alumno/getAlumno',[AlumnoController::class,'getAlumno'])->name('getAlumno');
 
+Route::post('alumno/getDate',[AlumnoController::class,'getDate'])->name('getDate');
+
 Route::post('alumno/getRecord',[AlumnoController::class,'getRecord'])->name('getRecord');
 
 Route::post('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo'])->name('psicologo.searchPsicologo');

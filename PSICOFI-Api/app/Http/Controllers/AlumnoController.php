@@ -113,10 +113,12 @@ class AlumnoController extends Controller
                         if (is_null($cita->clavePsicologo) && !is_null($cita->clavePsicologoExterno)) {
                             $detalleCita = Cita::where('idCita', $cita->idCita)
                                 ->join('psicologoexterno', 'cita.clavePsicologoExterno', '=', 'psicologoexterno.curp')
+                                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
                                 ->select(
                                     'cita.idCita',
                                     'cita.hora',
                                     'cita.fecha',
+                                    'estadocita.estado AS estado',
                                     'cita.claveUnica',
                                     'psicologoexterno.nombres as Nombres psicologo',
                                     'psicologoexterno.apellidoPaterno as Apellido Pat psicologo',
@@ -130,10 +132,12 @@ class AlumnoController extends Controller
                         }else if(!is_null($cita->clavePsicologo) && is_null($cita->clavePsicologoExterno)){
                             $detalleCita = Cita::where('idCita', $cita->idCita)
                                 ->join('psicologo', 'cita.clavePsicologo', '=', 'psicologo.claveUnica')
+                                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
                                 ->select(
                                     'cita.idCita',
                                     'cita.hora',
                                     'cita.fecha',
+                                    'estadocita.estado AS estado',
                                     'cita.claveUnica',
                                     'psicologo.nombres as Nombres psicologo',
                                     'psicologo.apellidoPaterno as Apellido Pat psicologo',
@@ -155,6 +159,80 @@ class AlumnoController extends Controller
             }else{
                 $respuesta = ['Error' => 'ID invalido'];
                 return json_encode($respuesta);
+            }
+        }catch(\Exception $e){
+            $respuesta = ['Error' => 'Ocurrio un error'];
+            return json_encode($respuesta);
+        }
+    }
+
+    public function getDate(Request $request){
+        $id = $request->input('id',null);
+        
+        try{
+            if(strlen($id) == 6){
+                $cita = Cita::where('claveUnica', $id)
+                ->whereIn('estadoCita', [1, 2])
+                ->select(
+                    'idCita',
+                    'clavePsicologo',
+                    'clavePsicologoExterno'
+                )
+                ->first();
+
+                if($cita != null){
+                    if (is_null($cita->clavePsicologo) && !is_null($cita->clavePsicologoExterno)) {
+                        $detalleCita = Cita::where('idCita', $cita->idCita)
+                            ->join('psicologoexterno', 'cita.clavePsicologoExterno', '=', 'psicologoexterno.curp')
+                            ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
+                            ->select(
+                                'cita.idCita',
+                                'cita.hora',
+                                'cita.fecha',
+                                'estadocita.estado AS estado',
+                                'cita.claveUnica',
+                                'psicologoexterno.nombres as Nombres psicologo',
+                                'psicologoexterno.apellidoPaterno as Apellido Pat psicologo',
+                                'psicologoexterno.apellidoMaterno as Apellido Mat psicologo'
+                            )
+                            ->first();
+
+                            if ($detalleCita) {
+                                return json_encode($detalleCita);
+                            }else{
+                                $respuesta = ['Cita no encontrada'];
+                                return json_encode($respuesta);
+                            }
+                    }else if(!is_null($cita->clavePsicologo) && is_null($cita->clavePsicologoExterno)){
+                        $detalleCita = Cita::where('idCita', $cita->idCita)
+                            ->join('psicologo', 'cita.clavePsicologo', '=', 'psicologo.claveUnica')
+                            ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
+                            ->select(
+                                'cita.idCita',
+                                'cita.hora',
+                                'cita.fecha',
+                                'estadocita.estado AS estado',
+                                'cita.claveUnica',
+                                'psicologo.nombres as Nombres psicologo',
+                                'psicologo.apellidoPaterno as Apellido Pat psicologo',
+                                'psicologo.apellidoMaterno as Apellido Mat psicologo'
+                            )
+                            ->first();
+
+                            if ($detalleCita) {
+                                return json_encode($detalleCita);
+                            }else{
+                                $respuesta = ['Cita no encontrada'];
+                                return json_encode($respuesta);
+                            }
+                    }else{
+                        $respuesta = ['Error' => 'Ocurrio un error'];
+                        return json_encode($respuesta);
+                    }
+                }else{
+                    $respuesta = ['Sin cita agendada'];
+                    return json_encode($respuesta);
+                }
             }
         }catch(\Exception $e){
             $respuesta = ['Error' => 'Ocurrio un error'];
