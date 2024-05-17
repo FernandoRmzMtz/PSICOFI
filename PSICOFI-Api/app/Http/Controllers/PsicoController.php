@@ -34,18 +34,18 @@ class PsicoController extends Controller
                     return 0;
                 }
             }else{
-                return $psicologoMod;
+                $respuesta = ['Error' => 'Psicologo no encontrdo'];
+                return json_encode($respuesta);
             }
         }
     }
 
     public function searchPsicologo(Request $request){
-        $clave = $request->input('clave',null);
-        $curp = $request->input('curp',null);
+        $id = $request->input('id',null);
 
-        if($clave == null){
-            $psicologo = PsicologoExterno::where('CURP', $curp)
-            ->select('psicologoexterno.CURP',
+        if(strlen($id) == 18){
+            $psicologo = PsicologoExterno::where('CURP', $id)
+            ->select('psicologoexterno.curp',
                     'psicologoexterno.nombres',
                     'psicologoexterno.apellidoPaterno',
                     'psicologoexterno.apellidoMaterno',
@@ -61,8 +61,8 @@ class PsicoController extends Controller
             }else{
                 return json_encode($psicologo);
             }
-        }else if($curp == null){
-            $resultado = Psicologo::where('claveUnica', $clave)
+        }else if(strlen($id) == 6){
+            $resultado = Psicologo::where('claveUnica', $id)
                 ->join('carreraspsico', 'psicologo.idCarrera', '=', 'carreraspsico.idCarrera')
                 ->select('psicologo.claveUnica',
                     'psicologo.nombres',
@@ -80,8 +80,8 @@ class PsicoController extends Controller
             }else{
                 return json_encode($resultado);
             }
-        }else if($clave !== null && $curp !== null){
-            $respuesta = ['Error' => 'Psicologo no encontrado'];
+        }else if(strlen($id) != 18 && strlen($id) != 18){
+            $respuesta = ['Error' => 'ID incorrecto'];
             return json_encode($respuesta);
         }
     }
