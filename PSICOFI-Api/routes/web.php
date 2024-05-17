@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DateController;
 use App\Http\Controllers\PsicoController;
+use App\Http\Controllers\AlumnoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,9 @@ Route::get('/', HomeController::class);
 
 Route::post('login',[AuthController::class,'login'])->name('login');
 
-Route::post('obtainAlumno',[AuthController::class,'obtainAlumno'])->name('obtainAlumno');
+Route::post('alumno/getAlumno',[AlumnoController::class,'getAlumno'])->name('getAlumno');
+
+Route::post('alumno/getRecord',[AlumnoController::class,'getRecord'])->name('getRecord');
 
 Route::post('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo'])->name('psicologo.searchPsicologo');
 

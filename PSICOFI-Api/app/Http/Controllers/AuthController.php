@@ -143,45 +143,6 @@ class AuthController extends Controller
         }
     }
 
-    public function obtainAlumno(Request $request){
-        $clave = $request->input('clave');
-
-        $clave_unica = (int) $clave; 
-        $location = 'https://servicios.ing.uaslp.mx/ws_psico/ws_psico.svc';
-        $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-                        <s:Body>
-                        <alumno xmlns="http://tempuri.org/">
-                            <key_sw>461E-ABD0-252D79762A23</key_sw>
-                            <clave_unica>' . $clave_unica . '</clave_unica>
-                        </alumno>
-                        </s:Body>
-                    </s:Envelope>';
-        $headers = [
-            'Method: POST',
-            'Connection: Keep-Alive',
-            'User-Agent: PHP-SOAP-CURL',
-            'Content-Type: text/xml',
-            'SOAPAction: http://tempuri.org/IService1/alumno'
-        ];
-
-        $ch = curl_init($location);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
-        $response = curl_exec($ch);
-        $err_status = curl_error($ch);
-
-        $xml = new \SimpleXMLElement($response);
-        $datos = $xml->xpath('//TablaMensaje');
-        $jsonResult = json_encode($datos[0]);
-
-        return $jsonResult;
-    }
-
     public function getAlumno(Request $request){
         $clave = $request->input('clave');
 

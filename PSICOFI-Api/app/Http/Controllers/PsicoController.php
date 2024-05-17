@@ -246,7 +246,10 @@ class PsicoController extends Controller
                     ->get();
                 
                 if($alumnos){
-                    return json_encode($alumnos);
+                    foreach($alumnos as $alumno){
+                        $claves[] = $alumno->claveUnica;
+                    }
+                    return json_encode($claves);
                 }else{
                     $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
                     return json_encode($respuesta);
