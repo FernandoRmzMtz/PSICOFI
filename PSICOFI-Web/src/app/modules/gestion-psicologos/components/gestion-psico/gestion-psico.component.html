@@ -54,11 +54,9 @@
         <div class="modal-body">
           <form (ngSubmit)="GuardarEditarPsicologo()">
             <label for="clave">Clave &uacute;nica / CURP:</label>
-            <!-- Mostrar este input si hay una claveUnica -->
             <input *ngIf="psicologoEditar.claveUnica" type="text" class="form-control" id="claveUnica" name="clave"
               placeholder="Clave &uacute;nica / CURP" [(ngModel)]="psicologoEditar.claveUnica" required readonly
               style="background-color: rgba(128, 128, 128, 0.137);">
-            <!-- Mostrar este input si no hay una claveUnica pero sí un CURP -->
             <input *ngIf="!psicologoEditar.claveUnica && psicologoEditar.curp" type="text" class="form-control" id="curp"
               name="clave" placeholder="Clave &uacute;nica / CURP" [(ngModel)]="psicologoEditar.curp" required readonly
               style="background-color: rgba(128, 128, 128, 0.137);">

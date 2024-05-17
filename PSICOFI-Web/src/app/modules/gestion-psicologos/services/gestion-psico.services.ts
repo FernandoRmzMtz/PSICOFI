@@ -32,7 +32,7 @@ export class gestionPsico {
     "correo": "",
     "activo": 0,
     "carrera": "",
-    "curp":""
+    "curp": ""
   }
 
   psicologoEditar = {
@@ -44,7 +44,7 @@ export class gestionPsico {
     "correo": "",
     "activo": 0,
     "carrera": "",
-    "curp":""
+    "curp": ""
   }
 
 
@@ -72,9 +72,9 @@ export class gestionPsico {
       "correo": "",
       "activo": 0,
       "carrera": "",
-      "curp":""
+      "curp": ""
     }
-  
+
     this.psicologoEditar = {
       "claveUnica": "",
       "nombres": "",
@@ -84,16 +84,16 @@ export class gestionPsico {
       "correo": "",
       "activo": 0,
       "carrera": "",
-      "curp":""
-  
+      "curp": ""
+
     }
 
     const body = { clave: clave };
 
     return this.http.post(environment.api + '/psicologo/searchPsicologo',
-    {
-      "id": clave
-    },
+      {
+        "id": clave
+      },
       {
         headers: {
           'Content-Type': 'application/json',
@@ -149,22 +149,28 @@ export class gestionPsico {
 
 
   editarPsicologo() {
-    return this.http.put(environment.api + '/psicologo/updatePsicologo',
-      {
-        "clave": this.psicologoEditar.claveUnica,
-        "nombres": this.psicologoEditar.nombres,
-        "apellidoPaterno": this.psicologoEditar.apellidoPaterno,
-        "apellidoMaterno": this.psicologoEditar.apellidoMaterno,
-        "activo": this.psicologoEditar.activo,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+    const body: any = {
+      nombres: this.psicologoEditar.nombres,
+      apellidoPaterno: this.psicologoEditar.apellidoPaterno,
+      apellidoMaterno: this.psicologoEditar.apellidoMaterno,
+      activo: this.psicologoEditar.activo
+    };
+  
+    if (this.psicologoEditar.claveUnica) {
+      body.clave = this.psicologoEditar.claveUnica;
+    } else {
+      body.curp = this.psicologoEditar.curp;
+    }
+  
+    return this.http.put(environment.api + '/psicologo/updatePsicologo', body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
       }
-    )
+    });
   }
+  
+
 
 
   filtrarPsicologos() {
