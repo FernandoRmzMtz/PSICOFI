@@ -12,7 +12,7 @@ import { environment } from "environments/enviroment";
 })
 
 export class gestionPsico {
-  
+
   fetchedPsico = [];
 
   constructor(private http: HttpClient, private loginService: LoginService) {
@@ -24,25 +24,27 @@ export class gestionPsico {
   public verPsicoVisible: boolean = false;
 
   psicologoViendo = {
-    "claveUnica": 172383,
-    "nombres": "Elias Osinski",
-    "apellidoPaterno": "Reinger",
-    "apellidoMaterno": "Mertz",
-    "semestre": 6,
-    "correo": "flegros@gmail.com",
-    "activo": 1,
-    "carrera": "Licenciatura en psicologia"
+    "claveUnica": "",
+    "nombres": "",
+    "apellidoPaterno": "",
+    "apellidoMaterno": "",
+    "semestre": 0,
+    "correo": "",
+    "activo": 0,
+    "carrera": "",
+    "curp": ""
   }
 
   psicologoEditar = {
-    "claveUnica": 172383,
-    "nombres": "Elias Osinski",
-    "apellidoPaterno": "Reinger",
-    "apellidoMaterno": "Mertz",
-    "semestre": 6,
-    "correo": "flegros@gmail.com",
-    "activo": 1,
-    "carrera": "Licenciatura en psicologia"
+    "claveUnica": "",
+    "nombres": "",
+    "apellidoPaterno": "",
+    "apellidoMaterno": "",
+    "semestre": 0,
+    "correo": "",
+    "activo": 0,
+    "carrera": "",
+    "curp": ""
   }
 
 
@@ -50,7 +52,6 @@ export class gestionPsico {
     return this.http.get(environment.api + '/psicologo/getPsicologos').pipe(
       catchError(error => {
         console.error('Error fetching psychologists:', error);
-        // Puedes retornar un valor por defecto o lanzar el error para que lo maneje otro componente
         return of([]);
       })
     );
@@ -61,9 +62,38 @@ export class gestionPsico {
   }
 
   getPsicologoById(clave: string): Observable<any> {
+
+    this.psicologoViendo = {
+      "claveUnica": "",
+      "nombres": "",
+      "apellidoPaterno": "",
+      "apellidoMaterno": "",
+      "semestre": 0,
+      "correo": "",
+      "activo": 0,
+      "carrera": "",
+      "curp": ""
+    }
+
+    this.psicologoEditar = {
+      "claveUnica": "",
+      "nombres": "",
+      "apellidoPaterno": "",
+      "apellidoMaterno": "",
+      "semestre": 0,
+      "correo": "",
+      "activo": 0,
+      "carrera": "",
+      "curp": ""
+
+    }
+
     const body = { clave: clave };
 
-    return this.http.post(environment.api + '/psicologo/searchPsicologo', body,
+    return this.http.post(environment.api + '/psicologo/searchPsicologo',
+      {
+        "id": clave
+      },
       {
         headers: {
           'Content-Type': 'application/json',
@@ -119,13 +149,39 @@ export class gestionPsico {
 
 
   editarPsicologo() {
-    return this.http.put(environment.api + '/psicologo/updatePsicologo',
+    const body: any = {
+      nombres: this.psicologoEditar.nombres,
+      apellidoPaterno: this.psicologoEditar.apellidoPaterno,
+      apellidoMaterno: this.psicologoEditar.apellidoMaterno,
+      activo: this.psicologoEditar.activo
+    };
+  
+    if (this.psicologoEditar.claveUnica) {
+      body.clave = this.psicologoEditar.claveUnica;
+    } else {
+      body.curp = this.psicologoEditar.curp;
+    }
+  
+    return this.http.put(environment.api + '/psicologo/updatePsicologo', body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+      }
+    });
+  }
+  
+
+
+
+  filtrarPsicologos() {
+    this.fetchedPsico = this.fetchedPsico;
+  }
+
+
+  fetchAlumnosPorPsicologo(id: string): Observable<any> {
+    return this.http.post(environment.api + '/psicologo/getPatients',
       {
-        "clave": this.psicologoEditar.claveUnica,
-        "nombres": this.psicologoEditar.nombres,
-        "apellidoPaterno": this.psicologoEditar.apellidoPaterno,
-        "apellidoMaterno": this.psicologoEditar.apellidoMaterno,
-        "activo": this.psicologoEditar.activo,
+        "id": id
       },
       {
         headers: {
@@ -134,11 +190,5 @@ export class gestionPsico {
         }
       }
     )
-  }
-
-
-  filtrarPsicologos()
-  {
-    this.fetchedPsico = this.fetchedPsico;
   }
 }

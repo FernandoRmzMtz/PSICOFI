@@ -34,6 +34,17 @@ export class GestionPsicoComponent implements OnInit {
   }
 
   public verPsico(clave: string): void {
+    this.psico.psicologoViendo = {
+      claveUnica: '',
+      nombres: '',
+      apellidoPaterno: '',
+      apellidoMaterno: '',
+      semestre: 0,
+      correo: '',
+      activo: 0,
+      carrera: '',
+      curp: ''
+    };
     this.psico.getPsicologoById(clave).subscribe(
       (psicologo) => {
         this.psico.psicologoViendo = psicologo;
@@ -63,7 +74,8 @@ export class GestionPsicoComponent implements OnInit {
   public GuardarEditarPsicologo(): void {
     this.psico.editarPsicologo().subscribe(
       (psicologo) => {
-        window.location.reload();      },
+        window.location.reload();
+      },
       (error) => {
         console.error('Error al editar psicólogo:', error);
       }
@@ -79,5 +91,5 @@ export class GestionPsicoComponent implements OnInit {
       }
     });
   }
-  
+
 }
