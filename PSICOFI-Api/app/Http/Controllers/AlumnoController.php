@@ -233,6 +233,9 @@ class AlumnoController extends Controller
                     $respuesta = ['Sin cita agendada'];
                     return json_encode($respuesta);
                 }
+            }else{
+                $respuesta = ['Error' => 'ID incorrecto'];
+                return json_encode($respuesta);
             }
         }catch(\Exception $e){
             $respuesta = ['Error' => 'Ocurrio un error'];
