@@ -121,7 +121,8 @@ class DateController extends Controller
 
         try {
             if($claveUnica == null || $id == null || $hora == null || $fecha == null){
-                return 0;
+                $respuesta = ['Error' => 'Consulta invalida'];
+                return json_encode($respuesta);
             }else if(strlen($id) == 6){
                 $cita = Cita::where('clavePsicologo', $id)
                 ->where('fecha', $fecha)
@@ -133,9 +134,11 @@ class DateController extends Controller
                 ]);
     
                 if($cita > 0) {
-                    return true;
+                    $respuesta = ['Cita agendada correctamente'];
+                    return json_encode($respuesta);
                 } else {
-                    return 0; 
+                    $respuesta = ['Cita NO agendada'];
+                    return json_encode($respuesta); 
                 }
             }else if(strlen($id) == 18){
                 $cita = Cita::where('clavePsicologoExterno', $id)
@@ -148,13 +151,19 @@ class DateController extends Controller
                 ]);
     
                 if($cita > 0) {
-                    return true; 
+                    $respuesta = ['Cita agendada correctamente'];
+                    return json_encode($respuesta);
                 } else {
-                    return 0;
+                    $respuesta = ['Cita NO agendada'];
+                    return json_encode($respuesta); 
                 }
+            }else {
+                $respuesta = ['Error' => 'ID incorrecto'];
+                return json_encode($respuesta);
             }
         }catch (\Exception $e){
-            return $e;
+            $respuesta = ['Error' => 'Ocurrio un error'];
+            return json_encode($respuesta); 
         }
     }
 
@@ -235,27 +244,15 @@ class DateController extends Controller
 
     public function cancelDate(Request $request){
         $id = $request->input('id',null);
-        // $fecha = $request->input('fecha',null);
-        // $hora = $request->input('hora', null);
         $idCita = $request->input('idCita', null);
 
         try{
             if(strlen($id) == 18){
-                // $cita = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
-                // ->where('hora', $hora)
-                // ->where('clavePsicologoExterno', $id)
-                // ->value('estadoCita');
-
                 $cita = Cita::where('idCita', $idCita)
                 ->where('clavePsicologoExterno', $id)
                 ->value('estadoCita');
 
                 if($cita == 2){
-                    // $confirm = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
-                    // ->where('hora', $hora)
-                    // ->where('clavePsicologoExterno', $id)
-                    // ->update(['estadoCita' => '6']);
-
                     $confirm = Cita::where('idCita', $idCita)
                     ->update(['estadoCita' => '6']);
 
@@ -268,11 +265,6 @@ class DateController extends Controller
                     return json_encode($respuesta);
                 }
             }else if(strlen($id) == 6){
-                // $cita = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
-                // ->where('hora', $hora)
-                // ->where('clavePsicologo', $id)
-                // ->value('estadoCita');
-
                 $cita = Cita::where('idCita', $idCita)
                 ->where('clavePsicologo', $id)
                 ->value('estadoCita');
@@ -291,12 +283,6 @@ class DateController extends Controller
                     ->where('claveUnica', $id)
                     ->value('estadoCita');
 
-                    // $confirm = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
-                    // ->where('hora', $hora)
-                    // ->where('claveUnica', $id)
-                    // ->update(['estadoCita' => '7',
-                    //         'claveUnica' => null]);
-                    
                     if($cita == 2){
                         $confirm = Cita::where('idCita', $idCita)
                         ->where('claveUnica', $id)
@@ -327,17 +313,10 @@ class DateController extends Controller
 
     public function confirmDate(Request $request){
         $id = $request->input('id',null);
-        // $fecha = $request->input('fecha',null);
-        // $hora = $request->input('hora', null);
         $idCita = $request->input('idCita', null);
 
         try{
             if(strlen($id) == 6){
-                // $cita = Cita::where('fecha', date('Y-m-d', strtotime($fecha)))
-                // ->where('hora', $hora)
-                // ->where('clavePsicologo', $id)
-                // ->value('estadoCita');
-
                 $cita = Cita::where('idCita', $idCita)
                 ->where('claveUnica', $id)
                 ->value('estadoCita');
