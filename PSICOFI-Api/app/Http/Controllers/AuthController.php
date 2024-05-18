@@ -76,17 +76,19 @@ class AuthController extends Controller
                 $token = csrf_token();
                 if($alumno){
                     $jsonArray = [
-                        'clave_unica' => $alumno->claveUnica,
-                        'nombre_alumno' => $alumno->nombres . ' ' . $alumno->apellidoPaterno . ' ' . $alumno->apellidoMaterno,
+                        'id' => $alumno->claveUnica,
+                        'nombre' => $alumno->nombres . ' ' . $alumno->apellidoPaterno . ' ' . $alumno->apellidoMaterno,
                         'validacion' => "USUARIO-VALIDO",
-                        'situacion_alumno' => $alumno->condicionAcademica,
+                        'rol' => "Alumno",
+                        'situacion' => $alumno->condicionAcademica,
                         'token' => $token
                     ];
                 }else if($psicologo){
                     $jsonArray = [
-                        'clave_unica' => $psicologo->claveUnica,
-                        'nombre_psicologo' => $psicologo->nombres . ' ' . $psicologo->apellidoPaterno . ' ' . $psicologo->apellidoMaterno,
+                        'id' => $psicologo->claveUnica,
+                        'nombre' => $psicologo->nombres . ' ' . $psicologo->apellidoPaterno . ' ' . $psicologo->apellidoMaterno,
                         'validacion' => "USUARIO-VALIDO",
+                        'rol' => "Psicologo",
                         'token' => $token
                     ];
                 }
@@ -103,7 +105,13 @@ class AuthController extends Controller
                 }else{
                     $arrayDatos = json_decode($jsonResult, true);
 
+                    $arrayDatos['id'] = $arrayDatos['clave_unica'];
+
+                    unset($arrayDatos['clave_unica']);
+
                     $token = csrf_token();
+
+                    $arrayDatos['rol'] = "Alumno";
 
                     $arrayDatos['token'] = $token;
 
@@ -125,9 +133,10 @@ class AuthController extends Controller
             if($psicologoexterno){
                 $token = csrf_token();
                 $jsonArray = [
-                    'curp' => $psicologoexterno->curp,
-                    'nombre_psicologo' => $psicologoexterno->nombres . ' ' . $psicologoexterno->apellidoPaterno . ' ' . $psicologoexterno->apellidoMaterno,
+                    'id' => $psicologoexterno->curp,
+                    'nombre' => $psicologoexterno->nombres . ' ' . $psicologoexterno->apellidoPaterno . ' ' . $psicologoexterno->apellidoMaterno,
                     'validacion' => "USUARIO-VALIDO",
+                    'rol' => "Psicologo",
                     'token' => $token
                 ];
 
@@ -136,7 +145,7 @@ class AuthController extends Controller
                 $respuesta['validacion'] = 'USUARIO-INVALIDO';
                 return json_encode($respuesta);
             }
-
+ 
         }else if($id != 6 || $id != 18){
             $respuesta = ['validacion' => 'USUARIO-INVALIDO'];
             return json_encode($respuesta);
