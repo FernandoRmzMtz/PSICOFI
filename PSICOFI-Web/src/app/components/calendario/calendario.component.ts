@@ -32,13 +32,13 @@ export class CalendarioComponent implements OnInit {
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
   tipoUsuario: 'alumno' | 'psicologo' = 'alumno';
   diaSeleccionado: Date = new Date();
-  psicologoSeleccionadoId = 189427;
+  psicologoSeleccionadoId = 388721;
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
   horariosDelDiaSeleccionado: string[] = [];
   diaSeleccionadoElemento: HTMLElement | null = null;
   horaSeleccionada: string = "";
   citaAgendada: boolean = false;
-  usuarioActualId: number = 167565; //cambiar referencias por el auth
+  usuarioActualId: number = 324109; //cambiar referencias por el auth
   citasAgendadas: Cita[] = [];
   citasDisponibles: Cita[] = [];
   mostrarDetallesCita: number | null = null;
@@ -204,8 +204,8 @@ export class CalendarioComponent implements OnInit {
 
   confirmarCita() {
     const cita = {
-      id: '159572',
-      claveUnica: 780529,
+      id: '388721',
+      claveUnica: 324109,
       fecha:  this.diaSeleccionado.toISOString().split('T')[0],  
       hora: this.horaSeleccionada  
     };

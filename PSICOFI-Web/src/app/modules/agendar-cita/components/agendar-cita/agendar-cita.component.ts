@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./agendar-cita.component.css']
 })
 export class AgendarCitaComponent {
-  claveUnica: string = '12345'; // Ejemplo de clave única
-  nombre: string = 'Juan Pérez'; // Ejemplo de nombre
-  psicologos: string[] = ['Psicólogo 1', 'Psicólogo 2', 'Psicólogo 3']; // Lista de psicólogos
+  claveUnica: string = '324109'; 
+  nombre: string = 'Fernando Antonio Ramírez Martínez'; 
+  psicologos: string[] = ['Lane Kshlerin Rippin Von', 'Charlene Torp DDS Crona McLaughlin', 'Carlee Gerhold Kozey Fadel']; 
 
 }

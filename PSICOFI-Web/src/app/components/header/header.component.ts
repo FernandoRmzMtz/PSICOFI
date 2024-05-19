@@ -12,12 +12,11 @@ interface HeaderRoute {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  tipoUsuario: string = 'alumno'; 
+  tipoUsuario: string = 'administrador'; 
 
   rutas: HeaderRoute[] = [
     { title: 'Inicio', path: '/dashboard', tipoUsuario: ['alumno', 'psicologo', 'psicologo_externo', 'administrador'] },
     { title: 'Agendar cita', path: '/agendar-cita', tipoUsuario: ['alumno'] },
-    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['psicologo', 'psicologo_externo'] },
     { title: 'Mis citas', path: '/mis-citas', tipoUsuario: ['alumno'] },
     { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['psicologo', 'psicologo_externo'] },
     { title: 'Reporte de citas', path: '/reporte-citas', tipoUsuario: ['psicologo', 'psicologo_externo'] },

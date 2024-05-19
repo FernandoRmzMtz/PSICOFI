@@ -20,4 +20,16 @@ export class AgendarCita {
 
         return this.http.post(url, body, { headers: headers });
     }
+
+    obtenerCitasProceso(id: number): Observable<any> {
+        const url = 'http://localhost/PSICOFI-Api/public/alumno/getDate';
+        const body = { id: id };
+        const token = localStorage.getItem('auth_token'); 
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token || ''
+        });
+
+        return this.http.post(url, body, { headers: headers });
+    }
 }
