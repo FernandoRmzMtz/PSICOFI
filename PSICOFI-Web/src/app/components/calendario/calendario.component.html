@@ -42,7 +42,7 @@
       <div *ngIf="diaSeleccionado">
         <h2>{{ diaSeleccionado | date: 'EEEE, d MMMM y' }}</h2>
         <!-- Esta parte permanece visible solo para alumnos -->
-        <div *ngIf="tipoUsuario === 'alumno'">
+        <div *ngIf="tipoUsuario === 'Alumno'">
           <div *ngIf="citaAgendada">
             <h4>Ya tienes una cita agendada, verificala en "Mis citas"</h4>
           </div>
@@ -63,7 +63,7 @@
 
 
         <!-- Secciones específicas para psicólogos -->
-        <div *ngIf="tipoUsuario === 'psicologo'">
+        <div *ngIf="tipoUsuario === 'Psicologo'">
           <!-- Horarios sin cita agendada (Disponibles para cancelar) -->
           <div>
             <h4>Horario sin cita agendada</h4>

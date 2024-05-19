@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
 
 export const routes: Routes = [
     {
@@ -7,6 +7,6 @@ export const routes: Routes = [
         redirectTo: 'login',
         pathMatch: 'full',
     }, 
-    {   path: 'dashboard', 
-        component: DashboardComponent }
+    {   path: 'inicio', 
+        component: PaginaInicioPage }
 ];

@@ -1,6 +1,9 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { CitasService, Cita } from '../servicios/citas.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { LoginService } from 'src/app/modules/login/services/login.services';
+
 @Component({
   selector: 'app-calendario',
   templateUrl: './calendario.component.html',
@@ -9,12 +12,16 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class CalendarioComponent implements OnInit {
   citas: Cita[] = [];
   form: FormGroup;
+  tipoUsuario: string = '';
+  private tipoUsuarioSubscription!: Subscription;
+
   horasDisponibles: string[] = this.generarHoras();
 
 
   constructor(
     private el: ElementRef,
-    private citasService: CitasService
+    private citasService: CitasService,
+    private LoginService: LoginService
   ) {
     this.form = new FormGroup({
       diasSeleccionados: new FormGroup(this.generarDiasControl()),
@@ -30,7 +37,7 @@ export class CalendarioComponent implements OnInit {
   diasDelMes: Date[] = [];
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  tipoUsuario: 'alumno' | 'psicologo' = 'alumno';
+  // tipoUsuario: 'alumno' | 'psicologo' = 'alumno';
   diaSeleccionado: Date = new Date();
   psicologoSeleccionadoId = 388721;
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
@@ -49,10 +56,28 @@ export class CalendarioComponent implements OnInit {
 
 
   ngOnInit(): void {
+    console.log('INIT');
+
+    this.tipoUsuarioSubscription = this.LoginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
+      this.tipoUsuario = tipoUsuario;
+      console.log('Tipo de usuario:', this.tipoUsuario);
+    });
+
+    if (this.LoginService.isAuthenticated()) {
+      this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
+    }
+    
+    console.log('TERMINO');
+
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
   }
 
+  ngOnDestroy(): void {
+    if (this.tipoUsuarioSubscription) {
+      this.tipoUsuarioSubscription.unsubscribe();
+    }
+  }
   generarHoras(): string[] {
     return Array.from({ length: 10 }, (_, i) => `${8 + i}:00`);
   }

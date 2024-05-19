@@ -30,8 +30,7 @@ export class LoginInternoComponent {
     if (this.cvunica.length == 6) {
       this.validaUsuarioInterno();
     }
-    else
-    {
+    else {
       alert("Usuario o contraseña incorrecta");
     }
   }
@@ -55,7 +54,8 @@ export class LoginInternoComponent {
           this.loginService.setToken(data.token);
           this.loginService.setActiveUser(data.nombre_alumno);
           this.loginService.setClave(data.clave_unica);
-          this._router.navigate(['/dashboard']);
+          this.loginService.setTipoUsuario(data.rol);
+          this._router.navigate(['/inicio']);
         }
 
       } else {
