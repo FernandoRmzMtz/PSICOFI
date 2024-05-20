@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id('idNotaCita');
             $table->unsignedBigInteger('tipoIntervencion');
             $table->text('notas');
-            $table->string('departamento')->nullable();
+            $table->unsignedBigInteger('departamento')->nullable();
             $table->text('detalleCanalizacion')->nullable();
             $table->unsignedBigInteger('idCita');
+            $table->boolean('foraneo')->nullable();
 
             // Foreign keys
             $table->foreign('tipoIntervencion')->references('idTipoIntervencion')->on('TipoIntervencion');

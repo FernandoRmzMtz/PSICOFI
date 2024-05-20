@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReporteCitasService } from '../../services/reporte-citas.service';
 import { Cita } from 'src/app/components/servicios/citas.service';
+import { Alumno } from 'src/app/model/alumno.model';
 
 @Component({
   selector: 'app-datos-reporte-cita',
@@ -15,11 +16,13 @@ export class DatosReporteCitaComponent implements OnInit {
     private route: ActivatedRoute,
     private http:HttpClient, 
     private _router:Router, 
-    private reporteCitaService:ReporteCitasService){
+    private reporteCitaService:ReporteCitasService
+  ){
 
   }
   idCita =0;
   public cita : Cita | null = null;
+  public alumno : Alumno | null = null;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -36,6 +39,7 @@ export class DatosReporteCitaComponent implements OnInit {
       response => {
         this.cita = response;
         console.log('Cita obtenida:', this.cita);
+        this.getAlumno(this.cita.claveUnica);
       },
       error => {
         console.error('Error al obtener la cita:', error);
@@ -44,25 +48,38 @@ export class DatosReporteCitaComponent implements OnInit {
     );
   }
 
-  public alumno = 
-    {
-    'claveUnica' : '324109',
-    'nombres' : 'Fernando Antonio',
-    'apellidoPaterno' : 'Ramírez',
-    'apellidoMaterno' : 'Martínez',
-    'edad' : 21,
-    'sexo' : 'M',
-    'area' : 'Ciencias de la computación',
-    'carrera' : 'Ing. en sistemas inteligentes',
-    'semestre' : 8,
-    'condicionAcademica' : 'INSCRITO',
-    'creditosAprobados' : 345,
-    'creditosInscritos' : 48,
-    'promedioGral' : 9.4,
-    'asesor' : 'Dra. Sandra Edith Nava Muñoz',
-    'contrasena' : '1234567890',
-    'habilitado' : true,
-    };
+  getAlumno(claveUnica: number): void {
+    this.reporteCitaService.getAlumno(claveUnica).subscribe(
+      response => {
+        this.alumno = response;
+        console.log('Alumno obtenido:', this.alumno);
+      },
+      error => {
+        console.error('Error al obtener la cita:', error);
+        this._router.navigate(['/historial-alumnos']);
+      }
+    );
+  }
+
+  // public alumno = 
+  //   {
+  //   'claveUnica' : '324109',
+  //   'nombres' : 'Fernando Antonio',
+  //   'apellidoPaterno' : 'Ramírez',
+  //   'apellidoMaterno' : 'Martínez',
+  //   'edad' : 21,
+  //   'sexo' : 'M',
+  //   'area' : 'Ciencias de la computación',
+  //   'carrera' : 'Ing. en sistemas inteligentes',
+  //   'semestre' : 8,
+  //   'condicionAcademica' : 'INSCRITO',
+  //   'creditosAprobados' : 345,
+  //   'creditosInscritos' : 48,
+  //   'promedioGral' : 9.4,
+  //   'asesor' : 'Dra. Sandra Edith Nava Muñoz',
+  //   'contrasena' : '1234567890',
+  //   'habilitado' : true,
+  //   };
 
 
 }

@@ -1,56 +1,3 @@
- <!-- <div class="container fade-in">
-    <div class="container">
-        <div class="mb-3">
-            <div class="row">
-                <div class="col-md-6 d-flex flex-column justify-content-center">
-                    <label for="selectTipoIntervencionRepCit" class="form-label mb-3">Motivo de la intervención:</label>
-                    <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionRepCita">
-                        <option selected></option>
-                        <option *ngFor="let tipo of tiposIntervencion" [value]="tipo.idTipoIntervencion">{{ tipo.tipoIntervencion }}</option>
-                    </select>
-                </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-center">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="alumnoForaneoRepCita">
-                        <label class="form-check-label" for="alumnoForaneoRepCita">
-                            Alumno foráneo
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <label for="observacionesRepCcita" class="form-label">Observaciones:</label>
-                    <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3"></textarea>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita">
-                        <label class="form-check-label" for="canalizacionRepCita">
-                            Necesita canalización
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6 d-flex flex-column justify-content-center">
-                    <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>
-                    <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita">
-                        <option value=""></option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <label for="detallesRepCita" class="form-label">Detalles:</label>
-                    <textarea class="form-control" id="detallesRepCita" name="observaciones" rows="3"></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 <div class="container fade-in">
     <div class="container">
         <div class="mb-3">
@@ -58,14 +5,17 @@
                 <div class="row">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectTipoIntervencionRepCit" class="form-label mb-3">Motivo de la intervención:</label>
-                        <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionRepCita">
-                            <option selected></option>
+                        <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionRepCita" >
+                            <!-- <option selected>{{ notaCita?.tipoIntervencion }}</option> -->
+                            <ng-container *ngIf="notaCita">
+                                <option [value]="notaCita.tipoIntervencion">{{ getTipoIntervencionName(notaCita.tipoIntervencion) }}</option>
+                            </ng-container>
                             <option *ngFor="let tipo of tiposIntervencion" [value]="tipo.idTipoIntervencion">{{ tipo.tipoIntervencion }}</option>
                         </select>
                     </div>
                     <div class="col-md-6 d-flex align-items-center justify-content-center">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="alumnoForaneoRepCita">
+                            <input class="form-check-input" type="checkbox" value="" id="alumnoForaneoRepCita" [checked]="notaCita?.foraneo">
                             <label class="form-check-label" for="alumnoForaneoRepCita">
                                 Alumno foráneo
                             </label>
@@ -75,13 +25,13 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="observacionesRepCcita" class="form-label">Observaciones:</label>
-                        <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3"></textarea>
+                        <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3">{{notaCita?.notas}}</textarea>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita">
+                            <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita"  [checked]="notaCita?.detalleCanalizacion">
                             <label class="form-check-label" for="canalizacionRepCita">
                                 Necesita canalización
                             </label>
@@ -90,16 +40,20 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
-                        <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>
-                        <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita">
-                            <option value=""></option>
+                        <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>                        
+                        <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita" >
+                            <!-- <option selected>{{ notaCita?.tipoIntervencion }}</option> -->
+                            <ng-container *ngIf="notaCita">
+                                <option selected [value]="notaCita.departamento">{{ getTipoDepartamentoName(notaCita.departamento) }}</option>
+                            </ng-container>
+                            <option *ngFor="let depa of departamentos" [value]="depa.departamento">{{ depa.departamento }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="detallesRepCita" class="form-label">Detalles:</label>
-                        <textarea class="form-control" id="detallesRepCita" name="detalles" rows="3"></textarea>
+                        <textarea class="form-control" id="detallesRepCita" name="detalles" rows="3">{{ notaCita?.detalleCanalizacion }}</textarea>
                     </div>
                 </div>
                 <div class="row mt-3">
@@ -107,6 +61,7 @@
                         <button type="submit" class="btn btn-primary btn-lg px-5">Guardar</button>
                     </div>
                 </div>
+
             </form>
         </div>
     </div>

@@ -72,6 +72,8 @@ Route::get('/reporte-citas/{idCita}', [NotaCitaController::class, 'getReporteCit
 
 Route::get('/getCita/{idCita}', [NotaCitaController::class, 'getCita'])->name('getCita');
 
+Route::get('/getNotaCita/{idCita}', [NotaCitaController::class, 'getNotaCita'])->name('getNotaCita');
+
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);
 });

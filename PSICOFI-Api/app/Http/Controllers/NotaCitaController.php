@@ -36,6 +36,12 @@ class NotaCitaController extends Controller
         return $cita;
         // return response()->json(['cita' => $cita]);
     }
+    public function getNotaCita($idCita){
+        // dd($idCita);
+        $notaCita = NotaCita::where('idCita', $idCita)->first();
+        return $notaCita;
+        // return response()->json(['cita' => $cita]);
+    }
 
     public function getReporteCita($idCita)
     {
