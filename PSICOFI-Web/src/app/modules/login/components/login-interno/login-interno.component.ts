@@ -51,8 +51,9 @@ export class LoginInternoComponent {
           alert("Usuario o contraseña incorrecta");
         }
         else {
+          console.log(data);
           this.loginService.setToken(data.token);
-          this.loginService.setActiveUser(data.nombre_alumno);
+          this.loginService.setActiveUser(data.nombre);
           this.loginService.setClave(data.clave_unica);
           this.loginService.setTipoUsuario(data.rol);
           this._router.navigate(['/inicio']);
