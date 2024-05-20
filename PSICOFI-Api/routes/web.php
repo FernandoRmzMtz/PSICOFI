@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotaCitaController;
+use App\Http\Controllers\TipoIntervencionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DateController;
@@ -55,6 +57,17 @@ Route::post('cita/cancelDate',[DateController::class,'cancelDate'])->name('cita.
 Route::post('cita/confirmDate',[DateController::class,'confirmDate'])->name('cita.confirmDate');
 
 Route::post('/api/nota-cita', [NotaCitaController::class, 'store']);
+
+Route::get('/tipos-intervencion', [TipoIntervencionController::class, 'index']);
+
+Route::post('alumno',[AuthController::class,'getAlumno'])->name('function.obtainAlumno');
+
+Route::post('/crear-cita', [NotaCitaController::class, 'crearCita'])->name('crearCita');
+
+Route::get('/departamentos', [DepartamentoController::class, 'index']);
+
+Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
+
 
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);

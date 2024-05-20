@@ -11,6 +11,8 @@ class NotaCitaController extends Controller
 
     public function crearCita(Request $request)
     {
+        // echo("hola");
+        // dd($request);
         // Crea una nueva cita
         $cita = new Cita();
         $cita->fecha = $request->fecha;

@@ -85,7 +85,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
         console.log(formData);
 
         // Enviar los datos al servidor
-        this.http.post<any>(environment.api+'/nota-cita', 
+        this.http.post<any>(environment.api+'/api/nota-cita', 
         formData,
         {
           headers: {

@@ -25,7 +25,6 @@ use App\Http\Controllers\TipoIntervencionController;
 
 Route::post('alumno',[AuthController::class,'getAlumno'])->name('function.obtainAlumno');
 Route::post('/crear-cita', [NotaCitaController::class, 'crearCita'])->name('crearCita');
-Route::get('/tipos-intervencion', [TipoIntervencionController::class, 'index']);
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
 Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
 
