@@ -20,7 +20,7 @@
     "@angular/router": "^16.2.0",
     "@ckeditor/ckeditor5-angular": "^7.0.1",
     "@ckeditor/ckeditor5-build-classic": "^41.3.1",
-    "@ckeditor/ckeditor5-build-decoupled-document": "^41.3.1",
+    "@ckeditor/ckeditor5-build-decoupled-document": "^41.4.2",
     "@ckeditor/ckeditor5-core": "^41.3.1",
     "@ckeditor/ckeditor5-engine": "^41.3.1",
     "@ckeditor/ckeditor5-utils": "^41.3.1",
