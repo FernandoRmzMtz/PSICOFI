@@ -9,27 +9,6 @@ use Illuminate\Http\Request;
 class NotaCitaController extends Controller
 {
 
-    // public function getReporteCita(Request $request){
-    //     $cita = Cita::where('idCita', $request->idCita)->first();
-    //     $idCita = $cita->idCita;
-    //     if($idCita){
-    //         $notaCita = NotaCita::where('idCita', $idCita)->first();
-    //         if($notaCita){
-    //             return response()->json(['notaCita' => $notaCita]);
-    //         }else{
-    //             $notaCita = new NotaCita();
-    //             $notaCita->tipoIntervencion = 1;
-    //             $notaCita->notas = "Observaciones:";     
-    //             $notaCita->idCita = $idCita;
-    //             $notaCita->save();
-    //             return response()->json(['notaCita' => $notaCita]);
-    //         }
-    //     }
-    //     else{
-    //         return response()->json(['message' => 'Error, el reporte de la cita que busca no existe.'], 404);
-    //     }
-    // }
-
     public function getCita($idCita){
         // dd($idCita);
         $cita = Cita::where('idCita', $idCita)->first();
