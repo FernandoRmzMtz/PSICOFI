@@ -100,8 +100,12 @@ class PsicoController extends Controller
         }
     }
 
-    public function getPsicologos(){
-        $psicologosExternos = PsicologoExterno::select(
+    public function getPsicologos(Request $request){
+        $activo = $request->input('activo',null);
+        
+        if($activo == 1){
+            $psicologosExternos = PsicologoExterno::where('activo',true)
+            ->select(
                 'CURP as identificador',
                 'nombres',
                 'apellidoPaterno',
@@ -110,14 +114,9 @@ class PsicoController extends Controller
                 'created_at'
             )
             ->get();
-
-        foreach ($psicologosExternos as $psicologo) {
-            $psicologo->formatted_created_at = $psicologo->created_at->format('Y-m-d');
-            $psicologo->makeHidden(['created_at']);
-        }
-    
-        $psicologosInternos = Psicologo::select(
-                'claveUnica as identificador',
+        }else{
+            $psicologosExternos = PsicologoExterno::select(
+                'CURP as identificador',
                 'nombres',
                 'apellidoPaterno',
                 'apellidoMaterno',
@@ -125,6 +124,35 @@ class PsicoController extends Controller
                 'created_at'
             )
             ->get();
+        }
+
+        foreach ($psicologosExternos as $psicologo) {
+            $psicologo->formatted_created_at = $psicologo->created_at->format('Y-m-d');
+            $psicologo->makeHidden(['created_at']);
+        }
+
+        if($activo == 1){
+            $psicologosInternos  = Psicologo::where('activo',true)
+            ->select(
+                'claveUnica  as identificador',
+                'nombres',
+                'apellidoPaterno',
+                'apellidoMaterno',
+                'activo',
+                'created_at'
+            )
+            ->get();
+        }else{
+            $psicologosInternos  = Psicologo::select(
+                'claveUnica  as identificador',
+                'nombres',
+                'apellidoPaterno',
+                'apellidoMaterno',
+                'activo',
+                'created_at'
+            )
+            ->get();
+        }
 
         foreach ($psicologosInternos as $psicologo) {
             $psicologo->formatted_created_at = $psicologo->created_at->format('Y-m-d');

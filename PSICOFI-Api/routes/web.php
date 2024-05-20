@@ -36,7 +36,7 @@ Route::post('psicologo/searchPsicologo',[PsicoController::class,'searchPsicologo
 
 Route::post('psicologo/registerPsicologo',[PsicoController::class,'registerPsicologo'])->name('psicologo.registerPsicologo');
 
-Route::get('psicologo/getPsicologos',[PsicoController::class,'getPsicologos'])->name('psicologo.getPsicologos');
+Route::post('psicologo/getPsicologos',[PsicoController::class,'getPsicologos'])->name('psicologo.getPsicologos');
 
 Route::post('psicologo/getPatients',[PsicoController::class,'getPatients'])->name('psicologo.getPatients');
 
