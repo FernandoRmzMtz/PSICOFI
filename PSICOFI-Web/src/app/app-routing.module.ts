@@ -16,9 +16,12 @@ import { ReporteCitasPage } from './modules/reporte-citas/reporte-citas.page';
 import { CitaUrgentePage } from './modules/cita-urgente/cita-urgente.page';
 import { ReportesPage } from './modules/reportes/reportes.page';
 import { AuthGuard } from './auth.guard';
+import { AlumnoinfoModule } from './modules/alumnoinfo/alumnoinfo.module';
+import { AlumnoinfoPage } from './modules/alumnoinfo/alumnoinfo.page';
 
 const routes: Routes = [
   {path: 'login', component: LoginPage},
+  {path: 'alumno-info', component: AlumnoinfoPage, canActivate: [AuthGuard], data: {tipoUsuario: ['Psicologo', 'Psicologo_externo']}},
   {path: 'gestion-psicologos', component: GestionPsicologosPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Administrador'] } },
   { path: 'gestion-agenda', component: GestionAgendaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
   {path: 'inicio', component: PaginaInicioPage},
@@ -27,9 +30,9 @@ const routes: Routes = [
   {path: 'cambio-contrasena', component: CambioContrasenaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo_externo'] } },
   {path: 'historial-alumnos', component: HistorialAlumnosPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
   {path: 'reporte-citas', component: ReporteCitasPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
-  {path: 'cita-urgente', component: CitaUrgentePage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
+  {path: 'cita-urgente', component: CitaUrgentePage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo', 'Administrador'] } },
   {path: 'reportes', component: ReportesPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Administrador'] } },
-  { path: '**', redirectTo: '/inicio' } 
+  { path: '**', redirectTo: '/inicio' },
 ];
 
 @NgModule({

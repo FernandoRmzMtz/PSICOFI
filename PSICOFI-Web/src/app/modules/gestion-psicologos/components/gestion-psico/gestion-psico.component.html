@@ -29,7 +29,7 @@
               <td scope="row">{{ psicologo.nombres }}</td>
               <td scope="row">{{ psicologo.formatted_created_at }}</td>
               <td scope="row" class="text-center"><i class="bi bi-circle-fill text-success" *ngIf="psicologo.activo==1">
-                  Activo</i><i class="bi bi-circle text-muted" *ngIf="psicologo.activo==0"> Inctivo</i></td>
+                  Activo</i><i class="bi bi-circle text-muted" *ngIf="psicologo.activo==0"> Inactivo</i></td>
               <td scope="row" class="d-flex">
                 <button type="button" class="btn btn-primary mx-1" (click)="editarPsicologo(psicologo.identificador)"><i
                     class="bi bi-pencil" data-bs-toggle="modal" data-bs-target="#editarpsico"></i></button>
