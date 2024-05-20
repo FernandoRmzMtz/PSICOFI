@@ -7,7 +7,7 @@ namespace Database\Seeders;
 use App\Models\Cita;
 use App\Models\Departamento;
 use Illuminate\Database\Seeder;
-use App\Models\Curso;
+use App\Models\Administrador;
 use App\Models\Alumno;
 use App\Models\CarrerasPsico;
 use App\Models\EstadoCita;
@@ -91,5 +91,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Cita::factory(7)->create();
+
+        Administrador::factory(1)->create();
     }
 }

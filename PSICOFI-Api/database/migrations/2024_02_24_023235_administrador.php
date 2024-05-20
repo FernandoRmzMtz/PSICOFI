@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('Administrador',function(Blueprint $table){
             $table->id('idUsuario');
+            $table->string('nombres',60);
+            $table->string('apellidoPaterno',60);
+            $table->string('apellidoMaterno',60);
             $table->string('correo',80);
             $table->string('telefono',15);
             $table->string('contrasena',20);

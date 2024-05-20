@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Administrador;
 use Illuminate\Http\Request;
 use App\Models\Auth;
 use RicorocksDigitalAgency\Soap\Facades\Soap;
@@ -72,7 +73,16 @@ class AuthController extends Controller
             )
             ->first();
 
-            if($alumno || $psicologo){
+            $administrador = Administrador::where('idUsuario', $id)
+            ->where('contrasena', $password)
+            ->select('administrador.idUsuario',
+                    'administrador.nombres',
+                    'administrador.apellidoPaterno',
+                    'administrador.apellidoMaterno',
+            )
+            ->first();
+
+            if($alumno || $psicologo || $administrador){
                 $token = csrf_token();
                 if($alumno){
                     $jsonArray = [
@@ -89,6 +99,14 @@ class AuthController extends Controller
                         'nombre' => $psicologo->nombres . ' ' . $psicologo->apellidoPaterno . ' ' . $psicologo->apellidoMaterno,
                         'validacion' => "USUARIO-VALIDO",
                         'rol' => "Psicologo",
+                        'token' => $token
+                    ];
+                }else if($administrador){
+                    $jsonArray = [
+                        'id' => $administrador->idUsuario,
+                        'nombre' => $administrador->nombres . ' ' . $administrador->apellidoPaterno . ' ' . $administrador->apellidoMaterno,
+                        'validacion' => "USUARIO-VALIDO",
+                        'rol' => "Administrador",
                         'token' => $token
                     ];
                 }
