@@ -96,6 +96,7 @@ class NotaCitaController extends Controller
             $notaCita->detalleCanalizacion = "";
         }        
         $notaCita->idCita = $request->idCita;
+        $notaCita->foraneo = $request->foraneo;
 
         // Guardar la nota de cita en la base de datos
         $notaCita->save();
