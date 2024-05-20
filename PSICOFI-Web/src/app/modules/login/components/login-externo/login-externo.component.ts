@@ -65,7 +65,7 @@ export class LoginExternoComponent {
         else {
           this.loginService.setToken(data.token);
           this.loginService.setActiveUser(data.nombre);
-          this.loginService.setClave(data.clave_unica);
+          this.loginService.setClave(data.id);
           this.loginService.setTipoUsuario(data.rol);
           this._router.navigate(['/inicio']);
         }
