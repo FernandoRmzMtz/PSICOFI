@@ -21,14 +21,14 @@ import { AlumnoinfoPage } from './modules/alumnoinfo/alumnoinfo.page';
 
 const routes: Routes = [
   {path: 'login', component: LoginPage},
-  {path: 'alumno-info', component: AlumnoinfoPage, canActivate: [AuthGuard], data: {tipoUsuario: ['Psicologo', 'Psicologo_externo']}},
+  {path: 'alumno-info', component: AlumnoinfoPage, canActivate: [AuthGuard], data: {tipoUsuario: ['Psicologo', 'Psicologo_externo', 'Administrador']}},
   {path: 'gestion-psicologos', component: GestionPsicologosPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Administrador'] } },
   { path: 'gestion-agenda', component: GestionAgendaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
   {path: 'inicio', component: PaginaInicioPage},
   {path: '', component: PaginaInicioPage},
   {path: 'agendar-cita', component: AgendarCitaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Alumno'] } },
   {path: 'cambio-contrasena', component: CambioContrasenaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo_externo'] } },
-  {path: 'historial-alumnos', component: HistorialAlumnosPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
+  {path: 'historial-alumnos', component: HistorialAlumnosPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo', 'Administrador'] } },
   {path: 'reporte-citas', component: ReporteCitasPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
   {path: 'cita-urgente', component: CitaUrgentePage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo', 'Administrador'] } },
   {path: 'reportes', component: ReportesPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Administrador'] } },
