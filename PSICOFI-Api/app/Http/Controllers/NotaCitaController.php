@@ -9,10 +9,56 @@ use Illuminate\Http\Request;
 class NotaCitaController extends Controller
 {
 
+    // public function getReporteCita(Request $request){
+    //     $cita = Cita::where('idCita', $request->idCita)->first();
+    //     $idCita = $cita->idCita;
+    //     if($idCita){
+    //         $notaCita = NotaCita::where('idCita', $idCita)->first();
+    //         if($notaCita){
+    //             return response()->json(['notaCita' => $notaCita]);
+    //         }else{
+    //             $notaCita = new NotaCita();
+    //             $notaCita->tipoIntervencion = 1;
+    //             $notaCita->notas = "Observaciones:";     
+    //             $notaCita->idCita = $idCita;
+    //             $notaCita->save();
+    //             return response()->json(['notaCita' => $notaCita]);
+    //         }
+    //     }
+    //     else{
+    //         return response()->json(['message' => 'Error, el reporte de la cita que busca no existe.'], 404);
+    //     }
+    // }
+
+    public function getCita($idCita){
+        // dd($idCita);
+        $cita = Cita::where('idCita', $idCita)->first();
+        return $cita;
+        // return response()->json(['cita' => $cita]);
+    }
+
+    public function getReporteCita($idCita)
+    {
+        $cita = Cita::where('idCita', $idCita)->first();
+        if ($cita) {
+            $notaCita = NotaCita::where('idCita', $idCita)->first();
+            if ($notaCita) {
+                return response()->json(['notaCita' => $notaCita]);
+            } else {
+                $notaCita = new NotaCita();
+                $notaCita->tipoIntervencion = 1;
+                $notaCita->notas = "Observaciones:";
+                $notaCita->idCita = $idCita;
+                $notaCita->save();
+                return response()->json(['notaCita' => $notaCita]);
+            }
+        } else {
+            return response()->json(['message' => 'Error, el reporte de la cita que busca no existe.'], 404);
+        }
+    }
+
     public function crearCita(Request $request)
     {
-        // echo("hola");
-        // dd($request);
         // Crea una nueva cita
         $cita = new Cita();
         $cita->fecha = $request->fecha;
@@ -32,13 +78,6 @@ class NotaCitaController extends Controller
 
     public function store(Request $request)
     {
-        // // Validación de datos
-        // $validatedData = $request->validate([
-        //     'tipoIntervencion' => 'required',
-        //     'notas' => 'required',
-        //     // Agrega otras reglas de validación según sea necesario
-        // ]);
-
         // Crear una nueva instancia del modelo NotaCita y asignar los valores
         $notaCita = new NotaCita();
         $notaCita->tipoIntervencion = $request->tipoIntervencion;
@@ -51,11 +90,6 @@ class NotaCitaController extends Controller
             $notaCita->detalleCanalizacion = "";
         }        
         $notaCita->idCita = $request->idCita;
-        // $notaCita->tipoIntervencion = $request->input('tipoIntervencion');
-        // $notaCita->notas = $request->input('notas');
-        // $notaCita->departamento = $request->input('departamento');
-        // $notaCita->detalleCanalizacion = $request->input('detalleCanalizacion');
-        // $notaCita->idCita = $request->input('idCita');
 
         // Guardar la nota de cita en la base de datos
         $notaCita->save();

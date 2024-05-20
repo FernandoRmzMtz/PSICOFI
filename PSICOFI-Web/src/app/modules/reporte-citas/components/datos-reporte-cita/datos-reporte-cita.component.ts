@@ -1,11 +1,48 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReporteCitasService } from '../../services/reporte-citas.service';
+import { Cita } from 'src/app/components/servicios/citas.service';
 
 @Component({
   selector: 'app-datos-reporte-cita',
   templateUrl: './datos-reporte-cita.component.html',
   styleUrls: ['./datos-reporte-cita.component.css']
 })
-export class DatosReporteCitaComponent {
+export class DatosReporteCitaComponent implements OnInit {
+
+  constructor(
+    private route: ActivatedRoute,
+    private http:HttpClient, 
+    private _router:Router, 
+    private reporteCitaService:ReporteCitasService){
+
+  }
+  idCita =0;
+  public cita : Cita | null = null;
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.idCita = +params.get('idCita')!;
+      console.log("id de cita:"+this.idCita);
+      if (this.idCita) {
+        this.getCita(this.idCita);
+      }
+    });  
+  }
+
+  getCita(idCita: number): void {
+    this.reporteCitaService.getCita(idCita).subscribe(
+      response => {
+        this.cita = response;
+        console.log('Cita obtenida:', this.cita);
+      },
+      error => {
+        console.error('Error al obtener la cita:', error);
+        this._router.navigate(['/historial-alumnos']);
+      }
+    );
+  }
 
   public alumno = 
     {
@@ -27,18 +64,5 @@ export class DatosReporteCitaComponent {
     'habilitado' : true,
     };
 
-// fechaActual: Date = new Date();
-// fechaFormateada: string = `${('0' + this.fechaActual.getDate()).slice(-2)}/${('0' + (this.fechaActual.getMonth() + 1)).slice(-2)}/${this.fechaActual.getFullYear()}`;
-// horaFormateada: string = `${('0' + this.fechaActual.getHours()).slice(-2)}:${('0' + this.fechaActual.getMinutes()).slice(-2)}:${('0' + this.fechaActual.getSeconds()).slice(-2)}`;
 
-public cita = {
-    // 'fecha': this.fechaFormateada,
-    // 'hora': this.horaFormateada,
-    'fecha': '16/04/2024',
-    'hora': '12:00',
-    'claveUnica': 1,
-    'estadoCita': 1,
-    'clavePsicologo': 1,
-    'clavePsicologoExterno': null,
-};
 }
