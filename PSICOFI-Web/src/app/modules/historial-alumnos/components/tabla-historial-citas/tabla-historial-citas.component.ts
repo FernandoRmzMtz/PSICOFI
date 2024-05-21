@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HistorialAlumnosService } from '../../services/historial-alumnos.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabla-historial-citas',
@@ -8,7 +9,7 @@ import { HistorialAlumnosService } from '../../services/historial-alumnos.servic
 })
 export class TablaHistorialCitasComponent {
 
-  constructor(private histo: HistorialAlumnosService){
+  constructor(private histo: HistorialAlumnosService, private router: Router){
     this.getHistorialCitas();
   };
 
@@ -24,5 +25,9 @@ export class TablaHistorialCitasComponent {
 
   public get records() {
     return this.histo.records;
+  }
+
+  redirectToReporteCitas(id:number) {
+    this.router.navigate(['/reporte-citas', id]);
   }
 }
