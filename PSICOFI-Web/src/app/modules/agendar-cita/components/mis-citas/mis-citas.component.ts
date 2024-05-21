@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AgendarCita } from '../../services/agendar-cita.service';
+import { LoginService } from 'src/app/modules/login/services/login.services';
 
 @Component({
   selector: 'app-mis-citas',
@@ -7,21 +8,36 @@ import { AgendarCita } from '../../services/agendar-cita.service';
   styleUrls: ['./mis-citas.component.css']
 })
 export class MisCitasComponent implements OnInit {
-  claveUnica: string = '324109';
-  nombre: string = 'Fernando Antonio Ramírez Martínez';
-  tieneCita: boolean = true; 
-  citasProceso: any[] = [ ];
+  claveUnica: string = '';
+  nombre: string = '';
+  tieneCita: boolean = false;
+  citasProceso: any[] = [];
   historialCitas: any[] = [];
 
-  constructor(private agendarCitaService: AgendarCita) { }
+  constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { }
 
   ngOnInit(): void {
-    this.obtenerHistorialCitas();
-    this.obtenerCitasProceso();
+    this.obtenerDatosAlumno();
+  }
+
+  obtenerDatosAlumno(): void {
+    const clave = this.loginService.getClave();
+    const id = parseInt(clave, 10);
+    this.agendarCitaService.obtenerAlumno(id).subscribe(
+      (data) => {
+        this.claveUnica = data.claveUnica;
+        this.nombre = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
+        this.obtenerHistorialCitas();
+        this.obtenerCitasProceso();
+      },
+      (error) => {
+        console.error('Error al obtener los datos del alumno:', error);
+      }
+    );
   }
 
   obtenerHistorialCitas(): void {
-    const id = 324109;  
+    const id = parseInt(this.claveUnica, 10);
     this.agendarCitaService.obtenerHistorialCitas(id).subscribe(
       (data) => {
         this.historialCitas = data;
@@ -31,8 +47,9 @@ export class MisCitasComponent implements OnInit {
       }
     );
   }
-  obtenerCitasProceso() {
-    const idAlumno = 324109; 
+
+  obtenerCitasProceso(): void {
+    const idAlumno = parseInt(this.claveUnica, 10);
     this.agendarCitaService.obtenerCitasProceso(idAlumno).subscribe(
       (data: any) => {
         if (data) {
@@ -49,6 +66,7 @@ export class MisCitasComponent implements OnInit {
       }
     );
   }
+
   cancelarCita(): void {
     this.tieneCita = false;
   }

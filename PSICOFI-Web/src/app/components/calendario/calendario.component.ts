@@ -56,19 +56,13 @@ export class CalendarioComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log('INIT');
-
     this.tipoUsuarioSubscription = this.LoginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
       this.tipoUsuario = tipoUsuario;
-      console.log('Tipo de usuario:', this.tipoUsuario);
     });
 
     if (this.LoginService.isAuthenticated()) {
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
     }
-    
-    console.log('TERMINO');
-
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
   }

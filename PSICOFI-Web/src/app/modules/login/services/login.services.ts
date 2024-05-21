@@ -73,6 +73,7 @@ export class LoginService {
   
 
   setClave(claveUnica: string): void {
+    console.log("clave unica"+ this.CLAVEUNICA)
     localStorage.setItem(this.CLAVEUNICA, claveUnica);
   }
 
