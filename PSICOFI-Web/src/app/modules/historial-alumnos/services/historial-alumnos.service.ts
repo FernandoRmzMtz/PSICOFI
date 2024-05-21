@@ -21,8 +21,9 @@ interface AlumnoAtendido {
   edad: number;
 }
 
+
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 
 export class HistorialAlumnosService {
@@ -31,6 +32,7 @@ export class HistorialAlumnosService {
 
   pacientes = [];
   alumnoViendo: string = '';
+  records: any = [];
 
   public infoAlumno: AlumnoAtendido = {
     claveUnica: 0,
@@ -58,13 +60,12 @@ export class HistorialAlumnosService {
   }
 
 
-  public getHistorialVisible()
-  {
+  public getHistorialVisible() {
     return this.historialTablaVisible;
   }
 
   public getPacientes(): Observable<any> {
-    return this.http.post(environment.api+'/psicologo/getPatients',
+    return this.http.post(environment.api + '/psicologo/getPatients',
       {
         "id": this.loginService.getClave()
       },
@@ -72,14 +73,14 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken()?? "token"
+          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
         }
       }
     )
   }
 
   public getAlumnoInfo(): Observable<AlumnoAtendido> {
-    return this.http.post<AlumnoAtendido>(environment.api+'/alumno/getAlumno',
+    return this.http.post<AlumnoAtendido>(environment.api + '/alumno/getAlumno',
       {
         "id": this.alumnoViendo
       },
@@ -87,7 +88,22 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken()?? "token"
+          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+        }
+      }
+    )
+  }
+
+  public getHistorialCitas(): Observable<any> {
+    return this.http.post(environment.api + '/alumno/getRecord',
+      {
+        "id": this.alumnoViendo
+      },
+      {
+        headers:
+        {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
         }
       }
     )
