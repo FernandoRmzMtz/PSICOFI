@@ -26,8 +26,18 @@ export class CitaUrgenteService {
    }
 
   obtenerAlumno(claveUnica: number): Observable<any> {
-    // return this.http.get<any>(environment.api+`/environment.apialumno/${claveUnica}`);
-    return this.http.get<any>(environment.api+`/alumno/${claveUnica}`);
+    return this.http.post<any>(environment.api+'/alumno/getAlumno',
+    {
+      "id":claveUnica
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+      }
+    }
+  );
+    // return this.http.get<any>(environment.api+`/alumno/${claveUnica}`);
   }
   private datosCitaLlenosSource = new BehaviorSubject<boolean>(false);
   datosCitaLlenos$ = this.datosCitaLlenosSource.asObservable();

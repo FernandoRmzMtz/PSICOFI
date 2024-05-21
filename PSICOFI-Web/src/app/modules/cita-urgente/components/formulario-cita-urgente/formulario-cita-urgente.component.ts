@@ -80,7 +80,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
           tipoIntervencion: this.tipoIntervencion,
           notas: this.notas,
           departamento: this.departamento ? this.departamento: "",
-          detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : "", // Si necesita canalización, incluir los detalles
+          detalleCanalizacion: this.detalleCanalizacion ? this.detalleCanalizacion : "", // Si necesita canalización, incluir los detalles
           idCita: idCita,
           foraneo: this.foraneo
         };

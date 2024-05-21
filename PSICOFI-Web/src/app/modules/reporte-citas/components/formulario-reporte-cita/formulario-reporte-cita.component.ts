@@ -124,7 +124,7 @@ export class FormularioReporteCitaComponent implements OnInit {
           notas: this.notas,
           departamento: this.departamento ? this.departamento: null,
           // departamento: this.departamento ? this.departamentos[parseInt(this.departamento)].idDepartamento: null,
-          detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : "",
+          detalleCanalizacion: this.detalleCanalizacion ? this.detalleCanalizacion : "",
           idCita: this.idCita,
           foraneo: this.foraneo
         };
