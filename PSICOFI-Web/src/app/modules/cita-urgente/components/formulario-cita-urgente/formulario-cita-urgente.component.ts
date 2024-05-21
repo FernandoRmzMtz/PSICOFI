@@ -24,9 +24,11 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   detalleCanalizacion: string = '';
   alumnoForaneo: boolean | null = null;
   datosCita: Array<any> = [];
+  foraneo: boolean | null = null;
 
   ngOnInit(): void {
-
+    console.log("neesita canalización:"+this.necesitaCanalizacion);
+    this.necesitaCanalizacion = false;
 
 
     this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
@@ -79,13 +81,14 @@ export class FormularioCitaUrgenteComponent implements OnInit {
           notas: this.notas,
           departamento: this.departamento ? this.departamento: "",
           detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : "", // Si necesita canalización, incluir los detalles
-          idCita: idCita
+          idCita: idCita,
+          foraneo: this.foraneo
         };
 
         console.log(formData);
 
         // Enviar los datos al servidor
-        this.http.post<any>(environment.api+'/nota-cita', 
+        this.http.post<any>(environment.api+'/api/nota-cita', 
         formData,
         {
           headers: {
@@ -109,6 +112,10 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   );
   }
   toggleCanalizacion(): void {
+    console.log("antes togle:neesita canalización:"+this.necesitaCanalizacion);
     this.necesitaCanalizacion = !this.necesitaCanalizacion; // Invierte el valor de necesitaCanalizacion
+    console.log("despues togle:neesita canalización:"+this.necesitaCanalizacion);
+    // this.necesitaCanalizacion = checked;
+
   }
 }
