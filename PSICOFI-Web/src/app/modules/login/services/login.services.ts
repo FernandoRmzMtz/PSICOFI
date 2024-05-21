@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 
+import { Router } from '@angular/router';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +22,7 @@ export class LoginService {
   private readonly CLAVEUNICA = 'clave_user';
   private readonly TIPOUSUARIO = 'rol';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   public toggleForm() {
     this.formVisible = this.formVisible === 1 ? 2 : 1;
@@ -43,6 +45,8 @@ export class LoginService {
     localStorage.removeItem(this.CLAVEUNICA);
     localStorage.removeItem(this.TIPOUSUARIO);
     this.tipoUsuarioSubject.next('');
+
+    this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
