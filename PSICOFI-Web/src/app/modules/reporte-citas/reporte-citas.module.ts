@@ -4,6 +4,7 @@ import { ReporteCitasPage } from './reporte-citas.page';
 import { DatosReporteCitaComponent } from './components/datos-reporte-cita/datos-reporte-cita.component';
 import { FormularioReporteCitaComponent } from './components/formulario-reporte-cita/formulario-reporte-cita.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -16,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule
   ]
 })
 export class ReporteCitasModule { }

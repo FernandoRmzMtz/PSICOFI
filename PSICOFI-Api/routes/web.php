@@ -68,6 +68,13 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
 Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
 
+Route::get('/reporte-citas/{idCita}', [NotaCitaController::class, 'getReporteCita'])->name('getReporteCita');
+
+Route::get('/getCita/{idCita}', [NotaCitaController::class, 'getCita'])->name('getCita');
+
+Route::get('/getNotaCita/{idCita}', [NotaCitaController::class, 'getNotaCita'])->name('getNotaCita');
+
+Route::put('/api/nota-cita/{id}', [NotaCitaController::class, 'updateCita'])->name('updateCita');
 
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);
