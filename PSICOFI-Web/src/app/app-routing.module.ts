@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'agendar-cita', component: AgendarCitaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Alumno'] } },
   {path: 'cambio-contrasena', component: CambioContrasenaPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo_externo'] } },
   {path: 'historial-alumnos', component: HistorialAlumnosPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
-  {path: 'reporte-citas', component: ReporteCitasPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
+  {path: 'reporte-citas/:idCita', component: ReporteCitasPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
   {path: 'cita-urgente', component: CitaUrgentePage, canActivate: [AuthGuard], data: { tipoUsuario: ['Psicologo', 'Psicologo_externo'] } },
   {path: 'reportes', component: ReportesPage, canActivate: [AuthGuard], data: { tipoUsuario: ['Administrador'] } },
 ];
