@@ -5,17 +5,17 @@
                 <div class="row">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectTipoIntervencionRepCit" class="form-label mb-3">Motivo de la intervención:</label>
-                        <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionRepCita" >
+                        <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionRepCita" required [(ngModel)]="tipoIntervencion" >
                             <!-- <option selected>{{ notaCita?.tipoIntervencion }}</option> -->
-                            <ng-container *ngIf="notaCita">
+                            <!-- <ng-container *ngIf="notaCita">
                                 <option [value]="notaCita.tipoIntervencion">{{ getTipoIntervencionName(notaCita.tipoIntervencion) }}</option>
-                            </ng-container>
+                            </ng-container> -->
                             <option *ngFor="let tipo of tiposIntervencion" [value]="tipo.idTipoIntervencion">{{ tipo.tipoIntervencion }}</option>
                         </select>
                     </div>
                     <div class="col-md-6 d-flex align-items-center justify-content-center">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="alumnoForaneoRepCita" [checked]="notaCita?.foraneo">
+                            <input class="form-check-input" name="foraneo" type="checkbox" value="" id="alumnoForaneoRepCita" [checked]="notaCita?.foraneo" [(ngModel)]="foraneo">
                             <label class="form-check-label" for="alumnoForaneoRepCita">
                                 Alumno foráneo
                             </label>
@@ -25,13 +25,13 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="observacionesRepCcita" class="form-label">Observaciones:</label>
-                        <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3">{{notaCita?.notas}}</textarea>
+                        <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3" required [(ngModel)]="notas">{{notaCita?.notas}}</textarea>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita"  [checked]="notaCita?.detalleCanalizacion">
+                            <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita"  [checked]="notaCita?.detalleCanalizacion || notaCita?.departamento">
                             <label class="form-check-label" for="canalizacionRepCita">
                                 Necesita canalización
                             </label>
@@ -40,20 +40,20 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
-                        <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>                        
-                        <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita" >
+                        <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>  
+                        <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita" [(ngModel)]="departamento" >                      
                             <!-- <option selected>{{ notaCita?.tipoIntervencion }}</option> -->
-                            <ng-container *ngIf="notaCita">
+                            <!-- <ng-container *ngIf="notaCita">
                                 <option selected [value]="notaCita.departamento">{{ getTipoDepartamentoName(notaCita.departamento) }}</option>
-                            </ng-container>
-                            <option *ngFor="let depa of departamentos" [value]="depa.departamento">{{ depa.departamento }}</option>
+                            </ng-container> -->
+                            <option *ngFor="let depa of departamentos" [value]="depa.idDepartamento">{{ depa.departamento }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
-                        <label for="detallesRepCita" class="form-label">Detalles:</label>
-                        <textarea class="form-control" id="detallesRepCita" name="detalles" rows="3">{{ notaCita?.detalleCanalizacion }}</textarea>
+                        <label for="detallesRepCita" class="form-label">Detalles de canalizaci&oacute;n:</label>
+                        <textarea class="form-control" id="detallesRepCita" name="detalles" rows="3" [(ngModel)]="detalleCanalizacion">{{ notaCita?.detalleCanalizacion }}</textarea>
                     </div>
                 </div>
                 <div class="row mt-3">

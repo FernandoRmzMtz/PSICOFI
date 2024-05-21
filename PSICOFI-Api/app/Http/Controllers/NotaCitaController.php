@@ -83,4 +83,40 @@ class NotaCitaController extends Controller
         // Retorna una respuesta adecuada (puedes personalizarla según tus necesidades)
         return response()->json(['message' => 'Nota de cita creada correctamente'], 201);
     }
+
+    public function updateCita(Request $request, $id)
+    {
+        // Validar los datos entrantes
+        $validatedData = $request->validate([
+            'tipoIntervencion' => 'required|integer',
+            'notas' => 'required|string',
+            'departamento' => 'nullable|integer',
+            'detalleCanalizacion' => 'nullable|string',
+            'foraneo' => 'nullable|boolean',
+        ]);
+
+        try {
+            // Encontrar la nota de cita por ID
+            // $notaCita = NotaCita::findOrFail($id);
+            $notaCita = NotaCita::where('idCita', $id)->first();
+
+
+            // Actualizar los campos de la nota de cita
+            $notaCita->tipoIntervencion = $validatedData['tipoIntervencion'];
+            $notaCita->notas = $validatedData['notas'];
+            $notaCita->departamento = $validatedData['departamento'] ?? null;
+            $notaCita->detalleCanalizacion = $validatedData['detalleCanalizacion'] ?? null;
+            $notaCita->foraneo = $validatedData['foraneo'] ?? null;
+
+            // Guardar los cambios
+            $notaCita->save();
+
+            // Devolver una respuesta exitosa
+            return response()->json(['message' => 'Nota de cita actualizada correctamente.', 'notaCita' => $notaCita], 200);
+
+        } catch (\Exception $e) {
+            // Manejar cualquier error que ocurra
+            return response()->json(['message' => 'Error al actualizar la nota de cita.', 'error' => $e->getMessage()], 500);
+        }
+    }
 }

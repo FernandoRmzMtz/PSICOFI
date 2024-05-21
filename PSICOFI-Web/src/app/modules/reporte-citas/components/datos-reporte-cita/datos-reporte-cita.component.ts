@@ -61,25 +61,5 @@ export class DatosReporteCitaComponent implements OnInit {
     );
   }
 
-  // public alumno = 
-  //   {
-  //   'claveUnica' : '324109',
-  //   'nombres' : 'Fernando Antonio',
-  //   'apellidoPaterno' : 'Ramírez',
-  //   'apellidoMaterno' : 'Martínez',
-  //   'edad' : 21,
-  //   'sexo' : 'M',
-  //   'area' : 'Ciencias de la computación',
-  //   'carrera' : 'Ing. en sistemas inteligentes',
-  //   'semestre' : 8,
-  //   'condicionAcademica' : 'INSCRITO',
-  //   'creditosAprobados' : 345,
-  //   'creditosInscritos' : 48,
-  //   'promedioGral' : 9.4,
-  //   'asesor' : 'Dra. Sandra Edith Nava Muñoz',
-  //   'contrasena' : '1234567890',
-  //   'habilitado' : true,
-  //   };
-
 
 }
