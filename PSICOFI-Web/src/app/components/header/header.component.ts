@@ -8,6 +8,7 @@ interface HeaderRoute {
   title: string;
   path: string;
   tipoUsuario: string[];
+  action?: () => void;
 }
 
 @Component({
@@ -31,7 +32,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // { title: 'Añadir psicólogo', path: '/añadir-Psicologo', tipoUsuario: ['Administrador'] },
     { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'] },
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
-    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo_externo', 'Administrador'] }
+    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo_externo', 'Administrador'], action: this.logout.bind(this)}
   ];
 
   constructor(private loginService: LoginService, private router: Router) {}
@@ -69,5 +70,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return [];
     }
     return this.rutas.filter(ruta => ruta.tipoUsuario.includes(this.tipoUsuario));
+  }
+
+  logout(): void {
+    this.loginService.logout();
+    this.router.navigate(['/login']); // Redirige al usuario a la página de inicio de sesión
+  }
+
+  navigate(ruta: HeaderRoute): void {
+    if (ruta.action) {
+      ruta.action();  // Ejecutar la acción asociada si existe
+    } else {
+      this.router.navigate([ruta.path]);  // Navegar a la ruta especificada si no hay acción
+    }
   }
 }

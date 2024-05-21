@@ -31,7 +31,7 @@
                     <div
                         class="h-75 d-flex flex-column flex-sm-row bd-highlight justify-content-end align-items-sm-end pt-sm-0 pt-5 align-items-center">
                         <div *ngFor="let ruta of rutasFiltradas; let i = index" class="p-1 px-1 bd-highlight">
-                            <a *ngIf="ruta.tipoUsuario.includes(tipoUsuario)" [routerLink]="ruta.path">{{ ruta.title }}</a>
+                            <a *ngIf="ruta.tipoUsuario.includes(tipoUsuario)" [routerLink]="ruta.path" (click)="navigate(ruta)">{{ ruta.title }}</a>
                             <span *ngIf="i < rutasFiltradas.length - 1" class="text-white"> | </span>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                 <div class="col-12 col-md-auto d-block d-sm-none">
                     <div class="row">
                         <div *ngFor="let ruta of rutasFiltradas; let i = index" class="col px-1">
-                            <a *ngIf="ruta.tipoUsuario.includes(tipoUsuario)" [routerLink]="ruta.path">{{ ruta.title }}</a>
+                            <a *ngIf="ruta.tipoUsuario.includes(tipoUsuario)" [routerLink]="ruta.path" (click)="navigate(ruta)">{{ ruta.title }}</a>
                             <span *ngIf="i < rutasFiltradas.length - 1" class="text-white"> | </span>
                         </div>
                     </div>
