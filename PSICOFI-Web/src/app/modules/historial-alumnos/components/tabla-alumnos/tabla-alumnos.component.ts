@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { HistorialAlumnosService } from '../../services/historial-alumnos.service'
 
 @Component({
@@ -7,6 +7,9 @@ import { HistorialAlumnosService } from '../../services/historial-alumnos.servic
   styleUrls: ['./tabla-alumnos.component.css']
 })
 export class TablaAlumnosComponent {
+
+  @Input()
+  public pacientes=[];
 
   constructor(private histo: HistorialAlumnosService){}
 

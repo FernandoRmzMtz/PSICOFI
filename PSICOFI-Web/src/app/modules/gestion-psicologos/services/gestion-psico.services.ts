@@ -49,12 +49,20 @@ export class gestionPsico {
 
 
   fetchPsicologos(): Observable<any> {
-    return this.http.get(environment.api + '/psicologo/getPsicologos').pipe(
-      catchError(error => {
-        console.error('Error fetching psychologists:', error);
-        return of([]);
-      })
-    );
+    // return this.http.post(environment.api + '/psicologo/getPsicologos').pipe(
+    //   catchError(error => {
+    //     console.error('Error fetching psychologists:', error);
+    //     return of([]);
+    //   })
+    // );
+
+      return this.http.post(environment.api+'/psicologo/getPsicologos', {}, 
+      {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          }
+      });
   }
 
   getPsicologos(): Observable<any> {

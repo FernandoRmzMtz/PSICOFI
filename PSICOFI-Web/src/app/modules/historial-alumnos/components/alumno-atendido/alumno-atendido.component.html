@@ -1,49 +1,49 @@
-<h5 class="my-3">
+<h2 class="my-3">
     HISTORIAL DE ALUMNO ATENDIDO
-</h5>
+</h2>
 <div class="container my-5">
     <div class="table-responsive" style="max-height: 460px;">
         <table class="table table-striped">
             <tbody>
                 <tr>
                     <td class="text-end">Nombre: </td>
-                    <td>Nombre del alumno</td>
+                    <td>{{alumnoInfo.nombres + ' ' + alumnoInfo.apellidoPaterno + ' ' + alumnoInfo.apellidoMaterno}}</td>
                     <td class="text-end">Condición académica: </td>
-                    <td>Condición académica</td>
+                    <td>{{alumnoInfo.condicionAcademica}}</td>
                 </tr>
                 <tr>
                     <td class="text-end">Clave única: </td>
-                    <td>Clave única</td>
+                    <td>{{alumnoInfo.claveUnica}}</td>
                     <td class="text-end">Promedio: </td>
-                    <td>89</td>
+                    <td>{{alumnoInfo.promedioGral}}</td>
                 </tr>
                 <tr>
                     <td class="text-end">Área: </td>
-                    <td>CICOMP</td>
+                    <td>{{alumnoInfo.area}}</td>
                     <td class="text-end">Créditos aprobados: </td>
-                    <td>12+1</td>
+                    <td>{{alumnoInfo.creditosAprobados}}</td>
                 </tr>
                 <tr>
                     <td class="text-end">Carrera: </td>
-                    <td>Sistemas Inteligentes</td>
+                    <td>{{alumnoInfo.carrera}}</td>
                     <td class="text-end">Créditos inscritos: </td>
-                    <td>40</td>
+                    <td>{{alumnoInfo.creditosInscritos}}</td>
                 </tr>
                 <tr>
                     <td class="text-end">Semestre: </td>
-                    <td>8</td>
+                    <td>{{alumnoInfo.semestre}}</td>
                     <td class="text-end">Sexo: </td>
-                    <td>MF</td>
+                    <td>{{alumnoInfo.sexo}}</td>
                 </tr>
                 <tr>
                     <td class="text-end">Asesor: </td>
-                    <td>Asesor</td>
+                    <td>{{alumnoInfo.asesor}}</td>
                     <td class="text-end">Edad: </td>
-                    <td>22</td>
+                    <td>{{alumnoInfo.edad}}</td>
                 </tr>
                 <tr>
                     <td class="text-end">Foráneo: </td>
-                    <td colspan="3">Si</td>
+                    <td colspan="3">--</td>
                 </tr>
                 
             </tbody>

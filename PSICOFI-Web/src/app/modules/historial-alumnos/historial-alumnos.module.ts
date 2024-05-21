@@ -5,7 +5,6 @@ import { TablaAlumnosComponent } from './components/tabla-alumnos/tabla-alumnos.
 import { AlumnoAtendidoComponent } from './components/alumno-atendido/alumno-atendido.component';
 import { TablaHistorialCitasComponent } from './components/tabla-historial-citas/tabla-historial-citas.component';
 
-
 @NgModule({
   declarations: [
     HistorialAlumnosPage,
