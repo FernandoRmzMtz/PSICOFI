@@ -9,19 +9,19 @@
     </div>
 </form>
 
-<div class="container my-5">
+<div class="container my-5" style="height: 31vh">
     <div class="table-responsive" style="max-height: 460px;">
         <table class="table table-striped">
             <thead>
                 <tr> 
-                    <th scope="col">Clave única</th>
+                    <th scope="col" class="ps-3">Clave única</th>
                     <th scope="col" class="text-center">Ver historial</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>325850</td>
-                    <td class="text-center clickeable"><button type="button" class="btn btn-secondary" (click)="verAlumnoAtendido(325850)"><i
+                <tr *ngFor="let paciente of pacientes">
+                    <td class="ps-3">{{paciente}}</td>
+                    <td class="text-center clickeable"><button type="button" class="btn btn-secondary" (click)="verAlumnoAtendido(paciente)"><i
                         class="bi bi-eye"></i></button></td>
                 </tr>
             </tbody>
