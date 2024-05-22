@@ -27,14 +27,15 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita"  [checked]="notaCita?.detalleCanalizacion || notaCita?.departamento">
+                            <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita"  [checked]="necesitaCanalizacion" (change)="toggleCanalizacion()">
+                            <!-- <input class="form-check-input" type="checkbox" value="" id="canalizacionRepCita"  [checked]="notaCita?.detalleCanalizacion || notaCita?.departamento" (change)="toggleCanalizacion()"> -->
                             <label class="form-check-label" for="canalizacionRepCita">
                                 Necesita canalización
                             </label>
                         </div>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3" *ngIf="necesitaCanalizacion">
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>  
                         <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita" [(ngModel)]="departamento" >                      
@@ -42,7 +43,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3" *ngIf="necesitaCanalizacion">
                     <div class="col-md-12">
                         <label for="detallesRepCita" class="form-label">Detalles de canalizaci&oacute;n:</label>
                         <textarea class="form-control" id="detallesRepCita" name="detalles" rows="3" [(ngModel)]="detalleCanalizacion">{{ notaCita?.detalleCanalizacion }}</textarea>
@@ -68,5 +69,45 @@
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
     <div>
         Se ha guardado exitosamente.
+    </div>
+</div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="x-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.646 4.646a.5.5 0 0 0-.708.708L7.293 8l-3.355 3.355a.5.5 0 0 0 .708.708L8 8.707l3.355 3.355a.5.5 0 0 0 .708-.708L8.707 8l3.355-3.355a.5.5 0 0 0-.708-.708L8 7.293 4.646 4.646z"/>
+    </symbol>
+</svg>
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorIntervencion" style="z-index: 1000;">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
+    <div>
+        Error, de escoger un tipo de intervención.
+    </div>
+</div>
+
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorNotas" style="z-index: 1000;">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
+    <div>
+        Error, debe ingresar observaciones.
+    </div>
+</div>
+
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorDetalleCan" style="z-index: 1000;">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
+    <div>
+        Error, ingrese el detalle de canalización.
+    </div>
+</div>
+
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorDepaCan" style="z-index: 1000;">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
+    <div>
+        Error, ingrese el departamento de canalización.
+    </div>
+</div>
+
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="error" style="z-index: 1000;">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
+    <div>
+        Ha ocurrido un error al actualizar la nota.
     </div>
 </div>

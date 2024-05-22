@@ -1,7 +1,6 @@
 <div class="container fade-in">
     <div class="container">
         <div class="mb-3">
-            <!-- <div *ngIf="!encontrado && buscado" class="text-danger mt-2">No se encontró ningún alumno con la clave única ingresada.</div> -->
             <table class="my-4">
                 <tr>
                     <td class="bg-info">Clave &uacute;nica:</td>
@@ -17,7 +16,6 @@
                 </tr>
                 <tr *ngIf="alumno">
                     <td class="bg-info">Fecha:</td>
-                    <!-- <td *ngIf="encontrado">{{cita.fecha}} {{cita.hora}}</td> -->
                     <input type="date" [(ngModel)]="cita.fecha" placeholder="Introduce la fecha de la cita" (change)="actualizarCita()">
                     <input type="time" [(ngModel)]="cita.hora" placeholder="Selecciona la hora" (change)="actualizarCita()">
                 </tr>

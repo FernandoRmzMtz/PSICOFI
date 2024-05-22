@@ -37,6 +37,11 @@ export class FormularioReporteCitaComponent implements OnInit {
     public cita : Cita | null = null;
     public notaCita: NotaCita | null = null;
     visible = false;
+    error =  false;
+    errorIntervencion = false;
+    errorNotas = false;
+    errorDepaCan = false;
+    errorDetalleCan = false;
 
 
   ngOnInit(): void {
@@ -69,6 +74,12 @@ export class FormularioReporteCitaComponent implements OnInit {
         // }
       }
     });  
+  }
+
+  toggleCanalizacion(): void {
+    console.log("antes togle:neesita canalización:"+this.necesitaCanalizacion);
+    this.necesitaCanalizacion = !this.necesitaCanalizacion;
+    console.log("despues togle:neesita canalización:"+this.necesitaCanalizacion);
   }
 
   getTipoDepartamentoName(idDepartamento: number | null | undefined): string {
@@ -114,39 +125,72 @@ export class FormularioReporteCitaComponent implements OnInit {
   }
 
   submitForm(): void {
-        const formData = {
-          tipoIntervencion: this.tipoIntervencion,
-          notas: this.notas,
-          departamento: this.departamento ? this.departamento: null,
-          detalleCanalizacion: this.detalleCanalizacion ? this.detalleCanalizacion : "",
-          idCita: this.idCita,
-          foraneo: this.foraneo
-        };
-
-        console.log(formData);
-
-        // Enviar los datos al servidor
-        this.http.put<any>(environment.api+'/api/nota-cita/'+this.idCita, 
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-          }
-        },
-        ).subscribe(
-          response => {
-            this.visible = true;
-            //esperamos unos segundos
-            setTimeout(() => {
-              this.visible = false;
-            }, 3000);
-            console.log('Datos enviados correctamente:', response);
-            window.location.reload();
-          },
-          error => {
-            console.error('Error al enviar los datos:', error);
-          }
-        );
-      }  
+    if(!this.tipoIntervencion) {
+      //muestra error
+      this.errorIntervencion = true;
+      setTimeout(() => {
+        this.errorIntervencion = false;
+      }, 3000);
+    }
+    else{
+      if(!this.notas) {
+        //muestra error
+        this.errorNotas = true;
+      setTimeout(() => {
+        this.errorNotas = false;
+      }, 3000);
+      }else{
+        if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
+          //muestra error
+          this.errorDepaCan = true;
+        setTimeout(() => {
+          this.errorDepaCan = false;
+        }, 5000);
+        }else{
+          if(this.necesitaCanalizacion&& !this.detalleCanalizacion && this.departamento) {
+            //muestra error
+            this.errorDetalleCan = true;
+          setTimeout(() => {
+            this.errorDetalleCan = false;
+          }, 5000);
+            }else{
+            const formData = {
+              tipoIntervencion: this.tipoIntervencion,
+              notas: this.notas,
+              departamento: this.necesitaCanalizacion? this.departamento ? this.departamento: null : null,
+              detalleCanalizacion: this.necesitaCanalizacion? this.detalleCanalizacion ? this.detalleCanalizacion : "" :"",
+              idCita: this.idCita,
+              foraneo: this.foraneo
+            };
+            // Enviar los datos al servidor
+            this.http.put<any>(environment.api+'/api/nota-cita/'+this.idCita, 
+            formData,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+              }
+            },
+            ).subscribe(
+              response => {
+                this.visible = true;
+                setTimeout(() => {
+                  this.visible = false;
+                }, 3000);
+                console.log('Datos enviados correctamente:', response);
+                window.location.reload();
+              },
+              error => {
+                this.error = true;
+                setTimeout(() => {
+                  this.error = false;
+                }, 3000);
+                console.error('Error al actualizar la nota de la cita:', error);
+              }
+            );
+          } 
+        } 
+      }
+    }
+  }
 }

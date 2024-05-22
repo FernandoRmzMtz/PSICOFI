@@ -15,6 +15,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   datosCitaLlenos: boolean = false;
   necesitaCanalizacion: boolean = false;
   visible = false;
+  error = false;
 
   constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService,private loginService: LoginService) { }
 
@@ -108,20 +109,28 @@ export class FormularioCitaUrgenteComponent implements OnInit {
             window.location.reload();
           },
           error => {
+            this.error = true;
+            //esperamos unos segundos
+            setTimeout(() => {
+              this.error = false;
+            }, 3000);
             console.error('Error al enviar los datos:', error);
           }
         );
     },
     (error: any) => {
-      console.error('Error al crear la cita:', error);
+      this.error = true;
+            //esperamos unos segundos
+            setTimeout(() => {
+              this.error = false;
+            }, 3000);
+      console.error('Error al actualizar la nota de la cita:', error);
     }
   );
   }
   toggleCanalizacion(): void {
     console.log("antes togle:neesita canalización:"+this.necesitaCanalizacion);
-    this.necesitaCanalizacion = !this.necesitaCanalizacion; // Invierte el valor de necesitaCanalizacion
+    this.necesitaCanalizacion = !this.necesitaCanalizacion;
     console.log("despues togle:neesita canalización:"+this.necesitaCanalizacion);
-    // this.necesitaCanalizacion = checked;
-
   }
 }

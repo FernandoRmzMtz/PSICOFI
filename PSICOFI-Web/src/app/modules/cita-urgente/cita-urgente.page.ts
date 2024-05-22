@@ -26,10 +26,8 @@ export class CitaUrgentePage {
     const headers = { 'X-CSRF-TOKEN': this.csrfToken };
     this.http.post(environment.api+'/nota-cita', data, { headers }).subscribe(response => {
       console.log('Respuesta del servidor:', response);
-      // Manejar la respuesta del servidor aquí
     }, error => {
       console.error('Error en la solicitud:', error);
-      // Manejar errores aquí
     });
   }
 }

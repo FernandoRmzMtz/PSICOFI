@@ -97,10 +97,8 @@ class NotaCitaController extends Controller
 
         try {
             // Encontrar la nota de cita por ID
-            // $notaCita = NotaCita::findOrFail($id);
             $notaCita = NotaCita::where('idCita', $id)->first();
-
-
+            
             // Actualizar los campos de la nota de cita
             $notaCita->tipoIntervencion = $validatedData['tipoIntervencion'];
             $notaCita->notas = $validatedData['notas'];
