@@ -31,7 +31,6 @@ export class CitasService {
       'X-CSRF-TOKEN': token || ''
     });
     return this.http.put<number>(url, cita, { headers });
-    
   }
   
 }
