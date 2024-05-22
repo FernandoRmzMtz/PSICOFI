@@ -19,25 +19,20 @@ export class CitaUrgenteService {
 
 
   constructor(private http: HttpClient, private loginService:LoginService) {
-    // this.http.get<{ csrf_token: string }>(`${environment.api}/csrf-token`).subscribe(response => {
-    //   this.csrfToken = response.csrf_token;
-    //   console.log("csrftoken: "+this.csrfToken);
-    // });
-   }
+  }
 
   obtenerAlumno(claveUnica: number): Observable<any> {
     return this.http.post<any>(environment.api+'/alumno/getAlumno',
-    {
-      "id":claveUnica
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+      {
+        "id":claveUnica
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+        }
       }
-    }
-  );
-    // return this.http.get<any>(environment.api+`/alumno/${claveUnica}`);
+    );
   }
   private datosCitaLlenosSource = new BehaviorSubject<boolean>(false);
   datosCitaLlenos$ = this.datosCitaLlenosSource.asObservable();
@@ -67,9 +62,6 @@ export class CitaUrgenteService {
   }
 
   crearCita(citaData: any): Observable<any> {
-    // const headers = new HttpHeaders({
-    //   'X-CSRF-TOKEN': this.csrfToken || ''
-    // });
     console.log("estos son los datos de la cita:"+citaData);
     console.log(citaData);
     return this.http.post<any>(environment.api+'/api/crear-cita', citaData,

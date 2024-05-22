@@ -14,10 +14,7 @@ export class ReporteCitasService {
 
   constructor(private http: HttpClient, private loginService:LoginService) { 
 
-  }
-
-  // getCita(idCita: number): Observable<any> {
-  //   return this.http.get<any>(environment.api+`/getCita/${idCita}`);  
+  } 
   getCita(idCita: number): Observable<Cita> {
     return this.http.get<Cita>(environment.api+`/getCita/${idCita}`);  
   }
