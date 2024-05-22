@@ -67,11 +67,11 @@ class NotaCitaController extends Controller
         $notaCita = new NotaCita();
         $notaCita->tipoIntervencion = $request->tipoIntervencion;
         $notaCita->notas = $request->notas;
-        if($request->departamento){
+        if($request->departamento && $request->detalleCanalizacion){
             $notaCita->departamento = $request->departamento;
             $notaCita->detalleCanalizacion = $request->detalleCanalizacion;
         }else{
-            $notaCita->departamento = "";
+            $notaCita->departamento = null;
             $notaCita->detalleCanalizacion = "";
         }        
         $notaCita->idCita = $request->idCita;
