@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Alumno;
 use App\Models\Cita;
 use Illuminate\Http\Request;
-
+use DateTime;
+use Exception;
+use Carbon\Carbon;
 
 class AlumnoController extends Controller
 {
@@ -14,10 +16,8 @@ class AlumnoController extends Controller
         return response()->json($alumno);
     }
 
-    public function obtainAlumno(Request $request){
-        $clave = $request->input('clave');
-
-        $clave_unica = (int) $clave; 
+    private function obtainAlumno($id){
+        $clave_unica = (int) $id; 
         $location = 'https://servicios.ing.uaslp.mx/ws_psico/ws_psico.svc';
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
                         <s:Body>
@@ -53,6 +53,52 @@ class AlumnoController extends Controller
         return $jsonResult;
     }
 
+    private function calcularEdad($fechaNacimiento) {
+
+        $fechaSinHora = substr($fechaNacimiento, 0, strpos($fechaNacimiento, ' '));
+        $fechaCarbon = Carbon::createFromFormat('d/m/Y', $fechaSinHora);
+        $edad = $fechaCarbon->age;
+
+        return $edad;
+    }
+
+    public function addAlumno($id){
+        $alumno = $this->obtainAlumno($id);
+
+        if($alumno){
+            $alumno = json_decode($alumno, true);
+            $edad = $this->calcularEdad($alumno['fecha_nace']);
+
+            $newAlumno = new Alumno;
+
+            $newAlumno -> claveUnica = intval($alumno['clave_unica']);
+            $newAlumno -> nombres = $alumno['nombres_alumno'];
+            $newAlumno -> apellidoPaterno = $alumno['primer_apellido_alumno'];
+            $newAlumno -> apellidoMaterno = $alumno['segundo_apellido_alumno'];
+            $newAlumno -> carrera = $alumno['nombre_carrera'];
+            $newAlumno -> edad = $edad;
+            $newAlumno->sexo = substr($alumno['genero'], 0, 1);
+            $newAlumno -> area = $alumno['nombre_area'];
+            $newAlumno -> condicionAcademica = "INSCRITO";
+            $newAlumno -> semestre = intval($alumno['semestre']);
+            $newAlumno -> creditosAprobados = $alumno['semestre'] * 50;
+            $newAlumno -> creditosInscritos = intval($alumno['creditos_inscritos']);
+            $newAlumno -> promedioGral = floatval($alumno['promedio_general']);
+            $newAlumno -> asesor = $alumno['tutor_academico'];
+            $newAlumno -> contrasena = null;
+            $newAlumno -> psicologoAsociado = null;
+            $newAlumno -> habilitado = 1;
+            
+            if($newAlumno->save()){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return null;
+        }
+    }
+
     public function getAlumno(Request $request){
         $id = $request->input('id',null);
 
@@ -75,11 +121,14 @@ class AlumnoController extends Controller
                     'edad'
                 )
                 ->first();
+
                 if($alumno){
                     return json_encode($alumno);
                 }else{
                     $respuesta = ['Error' => 'Alumno NO encontrado'];
                     return json_encode($respuesta);
+                    // $alumno = $this->obtainAlumno($id);
+                    // return $alumno;
                 }
             }else{
                 $respuesta = ['Error' => 'ID invalida'];
@@ -96,7 +145,6 @@ class AlumnoController extends Controller
         
         try{
             if(strlen($id) == 6){
-
                 $Record = [];
 
                 $citas = Cita::where('claveUnica', $id)

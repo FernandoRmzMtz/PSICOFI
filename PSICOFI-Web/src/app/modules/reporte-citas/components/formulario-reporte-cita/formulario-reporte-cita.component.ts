@@ -24,7 +24,6 @@ export class FormularioReporteCitaComponent implements OnInit {
   departamento: number | null = null;
   detalleCanalizacion: string = '';
   foraneo: boolean | undefined | null = null;
-  // foraneo: boolean | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +36,12 @@ export class FormularioReporteCitaComponent implements OnInit {
     idCita = 0;
     public cita : Cita | null = null;
     public notaCita: NotaCita | null = null;
+    visible = false;
+    error =  false;
+    errorIntervencion = false;
+    errorNotas = false;
+    errorDepaCan = false;
+    errorDetalleCan = false;
 
 
   ngOnInit(): void {
@@ -71,6 +76,12 @@ export class FormularioReporteCitaComponent implements OnInit {
     });  
   }
 
+  toggleCanalizacion(): void {
+    console.log("antes togle:neesita canalización:"+this.necesitaCanalizacion);
+    this.necesitaCanalizacion = !this.necesitaCanalizacion;
+    console.log("despues togle:neesita canalización:"+this.necesitaCanalizacion);
+  }
+
   getTipoDepartamentoName(idDepartamento: number | null | undefined): string {
     if (idDepartamento != null) {
       const departamento = this.departamentos.find(depa => depa.idDepartamento === idDepartamento);
@@ -102,7 +113,6 @@ export class FormularioReporteCitaComponent implements OnInit {
           this.detalleCanalizacion = this.notaCita.detalleCanalizacion;
         }
         if(this.notaCita.departamento){
-          // this.departamento = this.departamentos[this.notaCita.departamento].idDepartamento;
           this.departamento = this.notaCita.departamento;
           console.log("el departamento es: "+this.departamento+" y el tipo intervencion es:"+this.tipoIntervencion);
         }
@@ -115,39 +125,72 @@ export class FormularioReporteCitaComponent implements OnInit {
   }
 
   submitForm(): void {
-        // Crear el objeto con los datos del formulario
-
-        // console.log("El departamento es:"+this.departamento);
-
-        const formData = {
-          tipoIntervencion: this.tipoIntervencion,
-          notas: this.notas,
-          departamento: this.departamento ? this.departamento: null,
-          // departamento: this.departamento ? this.departamentos[parseInt(this.departamento)].idDepartamento: null,
-          detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion : "",
-          idCita: this.idCita,
-          foraneo: this.foraneo
-        };
-
-        console.log(formData);
-
-        // Enviar los datos al servidor
-        this.http.put<any>(environment.api+'/api/nota-cita/'+this.idCita, 
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-          }
-        },
-        ).subscribe(
-          response => {
-            console.log('Datos enviados correctamente:', response);
-            window.location.reload();
-          },
-          error => {
-            console.error('Error al enviar los datos:', error);
-          }
-        );
-      }  
+    if(!this.tipoIntervencion) {
+      //muestra error
+      this.errorIntervencion = true;
+      setTimeout(() => {
+        this.errorIntervencion = false;
+      }, 3000);
+    }
+    else{
+      if(!this.notas) {
+        //muestra error
+        this.errorNotas = true;
+      setTimeout(() => {
+        this.errorNotas = false;
+      }, 3000);
+      }else{
+        if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
+          //muestra error
+          this.errorDepaCan = true;
+        setTimeout(() => {
+          this.errorDepaCan = false;
+        }, 5000);
+        }else{
+          if(this.necesitaCanalizacion&& !this.detalleCanalizacion && this.departamento) {
+            //muestra error
+            this.errorDetalleCan = true;
+          setTimeout(() => {
+            this.errorDetalleCan = false;
+          }, 5000);
+            }else{
+            const formData = {
+              tipoIntervencion: this.tipoIntervencion,
+              notas: this.notas,
+              departamento: this.necesitaCanalizacion? this.departamento ? this.departamento: null : null,
+              detalleCanalizacion: this.necesitaCanalizacion? this.detalleCanalizacion ? this.detalleCanalizacion : "" :"",
+              idCita: this.idCita,
+              foraneo: this.foraneo
+            };
+            // Enviar los datos al servidor
+            this.http.put<any>(environment.api+'/api/nota-cita/'+this.idCita, 
+            formData,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+              }
+            },
+            ).subscribe(
+              response => {
+                this.visible = true;
+                setTimeout(() => {
+                  this.visible = false;
+                }, 3000);
+                console.log('Datos enviados correctamente:', response);
+                window.location.reload();
+              },
+              error => {
+                this.error = true;
+                setTimeout(() => {
+                  this.error = false;
+                }, 3000);
+                console.error('Error al actualizar la nota de la cita:', error);
+              }
+            );
+          } 
+        } 
+      }
+    }
+  }
 }
