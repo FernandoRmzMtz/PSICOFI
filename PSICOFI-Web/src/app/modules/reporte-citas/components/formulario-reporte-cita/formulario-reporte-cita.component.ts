@@ -24,7 +24,6 @@ export class FormularioReporteCitaComponent implements OnInit {
   departamento: number | null = null;
   detalleCanalizacion: string = '';
   foraneo: boolean | undefined | null = null;
-  // foraneo: boolean | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -103,7 +102,6 @@ export class FormularioReporteCitaComponent implements OnInit {
           this.detalleCanalizacion = this.notaCita.detalleCanalizacion;
         }
         if(this.notaCita.departamento){
-          // this.departamento = this.departamentos[this.notaCita.departamento].idDepartamento;
           this.departamento = this.notaCita.departamento;
           console.log("el departamento es: "+this.departamento+" y el tipo intervencion es:"+this.tipoIntervencion);
         }
@@ -116,15 +114,10 @@ export class FormularioReporteCitaComponent implements OnInit {
   }
 
   submitForm(): void {
-        // Crear el objeto con los datos del formulario
-
-        // console.log("El departamento es:"+this.departamento);
-
         const formData = {
           tipoIntervencion: this.tipoIntervencion,
           notas: this.notas,
           departamento: this.departamento ? this.departamento: null,
-          // departamento: this.departamento ? this.departamentos[parseInt(this.departamento)].idDepartamento: null,
           detalleCanalizacion: this.detalleCanalizacion ? this.detalleCanalizacion : "",
           idCita: this.idCita,
           foraneo: this.foraneo

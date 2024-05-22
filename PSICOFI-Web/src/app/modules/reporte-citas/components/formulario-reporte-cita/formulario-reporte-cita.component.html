@@ -6,10 +6,6 @@
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectTipoIntervencionRepCit" class="form-label mb-3">Motivo de la intervención:</label>
                         <select class="form-select form-select-lg" name="tipoIntervencion" id="selectTipoIntervencionRepCita" required [(ngModel)]="tipoIntervencion" >
-                            <!-- <option selected>{{ notaCita?.tipoIntervencion }}</option> -->
-                            <!-- <ng-container *ngIf="notaCita">
-                                <option [value]="notaCita.tipoIntervencion">{{ getTipoIntervencionName(notaCita.tipoIntervencion) }}</option>
-                            </ng-container> -->
                             <option *ngFor="let tipo of tiposIntervencion" [value]="tipo.idTipoIntervencion">{{ tipo.tipoIntervencion }}</option>
                         </select>
                     </div>
@@ -42,10 +38,6 @@
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>  
                         <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita" [(ngModel)]="departamento" >                      
-                            <!-- <option selected>{{ notaCita?.tipoIntervencion }}</option> -->
-                            <!-- <ng-container *ngIf="notaCita">
-                                <option selected [value]="notaCita.departamento">{{ getTipoDepartamentoName(notaCita.departamento) }}</option>
-                            </ng-container> -->
                             <option *ngFor="let depa of departamentos" [value]="depa.idDepartamento">{{ depa.departamento }}</option>
                         </select>
                     </div>
