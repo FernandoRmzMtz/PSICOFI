@@ -14,6 +14,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   departamentos: any[] = [];
   datosCitaLlenos: boolean = false;
   necesitaCanalizacion: boolean = false;
+  visible = false;
 
   constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService,private loginService: LoginService) { }
 
@@ -98,6 +99,11 @@ export class FormularioCitaUrgenteComponent implements OnInit {
         },
         ).subscribe(
           response => {
+            this.visible = true;
+            //esperamos unos segundos
+            setTimeout(() => {
+              this.visible = false;
+            }, 3000);
             console.log('Datos enviados correctamente:', response);
             window.location.reload();
           },

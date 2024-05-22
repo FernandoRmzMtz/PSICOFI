@@ -37,6 +37,7 @@ export class FormularioReporteCitaComponent implements OnInit {
     idCita = 0;
     public cita : Cita | null = null;
     public notaCita: NotaCita | null = null;
+    visible = false;
 
 
   ngOnInit(): void {
@@ -142,6 +143,11 @@ export class FormularioReporteCitaComponent implements OnInit {
         },
         ).subscribe(
           response => {
+            this.visible = true;
+            //esperamos unos segundos
+            setTimeout(() => {
+              this.visible = false;
+            }, 3000);
             console.log('Datos enviados correctamente:', response);
             window.location.reload();
           },
