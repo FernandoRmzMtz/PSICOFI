@@ -114,57 +114,78 @@ class DateController extends Controller
     }
 
     public function scheduleDate(Request $request){
-        $id = $request->input('id',null);
+        $id = $request->input('id');
         $claveUnica = $request->input('claveUnica');
         $fecha = $request->input('fecha');
         $hora = $request->input('hora');
 
-        try {
-            if($claveUnica == null || $id == null || $hora == null || $fecha == null){
-                $respuesta = ['Error' => 'Consulta invalida'];
-                return json_encode($respuesta);
-            }else if(strlen($id) == 6){
-                $cita = Cita::where('clavePsicologo', $id)
-                ->where('fecha', $fecha)
-                ->where('hora', $hora)
-                ->where('estadoCita', 7)
-                ->update([
-                    'claveUnica' => $claveUnica,
-                    'estadoCita' => 2
-                ]);
-    
-                if($cita > 0) {
-                    $respuesta = ['Cita agendada correctamente'];
+        $AlumnoController = app(\App\Http\Controllers\AlumnoController::class);
+
+        $data = ['id' => $claveUnica];
+        $request = new Request($data);
+        $alumno = $AlumnoController->getAlumno($request);
+
+        $alumno = json_decode($alumno, true);
+        
+        if (!isset($alumno['Error'])) {
+            $res = true;
+        }else if (isset($alumno['Error'])){
+            $res = $AlumnoController->addAlumno($claveUnica);
+        }
+
+        if($res == true){
+            try {
+                if($claveUnica == null || $id == null || $hora == null || $fecha == null){
+                    $respuesta = ['Error' => 'Consulta invalida'];
                     return json_encode($respuesta);
-                } else {
-                    $respuesta = ['Cita NO agendada'];
-                    return json_encode($respuesta); 
-                }
-            }else if(strlen($id) == 18){
-                $cita = Cita::where('clavePsicologoExterno', $id)
-                ->where('fecha', $fecha)
-                ->where('hora', $hora)
-                ->where('estadoCita', 7)
-                ->update([
-                    'claveUnica' => $claveUnica,
-                    'estadoCita' => 2
-                ]);
-    
-                if($cita > 0) {
-                    $respuesta = ['Cita agendada correctamente'];
+                }else if(strlen($id) == 6){
+                    $cita = Cita::where('clavePsicologo', $id)
+                    ->where('fecha', $fecha)
+                    ->where('hora', $hora)
+                    ->where('estadoCita', 7)
+                    ->update([
+                        'claveUnica' => $claveUnica,
+                        'estadoCita' => 2
+                    ]);
+        
+                    if($cita > 0) {
+                        $respuesta = ['Cita agendada correctamente'];
+                        return json_encode($respuesta);
+                    } else {
+                        $respuesta = ['Cita NO agendada'];
+                        return json_encode($respuesta);
+                    }
+                }else if(strlen($id) == 18){
+                    $cita = Cita::where('clavePsicologoExterno', $id)
+                    ->where('fecha', $fecha)
+                    ->where('hora', $hora)
+                    ->where('estadoCita', 7)
+                    ->update([
+                        'claveUnica' => $claveUnica,
+                        'estadoCita' => 2
+                    ]);
+        
+                    if($cita > 0) {
+                        $respuesta = ['Cita agendada correctamente'];
+                        return json_encode($respuesta);
+                    } else {
+                        $respuesta = ['Cita NO agendada'];
+                        return json_encode($respuesta); 
+                    }
+                }else {
+                    $respuesta = ['Error' => 'ID incorrecto'];
                     return json_encode($respuesta);
-                } else {
-                    $respuesta = ['Cita NO agendada'];
-                    return json_encode($respuesta); 
                 }
-            }else {
-                $respuesta = ['Error' => 'ID incorrecto'];
-                return json_encode($respuesta);
+            }catch (\Exception $e){
+                $respuesta = ['Error' => 'Ocurrio un error'];
+                return json_encode($e); 
             }
-        }catch (\Exception $e){
-            $respuesta = ['Error' => 'Ocurrio un error'];
+        }else{
+            $respuesta = ['Error' => 'Alumno invalido'];
             return json_encode($respuesta); 
         }
+        
+        
     }
 
     public function createDates(Request $request){
