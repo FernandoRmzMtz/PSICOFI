@@ -22,17 +22,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private routerSubscription!: Subscription;
 
   rutas: HeaderRoute[] = [
-    { title: 'Inicio', path: '/inicio', tipoUsuario: ['Alumno', 'Psicologo', 'Administrador'] },
+    { title: 'Inicio', path: '/inicio', tipoUsuario: ['Alumno', 'Psicologo', 'Administrador', 'Psicologo externo'] },
     { title: 'Agendar cita', path: '/agendar-cita', tipoUsuario: ['Alumno'] },
-    { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
-    { title: 'Reporte de citas', path: '/reporte-citas', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
-    { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
-    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
-    { title: 'Cambiar contraseña', path: '/cambiar-contraseña', tipoUsuario: ['Psicologo_externo'] },
+    { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
+    { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
+    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
+    { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo externo'] },
     // { title: 'Añadir psicólogo', path: '/añadir-Psicologo', tipoUsuario: ['Administrador'] },
     { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'] },
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
-    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo_externo', 'Administrador'], action: this.logout.bind(this)}
+    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador'], action: this.logout.bind(this)}
   ];
 
   constructor(private loginService: LoginService, private router: Router) {}

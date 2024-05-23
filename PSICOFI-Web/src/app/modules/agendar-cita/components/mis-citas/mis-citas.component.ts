@@ -13,11 +13,18 @@ export class MisCitasComponent implements OnInit {
   tieneCita: boolean = false;
   citasProceso: any[] = [];
   historialCitas: any[] = [];
+  idCitaActual: number | null = null;
 
-  constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { }
+  constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { 
+    this.citasProceso = []; 
+    this.idCitaActual = null; 
+  }
 
   ngOnInit(): void {
     this.obtenerDatosAlumno();
+    this.agendarCitaService.citaAgendada$.subscribe(() => {
+      this.obtenerCitasProceso();
+    });
   }
 
   obtenerDatosAlumno(): void {
@@ -25,10 +32,14 @@ export class MisCitasComponent implements OnInit {
     const id = parseInt(clave, 10);
     this.agendarCitaService.obtenerAlumno(id).subscribe(
       (data) => {
-        this.claveUnica = data.claveUnica;
-        this.nombre = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
-        this.obtenerHistorialCitas();
-        this.obtenerCitasProceso();
+        if (data) {
+          this.claveUnica = data.claveUnica;
+          this.nombre = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
+          this.obtenerHistorialCitas();
+          this.obtenerCitasProceso();
+        } else {
+          console.error('No se encontraron datos del alumno');
+        }
       },
       (error) => {
         console.error('Error al obtener los datos del alumno:', error);
@@ -52,7 +63,12 @@ export class MisCitasComponent implements OnInit {
     const idAlumno = parseInt(this.claveUnica, 10);
     this.agendarCitaService.obtenerCitasProceso(idAlumno).subscribe(
       (data: any) => {
-        if (data) {
+        if (Array.isArray(data) && data[0] === 'Sin cita agendada') {
+          this.tieneCita = false;
+          console.log('No hay citas en proceso.');
+        } else if (data) {
+          this.citasProceso = [];
+          this.idCitaActual = data.idCita;
           this.citasProceso.push({
             fecha: data.fecha,
             hora: data.hora,
@@ -66,8 +82,36 @@ export class MisCitasComponent implements OnInit {
       }
     );
   }
+  
 
   cancelarCita(): void {
-    this.tieneCita = false;
+    if (this.idCitaActual !== null) {
+        this.agendarCitaService.cancelarCita(this.idCitaActual, this.claveUnica).subscribe(
+            (response) => {
+                console.log('Cita cancelada:', response);
+                this.tieneCita = false;
+                this.citasProceso = [];
+                this.idCitaActual = null;
+                this.agendarCitaService.setCitaAgendada(false);
+                this.agendarCitaService.emitirCitaCancelada();
+            },
+            (error) => {
+                console.error('Error al cancelar la cita:', error);
+            }
+        );
+    }
+}
+
+  confirmarCita(): void {
+    if (this.idCitaActual !== null) {
+      this.agendarCitaService.confirmarCita(this.idCitaActual, this.claveUnica).subscribe(
+        (response) => {
+          console.log('Cita confirmada:', response);
+        },
+        (error) => {
+          console.error('Error al confirmar la cita:', error);
+        }
+      );
+    }
   }
 }

@@ -21,6 +21,8 @@ export class BannerComponent {
         return '/gestion-agenda';
       case 'Administrador':
         return '/gestion-psicologos';
+      case 'Psicologo externo':
+        return '/gestion-agenda';
       default:
         return '/login';
     }
@@ -31,6 +33,8 @@ export class BannerComponent {
       case 'Alumno':
         return 'Agendar cita';
       case 'Psicologo':
+        return 'Gestionar agenda';
+      case 'Psicologo externo':
         return 'Gestionar agenda';
       case 'Administrador':
         return 'Gestionar psicólogos';

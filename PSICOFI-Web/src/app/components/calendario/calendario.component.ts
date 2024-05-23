@@ -3,6 +3,7 @@ import { CitasService, Cita } from '../servicios/citas.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoginService } from 'src/app/modules/login/services/login.services';
+import { AgendarCita } from 'src/app/modules/agendar-cita/services/agendar-cita.service';
 
 @Component({
   selector: 'app-calendario',
@@ -21,7 +22,8 @@ export class CalendarioComponent implements OnInit {
   constructor(
     private el: ElementRef,
     private citasService: CitasService,
-    private LoginService: LoginService
+    private LoginService: LoginService,
+    private agendarCitaService: AgendarCita
   ) {
     this.form = new FormGroup({
       diasSeleccionados: new FormGroup(this.generarDiasControl()),
@@ -37,15 +39,14 @@ export class CalendarioComponent implements OnInit {
   diasDelMes: Date[] = [];
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  // tipoUsuario: 'alumno' | 'psicologo' = 'alumno';
   diaSeleccionado: Date = new Date();
-  psicologoSeleccionadoId = 388721;
+  psicologoSeleccionadoId = 121642;
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
   horariosDelDiaSeleccionado: string[] = [];
   diaSeleccionadoElemento: HTMLElement | null = null;
   horaSeleccionada: string = "";
   citaAgendada: boolean = false;
-  usuarioActualId: number = 324109; //cambiar referencias por el auth
+  usuarioActualId: number = 499453; //cambiar referencias por el auth
   citasAgendadas: Cita[] = [];
   citasDisponibles: Cita[] = [];
   mostrarDetallesCita: number | null = null;
@@ -56,16 +57,31 @@ export class CalendarioComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.agendarCitaService.getCitaAgendada().subscribe((citaAgendada: boolean) => {
+      this.citaAgendada = citaAgendada;
+      if (this.citaAgendada) {
+        this.cargarCitas(); 
+      }
+    });
+
+    this.agendarCitaService.getCitaCancelada().subscribe(() => {
+      this.cargarCitas();
+    });
     this.tipoUsuarioSubscription = this.LoginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
       this.tipoUsuario = tipoUsuario;
     });
-
+  
     if (this.LoginService.isAuthenticated()) {
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
     }
+  
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
+  
+    this.verificarCitaAgendada();
   }
+  
+  
 
   ngOnDestroy(): void {
     if (this.tipoUsuarioSubscription) {
@@ -101,48 +117,46 @@ export class CalendarioComponent implements OnInit {
 
   cargarCitas(): void {
     this.citasService.obtenerCitas(this.psicologoSeleccionadoId).subscribe({
-      next: (citas) => {
-        this.citas = citas;
-        if(this.tipoUsuario==='alumno' && this.citas.some(cita => cita.claveUnica === this.usuarioActualId && cita.estado === 'Asistencia sin confirmar'))
-          this.citaAgendada=true;
-        if (this.tipoUsuario === 'alumno') {
-          this.citas = this.citas.filter(cita => cita.estado === "Libre");
-        }
-
-        this.citas.forEach(cita => {
-          if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
-            const fecha = cita.fecha;
-            if (!this.disponibilidadPorDia[fecha]) {
-              this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+        next: (citas) => {
+            this.citas = citas;
+            if (this.tipoUsuario === 'Alumno') {
+                this.citas = this.citas.filter(cita => cita.estado === "Libre");
             }
-            this.disponibilidadPorDia[fecha].total++;
-            if (cita.estado === "Libre") {
-              this.disponibilidadPorDia[fecha].disponibles++;
-            }
-          }
-        });
-        this.generarDiasDelMes(this.fechaActual);
-      },
-      error: (error) => {
-        console.error('Error al cargar citas:', error);
-      },
-
+            this.disponibilidadPorDia = {};
+            this.citas.forEach(cita => {
+                if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
+                    const fecha = cita.fecha;
+                    if (!this.disponibilidadPorDia[fecha]) {
+                        this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+                    }
+                    this.disponibilidadPorDia[fecha].total++;
+                    if (cita.estado === "Libre") {
+                        this.disponibilidadPorDia[fecha].disponibles++;
+                    }
+                }
+            });
+            this.generarDiasDelMes(this.fechaActual);
+        },
+        error: (error) => {
+            console.error('Error al cargar citas:', error);
+        },
     });
   }
 
   getDisponibilidadClase(dia: Date): string {
-    const fecha = dia.toISOString().split('T')[0];
-    const disponibilidad = this.disponibilidadPorDia[fecha];
-    if (!disponibilidad) {
-      return '';
-    } else if (disponibilidad.disponibles > 3) {
-      return 'color-box-green';
-    } else if (disponibilidad.disponibles > 0) {
-      return 'color-box-yellow';
-    } else {
-      return 'color-box-red';
-    }
+      const fecha = dia.toISOString().split('T')[0];
+      const disponibilidad = this.disponibilidadPorDia[fecha];
+      if (!disponibilidad || disponibilidad.disponibles === 0) {
+          return '';
+      } else if (disponibilidad.disponibles > 3) {
+          return 'color-box-green';
+      } else if (disponibilidad.disponibles > 1) {
+          return 'color-box-yellow';
+      } else {
+          return 'color-box-red';
+      }
   }
+
 
   generarDiasDelMes(fecha: Date) {
     this.diasDelMes = [];
@@ -223,26 +237,33 @@ export class CalendarioComponent implements OnInit {
 
   confirmarCita() {
     const cita = {
-      id: '388721',
-      claveUnica: 324109,
-      fecha:  this.diaSeleccionado.toISOString().split('T')[0],  
-      hora: this.horaSeleccionada  
+        id: '121642',  // Asegúrate de que este ID sea correcto
+        claveUnica: this.usuarioActualId,  // Usar usuarioActualId en lugar de valor estático
+        fecha: this.diaSeleccionado.toISOString().split('T')[0],  
+        hora: this.horaSeleccionada  
     };
+
+    console.log('Datos de la cita a agendar:', cita); 
+
     this.citasService.agendarCita(cita).subscribe(
-      resultado => {
-        if (resultado === 1) {
-          console.log('Cita agendada con éxito.');
-        } else {
-          console.error('Error al intentar agendar la cita.');
+        resultado => {
+            if (resultado && resultado[0] === 'Cita agendada correctamente') {
+                console.log('Cita agendada con éxito.');
+                this.citaAgendada = true;
+                this.agendarCitaService.emitirCitaAgendada();
+            } else {
+                console.error('Error al intentar agendar la cita.');
+            }
+        },
+        error => {
+            console.error('Error al agendar la cita:', error);
         }
-      },
-      error => {
-        console.error('Error al agendar la cita:', error);
-      }
     );
-      this.cerrarModalConfirmacion();
-  }
-  
+
+    this.cerrarModalConfirmacion();
+}
+
+
   agregarHoraDisponible(): void {
     const nuevaHora = `${this.horasDisponibles.length + 13}:00`;
     this.horasDisponibles.push(nuevaHora);
@@ -304,4 +325,22 @@ export class CalendarioComponent implements OnInit {
   cancelarCita(cita: Cita) {
     this.cerrarModalDetalles();
   }
+
+  verificarCitaAgendada(): void {
+    if (this.tipoUsuario === 'Alumno') {
+      const idAlumno = this.usuarioActualId;
+      this.agendarCitaService.obtenerCitasProceso(idAlumno).subscribe((data: any) => {
+        if (Array.isArray(data) && data[0] === 'Sin cita agendada') {
+          this.agendarCitaService.setCitaAgendada(false);
+        } else if (data) {
+          this.agendarCitaService.setCitaAgendada(true);
+        }
+      },
+      (error) => {
+        console.error('Error al verificar las citas en proceso:', error);
+      });
+    }
+  }
+  
+  
 }
