@@ -84,7 +84,7 @@ class AuthController extends Controller
 
             if($alumno || $psicologo || $administrador){
                 $token = csrf_token();
-                if($alumno['contrasena'] != null){
+                if($alumno){
                     $jsonArray = [
                         'id' => $alumno->claveUnica,
                         'nombre' => $alumno->nombres . ' ' . $alumno->apellidoPaterno . ' ' . $alumno->apellidoMaterno,
