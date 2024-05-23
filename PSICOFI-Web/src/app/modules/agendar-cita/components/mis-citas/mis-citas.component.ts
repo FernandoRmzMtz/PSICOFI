@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { AgendarCita } from '../../services/agendar-cita.service';
 import { LoginService } from 'src/app/modules/login/services/login.services';
@@ -14,10 +15,13 @@ export class MisCitasComponent implements OnInit {
   citasProceso: any[] = [];
   historialCitas: any[] = [];
   idCitaActual: number | null = null;
+  citaConfirmada: boolean = false;
+  visible: boolean = false;
+  success_msg: string = '';
 
-  constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { 
-    this.citasProceso = []; 
-    this.idCitaActual = null; 
+  constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) {
+    this.citasProceso = [];
+    this.idCitaActual = null;
   }
 
   ngOnInit(): void {
@@ -75,6 +79,7 @@ export class MisCitasComponent implements OnInit {
             psicologo: `${data['Nombres psicologo']} ${data['Apellido Pat psicologo']} ${data['Apellido Mat psicologo']}`
           });
           this.tieneCita = true;
+          this.citaConfirmada = data.estado === 'Asistencia confirmada';
         }
       },
       (error) => {
@@ -82,31 +87,40 @@ export class MisCitasComponent implements OnInit {
       }
     );
   }
-  
 
   cancelarCita(): void {
     if (this.idCitaActual !== null) {
-        this.agendarCitaService.cancelarCita(this.idCitaActual, this.claveUnica).subscribe(
-            (response) => {
-                console.log('Cita cancelada:', response);
-                this.tieneCita = false;
-                this.citasProceso = [];
-                this.idCitaActual = null;
-                this.agendarCitaService.setCitaAgendada(false);
-                this.agendarCitaService.emitirCitaCancelada();
-            },
-            (error) => {
-                console.error('Error al cancelar la cita:', error);
-            }
-        );
+      this.agendarCitaService.cancelarCita(this.idCitaActual, this.claveUnica).subscribe(
+        (response) => {
+          console.log('Cita cancelada:', response);
+          this.visible = true;
+            this.success_msg = 'Cita cancelada con éxito.'
+            setTimeout(() => {
+              this.visible = false;
+            }, 3000);
+          this.tieneCita = false;
+          this.citasProceso = [];
+          this.idCitaActual = null;
+          this.agendarCitaService.setCitaAgendada(false);
+          this.agendarCitaService.emitirCitaCancelada();
+        },
+        (error) => {
+          console.error('Error al cancelar la cita:', error);
+        }
+      );
     }
-}
-
+  }
   confirmarCita(): void {
     if (this.idCitaActual !== null) {
       this.agendarCitaService.confirmarCita(this.idCitaActual, this.claveUnica).subscribe(
         (response) => {
           console.log('Cita confirmada:', response);
+          this.visible = true;
+            this.success_msg = 'Cita confirmada con éxito.'
+            setTimeout(() => {
+              this.visible = false;
+            }, 3000);
+          this.citaConfirmada = true;
         },
         (error) => {
           console.error('Error al confirmar la cita:', error);
@@ -114,4 +128,6 @@ export class MisCitasComponent implements OnInit {
       );
     }
   }
+
 }
+

@@ -8,10 +8,10 @@ import { LoginService } from 'src/app/modules/login/services/login.services';
   styleUrls: ['./agendar-cita.component.css']
 })
 export class AgendarCitaComponent implements OnInit {
-  claveUnica: string = ''; 
-  nombre: string = ''; 
-  psicologos: string[] = []; 
-
+  claveUnica: string = '';
+  nombre: string = '';
+  psicologos: { id: any; nombre: string; }[] = [];
+  psicologoSeleccionadoId: string = '';
   constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { }
 
   ngOnInit(): void {
@@ -20,7 +20,7 @@ export class AgendarCitaComponent implements OnInit {
   }
 
   obtenerDatosAlumno(): void {
-    const clave = this.loginService.getClave();  
+    const clave = this.loginService.getClave();
     const id = parseInt(clave, 10);
 
     this.agendarCitaService.obtenerAlumno(id).subscribe(
@@ -38,11 +38,23 @@ export class AgendarCitaComponent implements OnInit {
     this.agendarCitaService.obtenerPsicologos().subscribe(
       (data) => {
         console.log('Datos de psicólogos:', data);
-        this.psicologos = data.map((psicologo: any) => `${psicologo.nombres} ${psicologo.apellidoPaterno} ${psicologo.apellidoMaterno}`);
+        this.psicologos = Object.values(data).map((psicologo: any) => {
+          return { id: psicologo.identificador, nombre: `${psicologo.nombres} ${psicologo.apellidoPaterno} ${psicologo.apellidoMaterno}` };
+        });
       },
       (error) => {
         console.error('Error al obtener los psicólogos:', error);
       }
     );
+  }
+  
+
+  seleccionarPsicologo(event: any): void {
+    if (event && event.target) {
+      const selectedValue = (event.target as HTMLSelectElement).value;
+      if (selectedValue) {
+        this.psicologoSeleccionadoId = selectedValue;
+      }
+    }
   }
 }

@@ -16,9 +16,10 @@
                             <th scope="row" class="text-left text-white">Psicólogo:</th>
                             <td>
                                 <!-- Desplegable -->
-                                <select class="form-control">
-                                    <option *ngFor="let psicologo of psicologos" [value]="psicologo">{{psicologo}}</option>
-                                </select>
+                                <select class="form-control" (change)="seleccionarPsicologo($event)">
+                                    <option *ngFor="let psicologo of psicologos" [value]="psicologo.id">{{psicologo.nombre}}</option>
+                                  </select>
+                                                                                                                       
                             </td>
                         </tr>
                     </tbody>
@@ -33,5 +34,5 @@
             </div>
         </div>
     </div>
-    <app-calendario></app-calendario>
+    <app-calendario [psicologoId]="psicologoSeleccionadoId"></app-calendario>
 </div>

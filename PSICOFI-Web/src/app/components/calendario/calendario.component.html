@@ -1,3 +1,4 @@
+
 <div class="container my-5" style="margin-bottom: 100px!important;">
   <div class="row justify-content-center">
     <!-- Simbología -->
@@ -44,7 +45,7 @@
         <!-- Esta parte permanece visible solo para alumnos -->
         <div *ngIf="tipoUsuario === 'Alumno'">
           <div *ngIf="citaAgendada">
-            <h4>Ya tienes una cita agendada, verificala en "Mis citas"</h4>
+            <h4>Ya tienes una cita agendada, verificala en "Mis citas". Es necesario que confirmes la asistencia en dicha sección con un máximo de 48 horas antes de la cita.</h4>
           </div>
           <div *ngIf="horariosDelDiaSeleccionado.length > 0 && !citaAgendada">
             <h4>Horas disponibles</h4>
@@ -198,6 +199,14 @@
   </div>
 </div>
 
+<div class="alert alert-success fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="visible" style="z-index: 1000;">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+    <use xlink:href="#check-circle-fill"/>
+  </svg>
+  <div>
+    {{success_msg}}  
+  </div>
+</div>
 
 <!-- Modal para Detalles de la Cita Agendada -->
 <div class="modal-backdrop" *ngIf="mostrarModalDetalles">

@@ -4,11 +4,12 @@ import { Observable } from 'rxjs';
 
 export interface Cita {
   idCita: number;
-  fecha: string;
+  clavePsicologo: string;
+  clavePsicologoExterno?: string;
   hora: string;
+  fecha: string;
+  estado: string;
   claveUnica: number;
-  estado: string; 
-  clavePsicologo: number;
 }
 
 @Injectable({
@@ -17,9 +18,9 @@ export interface Cita {
 export class CitasService {
 
   constructor(private http: HttpClient) {}
-
-  obtenerCitas(id: number): Observable<Cita[]> {
-    const params = new HttpParams().set('id', id.toString());
+  
+  obtenerCitas(id: string): Observable<Cita[]> {
+    const params = new HttpParams().set('id', id);
     return this.http.get<Cita[]>('http://psicofi-api.test/cita/getDates', { params: params });
   }
 

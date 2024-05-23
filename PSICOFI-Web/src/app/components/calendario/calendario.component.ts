@@ -1,4 +1,5 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+
+import { Component, OnInit, ElementRef, Input, SimpleChanges } from '@angular/core';
 import { CitasService, Cita } from '../servicios/citas.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -11,13 +12,15 @@ import { AgendarCita } from 'src/app/modules/agendar-cita/services/agendar-cita.
   styleUrls: ['./calendario.component.css']
 })
 export class CalendarioComponent implements OnInit {
+  @Input() psicologoId: string = '0';
+
   citas: Cita[] = [];
   form: FormGroup;
   tipoUsuario: string = '';
   private tipoUsuarioSubscription!: Subscription;
-
+  visible: boolean = false;
   horasDisponibles: string[] = this.generarHoras();
-
+  success_msg:string= '';
 
   constructor(
     private el: ElementRef,
@@ -40,13 +43,13 @@ export class CalendarioComponent implements OnInit {
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
   diaSeleccionado: Date = new Date();
-  psicologoSeleccionadoId = 121642;
+  //psicologoSeleccionadoId = 121642;
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
   horariosDelDiaSeleccionado: string[] = [];
   diaSeleccionadoElemento: HTMLElement | null = null;
   horaSeleccionada: string = "";
   citaAgendada: boolean = false;
-  usuarioActualId: number = 499453; //cambiar referencias por el auth
+  usuarioActualId: number | null = null;
   citasAgendadas: Cita[] = [];
   citasDisponibles: Cita[] = [];
   mostrarDetallesCita: number | null = null;
@@ -60,28 +63,41 @@ export class CalendarioComponent implements OnInit {
     this.agendarCitaService.getCitaAgendada().subscribe((citaAgendada: boolean) => {
       this.citaAgendada = citaAgendada;
       if (this.citaAgendada) {
-        this.cargarCitas(); 
+        this.cargarCitas();
       }
     });
 
     this.agendarCitaService.getCitaCancelada().subscribe(() => {
       this.cargarCitas();
     });
+
     this.tipoUsuarioSubscription = this.LoginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
       this.tipoUsuario = tipoUsuario;
+      if (this.LoginService.isAuthenticated()) {
+        const claveUnica = this.LoginService.getClave();
+        this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
+      }
     });
-  
+
     if (this.LoginService.isAuthenticated()) {
+      const claveUnica = this.LoginService.getClave();
+      this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
     }
-  
+    console.log("this.psicologoId");
+    console.log(this.psicologoId);
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
-  
+
     this.verificarCitaAgendada();
   }
   
-  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['psicologoId'] && !changes['psicologoId'].firstChange) {
+      this.cargarCitas();
+    }
+  }
+
 
   ngOnDestroy(): void {
     if (this.tipoUsuarioSubscription) {
@@ -114,47 +130,48 @@ export class CalendarioComponent implements OnInit {
       this.horariosDelDiaSeleccionado = [];
     }
   }
-
   cargarCitas(): void {
-    this.citasService.obtenerCitas(this.psicologoSeleccionadoId).subscribe({
-        next: (citas) => {
-            this.citas = citas;
-            if (this.tipoUsuario === 'Alumno') {
-                this.citas = this.citas.filter(cita => cita.estado === "Libre");
+    console.log("this.psicologoId cargar");
+    console.log(this.psicologoId);
+    this.citasService.obtenerCitas(this.psicologoId).subscribe({
+      next: (citas) => {
+        this.citas = citas;
+        if (this.tipoUsuario === 'Alumno') {
+          this.citas = this.citas.filter(cita => cita.estado === "Libre");
+        }
+        this.disponibilidadPorDia = {};
+        this.citas.forEach(cita => {
+          if (String(cita.clavePsicologo) === this.psicologoId || String(cita.clavePsicologoExterno) === this.psicologoId) {
+            const fecha = cita.fecha;
+            if (!this.disponibilidadPorDia[fecha]) {
+              this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
             }
-            this.disponibilidadPorDia = {};
-            this.citas.forEach(cita => {
-                if (cita.clavePsicologo === this.psicologoSeleccionadoId) {
-                    const fecha = cita.fecha;
-                    if (!this.disponibilidadPorDia[fecha]) {
-                        this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
-                    }
-                    this.disponibilidadPorDia[fecha].total++;
-                    if (cita.estado === "Libre") {
-                        this.disponibilidadPorDia[fecha].disponibles++;
-                    }
-                }
-            });
-            this.generarDiasDelMes(this.fechaActual);
-        },
-        error: (error) => {
-            console.error('Error al cargar citas:', error);
-        },
+            this.disponibilidadPorDia[fecha].total++;
+            if (cita.estado === "Libre") {
+              this.disponibilidadPorDia[fecha].disponibles++;
+            }
+          }
+        });
+        this.generarDiasDelMes(this.fechaActual);
+      },
+      error: (error) => {
+        console.error('Error al cargar citas:', error);
+      },
     });
   }
 
   getDisponibilidadClase(dia: Date): string {
-      const fecha = dia.toISOString().split('T')[0];
-      const disponibilidad = this.disponibilidadPorDia[fecha];
-      if (!disponibilidad || disponibilidad.disponibles === 0) {
-          return '';
-      } else if (disponibilidad.disponibles > 3) {
-          return 'color-box-green';
-      } else if (disponibilidad.disponibles > 1) {
-          return 'color-box-yellow';
-      } else {
-          return 'color-box-red';
-      }
+    const fecha = dia.toISOString().split('T')[0];
+    const disponibilidad = this.disponibilidadPorDia[fecha];
+    if (!disponibilidad || disponibilidad.disponibles === 0) {
+      return '';
+    } else if (disponibilidad.disponibles > 3) {
+      return 'color-box-green';
+    } else if (disponibilidad.disponibles > 1) {
+      return 'color-box-yellow';
+    } else {
+      return 'color-box-red';
+    }
   }
 
 
@@ -215,7 +232,7 @@ export class CalendarioComponent implements OnInit {
     ).map(cita => cita.hora);
     const citasDelDia = this.citas.filter(cita =>
       cita.hora.startsWith(fechaSeleccionada) &&
-      cita.clavePsicologo === this.psicologoSeleccionadoId);
+      cita.clavePsicologo === this.psicologoId);
     this.citasAgendadas = citasDelDia.filter(cita => cita.estado === "Asistencia sin confirmar");
     this.citasDisponibles = citasDelDia.filter(cita => cita.estado === "Libre");
     if (this.diaSeleccionadoElemento) {
@@ -236,32 +253,41 @@ export class CalendarioComponent implements OnInit {
   }
 
   confirmarCita() {
-    const cita = {
-        id: '121642',  // Asegúrate de que este ID sea correcto
-        claveUnica: this.usuarioActualId,  // Usar usuarioActualId en lugar de valor estático
-        fecha: this.diaSeleccionado.toISOString().split('T')[0],  
-        hora: this.horaSeleccionada  
-    };
+    if (this.usuarioActualId !== null) {
+      const cita = {
+        id: this.psicologoId,
+        claveUnica: this.usuarioActualId, 
+        fecha: this.diaSeleccionado.toISOString().split('T')[0],
+        hora: this.horaSeleccionada
+      };
 
-    console.log('Datos de la cita a agendar:', cita); 
+      console.log('Datos de la cita a agendar:', cita);
 
-    this.citasService.agendarCita(cita).subscribe(
+      this.citasService.agendarCita(cita).subscribe(
         resultado => {
-            if (resultado && resultado[0] === 'Cita agendada correctamente') {
-                console.log('Cita agendada con éxito.');
-                this.citaAgendada = true;
-                this.agendarCitaService.emitirCitaAgendada();
-            } else {
-                console.error('Error al intentar agendar la cita.');
-            }
+          if (resultado && resultado[0] === 'Cita agendada correctamente') {
+            this.visible = true;
+            this.success_msg = 'Cita agendada con éxito.'
+            setTimeout(() => {
+              this.visible = false;
+            }, 3000);
+            this.citaAgendada = true;
+            this.agendarCitaService.emitirCitaAgendada();
+          } else {
+            console.error('Error al intentar agendar la cita.');
+          }
         },
         error => {
-            console.error('Error al agendar la cita:', error);
+          console.error('Error al agendar la cita:', error);
         }
-    );
+      );
+    } else {
+      console.error('El ID del usuario es null. No se puede agendar la cita.');
+    }
 
     this.cerrarModalConfirmacion();
-}
+  }
+
 
 
   agregarHoraDisponible(): void {
@@ -328,19 +354,22 @@ export class CalendarioComponent implements OnInit {
 
   verificarCitaAgendada(): void {
     if (this.tipoUsuario === 'Alumno') {
-      const idAlumno = this.usuarioActualId;
-      this.agendarCitaService.obtenerCitasProceso(idAlumno).subscribe((data: any) => {
-        if (Array.isArray(data) && data[0] === 'Sin cita agendada') {
-          this.agendarCitaService.setCitaAgendada(false);
-        } else if (data) {
-          this.agendarCitaService.setCitaAgendada(true);
-        }
-      },
-      (error) => {
-        console.error('Error al verificar las citas en proceso:', error);
-      });
+      if (this.usuarioActualId !== null) { 
+        const idAlumno = this.usuarioActualId;
+        this.agendarCitaService.obtenerCitasProceso(idAlumno).subscribe((data: any) => {
+          if (Array.isArray(data) && data[0] === 'Sin cita agendada') {
+            this.agendarCitaService.setCitaAgendada(false);
+          } else if (data) {
+            this.agendarCitaService.setCitaAgendada(true);
+          }
+        },
+          (error) => {
+            console.error('Error al verificar las citas en proceso:', error);
+          });
+      } else {
+        console.error('El ID del usuario es null. No se puede verificar las citas en proceso.');
+      }
     }
   }
-  
-  
 }
+
