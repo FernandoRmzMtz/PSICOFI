@@ -63,7 +63,3 @@ export class CitasService {
     return this.http.post<any>(url, data, { headers });
   }
 }
-
-
-
-
