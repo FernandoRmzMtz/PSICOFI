@@ -23,14 +23,14 @@ export class CitasService {
     return this.http.get<Cita[]>('http://psicofi-api.test/cita/getDates', { params: params });
   }
 
-  agendarCita(cita: { id: string; claveUnica: number; fecha: string; hora: string; }): Observable<number> {
+  agendarCita(cita: { id: string; claveUnica: number; fecha: string; hora: string; }): Observable<any[]> {
     const url = 'http://psicofi-api.test/cita/scheduleDate';
     const token = localStorage.getItem('auth_token'); 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': token || ''
     });
-    return this.http.put<number>(url, cita, { headers });
+    return this.http.put<any[]>(url, cita, { headers });
   }
 
   crearCitas(data: { id: string, fecha: string, horas: string[] }): Observable<any> {
