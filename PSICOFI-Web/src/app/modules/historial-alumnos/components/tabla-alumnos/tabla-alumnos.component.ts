@@ -21,7 +21,7 @@ export class TablaAlumnosComponent implements OnInit {
 
   ngOnInit() {
     this.histo.getPacientes().subscribe(data => {
-      this._pacientes = data;
+      this._pacientes = Array.isArray(data) ? data : [];
       this.filteredPacientes = [...this._pacientes];
     });
   }
@@ -32,7 +32,7 @@ export class TablaAlumnosComponent implements OnInit {
 
   public buscarChange(): void {
     const filterValue = this.inputBuscar.toLowerCase();
-    this.filteredPacientes = this.pacientes.filter(clave =>
+    this.filteredPacientes = this._pacientes.filter(clave =>
       clave.toString().includes(filterValue)
     );
   }

@@ -1,52 +1,57 @@
 <div class="container">
     <div class="row">
-        <div class="col-5">
-            <img src="assets/logo-uaslp_blue.png" alt="logo-UASLP" />
-        </div>
-        <div class="col-1">
-            <hr class="vr mx-3" style="height: 50px; color: #23488C">
-        </div>
-        <div class="col-5">
-            <img src="assets/logo-fi_blue.png" alt="logo-FI" />
-        </div>
+      <div class="col-5">
+        <img src="assets/logo-uaslp_blue.png" alt="logo-UASLP" />
+      </div>
+      <div class="col-1">
+        <hr class="vr mx-3" style="height: 50px; color: #23488C">
+      </div>
+      <div class="col-5">
+        <img src="assets/logo-fi_blue.png" alt="logo-FI" />
+      </div>
     </div>
     <h2 class="text-center mt-4">Departamento de Atenci&oacute;n Psicol&oacute;gica</h2>
     <hr style="color:#23488C;">
     <div class="container">
-        <form (ngSubmit)="onSubmit()" #loginFormulario="ngForm" novalidate>
-            <div class="mb-3">
-                <label for="" class="form-label">Clave &uacute;nica</label>
-                <input
-                    type="text"
-                    class="form-control {{validarClave}}"
-                    name="cvunica"
-                    id="cvunica"
-                    placeholder="Clave unica a 6 d&iacute;gitos"
-                    [(ngModel)] = "cvunica"
-                    (ngModelChange)="onInputChange()"
-                    required
-                />
-            </div>
-            <div class="mb-3">
-                <label for="" class="form-label">Contrase&ntilde;a</label>
-                <input
-                    type="password"
-                    class="form-control {{validarContrasena}}"
-                    name="contrasena"
-                    id="contrasena"
-                    placeholder="Contrase&ntilde;a"
-                    [(ngModel)] = "contrasena"
-                    (ngModelChange)="onInputChange()"
-                    required
-                />
-            </div>
-            <button
-                type="submit"
-                class="btn btn-primary my-3 w-100"
-            >
-                Iniciar Sesi&oacute;n
-            </button>
-        </form>
-        <p>¿Eres psic&oacute;logo externo? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia sesi&oacute;n aqu&iacute;</b></span></p>
+      <form (ngSubmit)="onSubmit()" #loginFormulario="ngForm" novalidate>
+        <div class="mb-3">
+          <label for="" class="form-label">Clave &uacute;nica</label>
+          <input
+            type="text"
+            class="form-control {{validarClave}}"
+            name="cvunica"
+            id="cvunica"
+            placeholder="Clave unica a 6 d&iacute;gitos"
+            [(ngModel)]="cvunica"
+            (ngModelChange)="onInputChange()"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Contrase&ntilde;a</label>
+          <input
+            type="password"
+            class="form-control {{validarContrasena}}"
+            name="contrasena"
+            id="contrasena"
+            placeholder="Contrase&ntilde;a"
+            [(ngModel)]="contrasena"
+            (ngModelChange)="onInputChange()"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary my-3 w-100"
+        >
+          Iniciar Sesi&oacute;n
+        </button>
+      </form>
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+      <p>¿Eres psic&oacute;logo externo? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia sesi&oacute;n aqu&iacute;</b></span></p>
     </div>
-</div>
+  </div>
+  
