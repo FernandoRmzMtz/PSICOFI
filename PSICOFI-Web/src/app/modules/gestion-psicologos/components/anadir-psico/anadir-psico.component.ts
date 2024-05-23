@@ -62,6 +62,7 @@ export class AnadirPsicoComponent {
     setTimeout(() => {
       this.visible = false;
     }, 3000);
+
   }
 
   public registraPsicologoInterno(psicologo: any): void {
