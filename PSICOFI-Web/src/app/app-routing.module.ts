@@ -9,6 +9,7 @@ import { GestionPsicologosPage } from './modules/gestion-psicologos/gestion-psic
 import { AgendarCitaPage } from './modules/agendar-cita/agendar-cita.page';
 import { PaginaInicioPage } from './modules/pagina-inicio/pagina-inicio.page';
 import { CambioContrasenaPage } from './modules/cambio-contrasena/cambio-contrasena.page';
+import { CambioContrasenaModule } from './modules/cambio-contrasena/cambio-contrasena.module';
 import { GestionAgendaPage } from './modules/gestion-agenda/gestion-agenda.page';
 import { HistorialAlumnosPage } from './modules/historial-alumnos/historial-alumnos.page';
 import { HistorialAlumnosModule } from './modules/historial-alumnos/historial-alumnos.module';

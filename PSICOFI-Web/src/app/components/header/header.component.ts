@@ -3,6 +3,7 @@ import { LoginService } from 'src/app/modules/login/services/login.services';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { HistorialAlumnosService } from 'src/app/modules/historial-alumnos/services/historial-alumnos.service';
 
 interface HeaderRoute {
   title: string;
@@ -28,8 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
     { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
     { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo externo'] },
-    // { title: 'Añadir psicólogo', path: '/añadir-Psicologo', tipoUsuario: ['Administrador'] },
-    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'] },
+    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'], action: this.resetGestion.bind(this) },
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
     { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador'], action: this.logout.bind(this)}
   ];
@@ -82,5 +82,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate([ruta.path]);  // Navegar a la ruta especificada si no hay acción
     }
+  }
+
+  resetAlumnosAtendidos(): void {
+    window.location.reload();  
+  }
+
+  resetGestion():void {
+    //Reload page
+    window.location.reload();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Input, Output, OnInit } from '@angular/core';
 import { HistorialAlumnosService } from '../../services/historial-alumnos.service'
 
 @Component({
@@ -6,14 +6,34 @@ import { HistorialAlumnosService } from '../../services/historial-alumnos.servic
   templateUrl: './tabla-alumnos.component.html',
   styleUrls: ['./tabla-alumnos.component.css']
 })
-export class TablaAlumnosComponent {
+export class TablaAlumnosComponent implements OnInit {
+  public filteredPacientes: number[] = [];
+  private _pacientes: number[] = [];
 
   @Input()
-  public pacientes=[];
+  public pacientes: number[] = [];  
 
-  constructor(private histo: HistorialAlumnosService){}
+  public inputBuscar: string = '';
+
+  constructor(private histo: HistorialAlumnosService) {
+    this.filteredPacientes = [...this.pacientes]; 
+  }
+
+  ngOnInit() {
+    this.histo.getPacientes().subscribe(data => {
+      this._pacientes = data;
+      this.filteredPacientes = [...this._pacientes];
+    });
+  }
 
   public verAlumnoAtendido(clave: number): void {
     this.histo.verAlumno(clave);
+  }
+
+  public buscarChange(): void {
+    const filterValue = this.inputBuscar.toLowerCase();
+    this.filteredPacientes = this.pacientes.filter(clave =>
+      clave.toString().includes(filterValue)
+    );
   }
 }

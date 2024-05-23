@@ -4,6 +4,8 @@ import { HistorialAlumnosPage } from './historial-alumnos.page';
 import { TablaAlumnosComponent } from './components/tabla-alumnos/tabla-alumnos.component';
 import { AlumnoAtendidoComponent } from './components/alumno-atendido/alumno-atendido.component';
 import { TablaHistorialCitasComponent } from './components/tabla-historial-citas/tabla-historial-citas.component';
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -13,7 +15,8 @@ import { TablaHistorialCitasComponent } from './components/tabla-historial-citas
     TablaHistorialCitasComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ]
 })
 export class HistorialAlumnosModule { }

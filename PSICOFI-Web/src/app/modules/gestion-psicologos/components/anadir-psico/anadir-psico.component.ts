@@ -64,6 +64,7 @@ export class AnadirPsicoComponent {
     }, 3000);
   }
 
+
   public registraPsicologoInterno(psicologo: any): void {
     this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
       (psicologo) => {
