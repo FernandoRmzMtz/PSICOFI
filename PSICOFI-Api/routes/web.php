@@ -50,6 +50,8 @@ Route::put('cita/scheduleDate',[DateController::class,'scheduleDate'])->name('ci
 
 Route::get('cita/getDates',[DateController::class,'getDates'])->name('cita.getDates');
 
+Route::get('cita/getAllDates',[DateController::class,'getAllDates'])->name('cita.getAllDates');
+
 Route::post('cita/createDates',[DateController::class,'createDates'])->name('cita.createDates');
 
 Route::post('cita/cancelDate',[DateController::class,'cancelDate'])->name('cita.cancelDate');

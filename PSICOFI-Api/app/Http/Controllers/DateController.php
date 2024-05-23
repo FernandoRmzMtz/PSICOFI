@@ -7,9 +7,52 @@ use Illuminate\Http\Request;
 use App\Models\PsicologoExterno;
 use App\Models\Psicologo;
 use Carbon\Carbon;
+use App\Mail\confirmDateMail;
+use App\Mail\cancelMail;
+use App\Mail\cancelMailPsicologo;
+use App\Mail\scheduleDateMail;
+use App\Models\Alumno;
+use Illuminate\Support\Facades\Mail;
 
 class DateController extends Controller
 {
+    public function getAllDates(Request $request){
+        $id = $request->input('id',null);
+
+        try{
+            if(strlen($id) == 18){
+                $citas = Cita::where('clavePsicologoExterno', $id)
+                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
+                ->where('cita.clavePsicologoExterno', $id)
+                ->select('idCita',
+                        'cita.clavePsicologoExterno',
+                        'cita.hora',
+                        'cita.fecha',
+                        'estadocita.estado AS estado',
+                        'cita.claveUnica',
+                )
+                ->get();
+            }else if(strlen($id) == 6){
+                $citas = Cita::where('clavePsicologo', $id)
+                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
+                ->where('cita.clavePsicologo', $id)
+                ->select('idCita',
+                        'cita.clavePsicologo',
+                        'cita.hora',
+                        'cita.fecha',
+                        'estadocita.estado AS estado',
+                        'cita.claveUnica',
+                )
+                ->get();
+            } else {
+                return response()->json(['error' => 'ID inválido'], 400);
+            }
+            return json_encode($citas);
+        }catch(\Exception $e){
+            return $e;
+        }
+    }
+
     public function getDates(Request $request){
         $id = $request->input('id',null);
 
@@ -119,6 +162,12 @@ class DateController extends Controller
         $fecha = $request->input('fecha');
         $hora = $request->input('hora');
 
+        $details = [
+            'email' => $_ENV['DESTINATARIO_CORREO'],
+            'fecha' => $fecha,
+            'hora' => $hora
+        ];
+
         $AlumnoController = app(\App\Http\Controllers\AlumnoController::class);
 
         $data = ['id' => $claveUnica];
@@ -134,6 +183,12 @@ class DateController extends Controller
         }
 
         if($res == true){
+            $alumno = Alumno::where('claveUnica', $claveUnica)
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                ->first();
+            
+            $details['name'] = $alumno->nombreCompleto;
+
             try {
                 if($claveUnica == null || $id == null || $hora == null || $fecha == null){
                     $respuesta = ['Error' => 'Consulta invalida'];
@@ -149,6 +204,14 @@ class DateController extends Controller
                     ]);
         
                     if($cita > 0) {
+                        $psicologo = Psicologo::where('claveUnica', $id)
+                            ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                            ->first();
+
+                        $details['psicologo'] = $psicologo->nombreCompleto;
+
+                        Mail::to($details['email'])->send(new scheduleDateMail($details));
+
                         $respuesta = ['Cita agendada correctamente'];
                         return json_encode($respuesta);
                     } else {
@@ -166,6 +229,14 @@ class DateController extends Controller
                     ]);
         
                     if($cita > 0) {
+                        $psicologo = PsicologoExterno::where('CURP', $id)
+                            ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                            ->first();
+
+                        $details['psicologo'] = $psicologo->nombreCompleto;
+
+                        Mail::to($details['email'])->send(new scheduleDateMail($details));
+
                         $respuesta = ['Cita agendada correctamente'];
                         return json_encode($respuesta);
                     } else {
@@ -267,6 +338,32 @@ class DateController extends Controller
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);
 
+        $citaInfo = Cita::where('idCita', $idCita)
+            ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
+            ->first();
+
+        if($citaInfo->clavePsicologo == null){
+            $psicologo = PsicologoExterno::where('CURP', $citaInfo->clavePsicologoExterno)
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                ->first();
+        }else if($citaInfo->clavePsicologoExterno == null){
+            $psicologo = Psicologo::where('claveUnica', $citaInfo->clavePsicologo)
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                ->first();
+        }
+        
+        $alumno = Alumno::where('claveUnica', $citaInfo->claveUnica)
+                    ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                    ->first();
+
+        $details = [
+            'email' => $_ENV['DESTINATARIO_CORREO'],
+            'hora' => $citaInfo->hora,
+            'fecha' => $citaInfo->fecha,
+            'name' => $alumno->nombreCompleto,
+            'psicologo' => $psicologo->nombreCompleto
+        ];
+
         try{
             if(strlen($id) == 18){
                 $cita = Cita::where('idCita', $idCita)
@@ -278,6 +375,7 @@ class DateController extends Controller
                     ->update(['estadoCita' => '6']);
 
                     if($confirm > 0){
+                        Mail::to($details['email'])->send(new cancelMailPsicologo($details));
                         $respuesta = ['Cita cancelada correctamente'];
                         return json_encode($respuesta);
                     }
@@ -287,8 +385,8 @@ class DateController extends Controller
                 }
             }else if(strlen($id) == 6){
                 $cita = Cita::where('idCita', $idCita)
-                ->where('clavePsicologo', $id)
-                ->value('estadoCita');
+                    ->where('clavePsicologo', $id)
+                    ->value('estadoCita');
 
                 if($cita == 2){
                     $confirm = Cita::where('idCita', $idCita)
@@ -296,7 +394,11 @@ class DateController extends Controller
                     ->update(['estadoCita' => '6']);
 
                     if($confirm > 0){
+                        Mail::to($details['email'])->send(new cancelMailPsicologo($details));
                         $respuesta = ['Cita cancelada correctamente'];
+                        return json_encode($respuesta);
+                    }else{
+                        $respuesta = ['Error' => 'Cita NO cancelada'];
                         return json_encode($respuesta);
                     }
                 }else{
@@ -311,6 +413,7 @@ class DateController extends Controller
                                 'claveUnica' => null]);
 
                         if($confirm > 0){
+                            Mail::to($details['email'])->send(new cancelMail($details));
                             $respuesta = ['Cita cancelada correctamente'];
                             return json_encode($respuesta);
                         }else{
@@ -336,6 +439,32 @@ class DateController extends Controller
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);
 
+        $citaInfo = Cita::where('idCita', $idCita)
+            ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
+            ->first();
+
+        if($citaInfo->clavePsicologo == null){
+            $psicologo = PsicologoExterno::where('CURP', $citaInfo->clavePsicologoExterno)
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                ->first();
+        }else if($citaInfo->clavePsicologoExterno == null){
+            $psicologo = Psicologo::where('claveUnica', $citaInfo->clavePsicologo)
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                ->first();
+        }
+        
+        $alumno = Alumno::where('claveUnica', $citaInfo->claveUnica)
+                    ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                    ->first();
+
+        $details = [
+            'email' => $_ENV['DESTINATARIO_CORREO'],
+            'hora' => $citaInfo->hora,
+            'fecha' => $citaInfo->fecha,
+            'name' => $alumno->nombreCompleto,
+            'psicologo' => $psicologo->nombreCompleto
+        ];
+
         try{
             if(strlen($id) == 6){
                 $cita = Cita::where('idCita', $idCita)
@@ -348,6 +477,7 @@ class DateController extends Controller
                     ->update(['estadoCita' => '1']);
 
                     if($confirm > 0){
+                        Mail::to($details['email'])->send(new confirmDateMail($details));
                         $respuesta = ['Cita confirmada correctamente'];
                         return json_encode($respuesta);
                     }
