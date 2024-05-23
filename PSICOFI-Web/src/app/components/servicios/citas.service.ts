@@ -32,7 +32,36 @@ export class CitasService {
     });
     return this.http.put<number>(url, cita, { headers });
   }
-  
+
+  crearCitas(data: { id: string, fecha: string, horas: string[] }): Observable<any> {
+    const url = 'http://localhost/PSICOFI-Api/public/cita/createDates';
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': token || ''
+    });
+    return this.http.post<any>(url, data, { headers });
+  }
+
+  cancelarCita(data: { idCita: number, id: string }): Observable<any> {
+    const url = 'http://localhost/PSICOFI-Api/public/cita/cancelDate';
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': token || ''
+    });
+    return this.http.post<any>(url, data, { headers });
+  }
+
+  confirmarCita(data: { idCita: number, id: string }): Observable<any> {
+    const url = 'http://localhost/PSICOFI-Api/public/cita/confirmDate';
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': token || ''
+    });
+    return this.http.post<any>(url, data, { headers });
+  }
 }
 
 
