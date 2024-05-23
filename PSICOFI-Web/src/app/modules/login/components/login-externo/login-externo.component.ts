@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class LoginExternoComponent {
   public cvunica: string = "";
   public contrasena: string = "";
+  public errorMessage: string = "";
 
   public validarContrasena: string = "";
   public validarClave: string = "";
@@ -31,8 +32,7 @@ export class LoginExternoComponent {
       this.validaUsuarioInterno();
     }
     else {
-      alert("Usuario o contraseña incorrecta");
-    }
+      this.errorMessage = "Usuario o contraseña incorrecta";    }
   }
 
   //Validación simple de formato de entrada
@@ -54,13 +54,14 @@ export class LoginExternoComponent {
       this.validarContrasena = "";
       this.validarClave = "";
     }
+    this.errorMessage = ""; 
   }
 
   public validaUsuarioInterno(): void {
     this.loginService.loginInterno(this.cvunica, this.contrasena).subscribe((data) => {
       if (data) {
         if (data.validacion == "USUARIO-INVALIDO") {
-          alert("Usuario o contraseña incorrecta");
+          this.errorMessage = "Usuario o contraseña incorrecta";
         }
         else {
           this.loginService.setToken(data.token);
@@ -71,7 +72,7 @@ export class LoginExternoComponent {
         }
 
       } else {
-        alert("Usuario o contraseña incorrecta");
+        this.errorMessage = "Usuario o contraseña incorrecta";
       }
     });
   }

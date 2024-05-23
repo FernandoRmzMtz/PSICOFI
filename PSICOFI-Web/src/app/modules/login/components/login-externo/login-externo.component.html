@@ -45,6 +45,9 @@
                 Iniciar Sesi&oacute;n
             </button>
         </form>
+        <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
         <p>¿Eres psic&oacute;logo interno? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia sesi&oacute;n aqu&iacute;</b></span></p>
     </div>
 </div>
