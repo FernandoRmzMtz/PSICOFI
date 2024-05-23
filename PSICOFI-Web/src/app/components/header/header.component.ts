@@ -31,12 +31,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo_externo'], action: this.resetAlumnosAtendidos.bind(this)},
     { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo_externo'] },
     // { title: 'Añadir psicólogo', path: '/añadir-Psicologo', tipoUsuario: ['Administrador'] },
-    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'] },
+    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'], action: this.resetGestion.bind(this) },
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
     { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo_externo', 'Administrador'], action: this.logout.bind(this)}
   ];
 
-  constructor(private loginService: LoginService, private router: Router, private alumnosHisto: HistorialAlumnosService ) {}
+  constructor(private loginService: LoginService, private router: Router) {}
 
   ngOnInit(): void {
     this.tipoUsuarioSubscription = this.loginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
@@ -87,6 +87,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   resetAlumnosAtendidos(): void {
-    this.alumnosHisto.historialTablaVisible = 1;
+    window.location.reload();  
+  }
+
+  resetGestion():void {
+    //Reload page
+    window.location.reload();
   }
 }
