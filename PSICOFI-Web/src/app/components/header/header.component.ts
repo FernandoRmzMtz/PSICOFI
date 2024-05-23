@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // { title: 'Reporte de citas', path: '/reporte-citas', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
     { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
     { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
-    { title: 'Cambiar contraseña', path: '/cambiar-contraseña', tipoUsuario: ['Psicologo_externo'] },
+    { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo_externo'] },
     // { title: 'Añadir psicólogo', path: '/añadir-Psicologo', tipoUsuario: ['Administrador'] },
     { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'] },
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
