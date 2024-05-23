@@ -43,7 +43,7 @@ export class CalendarioComponent implements OnInit {
   diasDeLaSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
   diaSeleccionado: Date = new Date();
-  //psicologoSeleccionadoId = 121642;
+  psicologo: string = '';
   disponibilidadPorDia: { [fecha: string]: { total: number, disponibles: number } } = {};
   horariosDelDiaSeleccionado: string[] = [];
   diaSeleccionadoElemento: HTMLElement | null = null;
@@ -60,6 +60,7 @@ export class CalendarioComponent implements OnInit {
 
 
   ngOnInit(): void {
+    
     this.agendarCitaService.getCitaAgendada().subscribe((citaAgendada: boolean) => {
       this.citaAgendada = citaAgendada;
       if (this.citaAgendada) {
@@ -72,7 +73,7 @@ export class CalendarioComponent implements OnInit {
     });
 
     this.tipoUsuarioSubscription = this.LoginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
-      this.tipoUsuario = tipoUsuario;
+      this.tipoUsuario = tipoUsuario;      
       if (this.LoginService.isAuthenticated()) {
         const claveUnica = this.LoginService.getClave();
         this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
@@ -84,8 +85,8 @@ export class CalendarioComponent implements OnInit {
       this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
     }
-    console.log("this.psicologoId");
-    console.log(this.psicologoId);
+
+
     this.generarDiasDelMes(this.fechaActual);
     this.cargarCitas();
 
@@ -130,15 +131,25 @@ export class CalendarioComponent implements OnInit {
       this.horariosDelDiaSeleccionado = [];
     }
   }
+  
   cargarCitas(): void {
+    console.log("Tipo");
+    console.log(this.tipoUsuario);
+
+    if(this.tipoUsuario==='Alumno')
+      this.psicologo=this.psicologoId;
+    else if ((this.tipoUsuario === 'Psicologo' ||this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) 
+      this.psicologo= this.usuarioActualId.toString();
     console.log("this.psicologoId cargar");
-    console.log(this.psicologoId);
-    this.citasService.obtenerCitas(this.psicologoId).subscribe({
+    console.log(this.psicologo);
+    this.citasService.obtenerCitas(this.psicologo).subscribe({
       next: (citas) => {
         this.citas = citas;
         if (this.tipoUsuario === 'Alumno') {
           this.citas = this.citas.filter(cita => cita.estado === "Libre");
-        }
+        }  
+        console.log("Citas total");
+        console.log(this.citas);
         this.disponibilidadPorDia = {};
         this.citas.forEach(cita => {
           if (String(cita.clavePsicologo) === this.psicologoId || String(cita.clavePsicologoExterno) === this.psicologoId) {
@@ -222,7 +233,7 @@ export class CalendarioComponent implements OnInit {
   }
 
   seleccionarDia(dia: Date, evento?: Event): void {
-    if (this.citaAgendada) return;
+    if (this.citaAgendada && this.tipoUsuario === 'Alumno') return;
     this.diaSeleccionado = dia;
     this.horaSeleccionada = "";
     const fechaSeleccionada = dia.toISOString().split('T')[0];
@@ -233,7 +244,7 @@ export class CalendarioComponent implements OnInit {
     const citasDelDia = this.citas.filter(cita =>
       cita.hora.startsWith(fechaSeleccionada) &&
       cita.clavePsicologo === this.psicologoId);
-    this.citasAgendadas = citasDelDia.filter(cita => cita.estado === "Asistencia sin confirmar");
+    this.citasAgendadas = citasDelDia.filter(cita => cita.estado === "Asistencia sin confirmar" || cita.estado === "Asistencia confirmada");
     this.citasDisponibles = citasDelDia.filter(cita => cita.estado === "Libre");
     if (this.diaSeleccionadoElemento) {
       this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');

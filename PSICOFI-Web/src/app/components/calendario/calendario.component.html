@@ -42,6 +42,8 @@
     <div class="col-md-4 mt-sm-2 p-3" *ngIf="diaSeleccionado">
       <div *ngIf="diaSeleccionado">
         <h2>{{ diaSeleccionado | date: 'EEEE, d MMMM y' }}</h2>
+
+        
         <!-- Esta parte permanece visible solo para alumnos -->
         <div *ngIf="tipoUsuario === 'Alumno'">
           <div *ngIf="citaAgendada">
