@@ -3,6 +3,7 @@ import { LoginService } from 'src/app/modules/login/services/login.services';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { HistorialAlumnosService } from 'src/app/modules/historial-alumnos/services/historial-alumnos.service';
 
 interface HeaderRoute {
   title: string;
@@ -27,7 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
     // { title: 'Reporte de citas', path: '/reporte-citas', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
     { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
-    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo_externo'] },
+    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo_externo'], action: this.resetAlumnosAtendidos.bind(this)},
     { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo_externo'] },
     // { title: 'Añadir psicólogo', path: '/añadir-Psicologo', tipoUsuario: ['Administrador'] },
     { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'] },
@@ -35,7 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo_externo', 'Administrador'], action: this.logout.bind(this)}
   ];
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router, private alumnosHisto: HistorialAlumnosService ) {}
 
   ngOnInit(): void {
     this.tipoUsuarioSubscription = this.loginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
@@ -83,5 +84,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate([ruta.path]);  // Navegar a la ruta especificada si no hay acción
     }
+  }
+
+  resetAlumnosAtendidos(): void {
+    this.alumnosHisto.historialTablaVisible = 1;
   }
 }
