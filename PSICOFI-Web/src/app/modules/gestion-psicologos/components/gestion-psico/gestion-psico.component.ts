@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { gestionPsico } from '../../services/gestion-psico.services';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-gestion-psico',
   templateUrl: './gestion-psico.component.html',
   styleUrls: ['./gestion-psico.component.css']
 })
 export class GestionPsicoComponent implements OnInit {
-  public psicologos: any = [];
-  public psicologosBackup: any = [];
+  visibleOK = false;
+  public psicologos: any[] = [];
+  public psicologosBackup: any[] = [];
   public inputBuscar = "";
   psicologo = {
     "activo": 0,
@@ -22,6 +25,10 @@ export class GestionPsicoComponent implements OnInit {
   constructor(private psico: gestionPsico) { }
 
   ngOnInit(): void {
+    this.loadPsicologos();
+  }
+
+  loadPsicologos(): void {
     this.psico.getPsicologos().subscribe(
       (data) => {
         this.psicologos = data;
@@ -34,17 +41,6 @@ export class GestionPsicoComponent implements OnInit {
   }
 
   public verPsico(clave: string): void {
-    this.psico.psicologoViendo = {
-      claveUnica: '',
-      nombres: '',
-      apellidoPaterno: '',
-      apellidoMaterno: '',
-      semestre: 0,
-      correo: '',
-      activo: 0,
-      carrera: '',
-      curp: ''
-    };
     this.psico.getPsicologoById(clave).subscribe(
       (psicologo) => {
         this.psico.psicologoViendo = psicologo;
@@ -74,7 +70,12 @@ export class GestionPsicoComponent implements OnInit {
   public GuardarEditarPsicologo(): void {
     this.psico.editarPsicologo().subscribe(
       (psicologo) => {
-        window.location.reload();
+        this.visibleOK = true;
+        setTimeout(() => {
+          this.visibleOK = false;
+        }, 3000);
+        this.loadPsicologos(); // Refresh the list of psychologists
+        this.closeModal(); // Close the modal
       },
       (error) => {
         console.error('Error al editar psicólogo:', error);
@@ -82,7 +83,7 @@ export class GestionPsicoComponent implements OnInit {
     );
   }
 
-  public buscarChange() {
+  public buscarChange(): void {
     this.psicologos = this.psicologosBackup.filter((res: any) => {
       if (typeof res.nombres === 'string') {
         return res.nombres.toLocaleLowerCase().includes(this.inputBuscar.toLocaleLowerCase());
@@ -92,4 +93,17 @@ export class GestionPsicoComponent implements OnInit {
     });
   }
 
+  private closeModal(): void {
+    const modalElement = document.getElementById('editarpsico');
+    if (modalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      } else {
+        // If modalInstance is not found, create and hide it
+        const modal = new bootstrap.Modal(modalElement);
+        modal.hide();
+      }
+    }
+  }
 }

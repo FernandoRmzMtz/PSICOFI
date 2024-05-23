@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CambioContrasenaPage } from './cambio-contrasena.page';
-
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -9,7 +9,8 @@ import { CambioContrasenaPage } from './cambio-contrasena.page';
     CambioContrasenaPage
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ]
 })
 export class CambioContrasenaModule { }

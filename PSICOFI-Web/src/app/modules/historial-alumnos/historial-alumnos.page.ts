@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { HistorialAlumnosService } from './services/historial-alumnos.service';
+
+
 @Component({
   selector: 'app-historial-alumnos',
   templateUrl: './historial-alumnos.page.html',
