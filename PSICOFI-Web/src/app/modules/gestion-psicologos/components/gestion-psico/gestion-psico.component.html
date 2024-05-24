@@ -103,11 +103,13 @@
   </div>
 
 
-  <div *ngIf="isLoading || isLoadingEditar" class="overlay">
-    <div class="spinner-border" style="color:#23488C" role="status">
-      <span class="visually-hidden">Cargando...</span>
+  <div *ngIf="isLoading || isLoadingEditar" class="loading-container">
+    <div class="loading-box">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p>Cargando...</p>
     </div>
-    <p class="mx-2">Cargando...</p>
   </div>
 
 

@@ -46,7 +46,7 @@
   }
 
 
-  .overlay {
+  .loading-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -55,16 +55,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1050;
+    z-index: 1050; /* Asegúrate de que esté encima de los modales (Bootstrap modales tienen z-index 1050) */
   }
   
-  .overlay .spinner-border {
-    width: 3rem;
-    height: 3rem;
-  }
-  
-  .overlay p {
-    margin-top: 1rem;
-    font-size: 1.25rem;
-    color: #333;
+  .loading-box {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
   }
