@@ -347,10 +347,31 @@ private actualizarDisponibilidadPorDia(): void {
       console.error('No hay cita seleccionada para cancelar.');
       return;
     }
+    const idCita = this.citaSeleccionada.idCita;
 
-    console.log(`Cita cancelada: ${this.citaSeleccionada.idCita}`);
-    this.cerrarModal();
-    this.cargarCitas();
+    console.log("el idCita seleccionado es: "+idCita);
+
+    // Realizar la llamada para eliminar la cita de la base de datos
+    this.http.delete(`http://localhost/PSICOFI-Api/public/cita/deleteDate/${idCita}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': this.LoginService.getToken() ?? "token"
+      }
+    }).subscribe(
+      () => {
+        console.log('El horario de la cita ha sido cancelada correctamente.');
+        this.cerrarModal();
+        this.cargarCitas();
+        window.location.reload();
+      },
+      error => {
+        console.error('Error al cancelar la cita:', error);
+      }
+    );
+
+    // console.log(`Cita cancelada: ${this.citaSeleccionada.idCita}`);
+    // this.cerrarModal();
+    // this.cargarCitas();
   }
 
   abrirModalAgregarHora(): void {
@@ -447,6 +468,7 @@ private actualizarDisponibilidadPorDia(): void {
   }
 
   cancelarCita(cita: Cita) {
+    // this.citasService.cancelarCita(cita);
     this.cerrarModalDetalles();
   }
 

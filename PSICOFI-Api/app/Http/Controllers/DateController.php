@@ -334,6 +334,29 @@ class DateController extends Controller
         }
     }
 
+    public function deleteDate($idCita){
+    // public function deleteDate(Request $request){
+        // $idCita = $request->input('idCita', null);
+        // dd($request);
+    
+        $citaInfo = Cita::where('idCita', $idCita)
+            ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
+            ->first();
+    
+        if (!$citaInfo) {
+            return response()->json(['error' => 'No se encontró la cita con el ID proporcionado ('+$idCita+')'], 404);
+        }
+
+        // Eliminar la cita de la base de datos
+        try {
+            Cita::where('idCita', $idCita)->delete();
+        return response()->json(['message' => 'Cita cancelada correctamente'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al cancelar la cita'], 500);
+        }
+    }
+    
+
     public function cancelDate(Request $request){
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);

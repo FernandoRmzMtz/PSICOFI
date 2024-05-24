@@ -56,6 +56,8 @@ Route::post('cita/createDates',[DateController::class,'createDates'])->name('cit
 
 Route::post('cita/cancelDate',[DateController::class,'cancelDate'])->name('cita.cancelDate');
 
+Route::delete('cita/deleteDate/{idCita}',[DateController::class,'deleteDate'])->name('cita.deleteDate');
+
 Route::post('cita/confirmDate',[DateController::class,'confirmDate'])->name('cita.confirmDate');
 
 Route::post('/api/nota-cita', [NotaCitaController::class, 'store']);
