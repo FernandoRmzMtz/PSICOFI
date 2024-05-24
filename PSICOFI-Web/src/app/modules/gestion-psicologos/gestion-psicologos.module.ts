@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { VerPsicologoComponent } from './components/ver-psicologo/ver-psicologo.component';
 import { TablaAlumnosAtendidosComponent } from './components/tabla-alumnos-atendidos/tabla-alumnos-atendidos.component';
 import { HttpClientModule } from '@angular/common/http';
-
+import { SharedModule } from 'src/app/components/shared.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,8 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     CommonModule,
     HttpClientModule,
-    [FormsModule]
+    [FormsModule],
+    SharedModule
   ]
 })
 export class GestionPsicologosModule { }

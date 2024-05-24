@@ -4,6 +4,7 @@ import { Router, NavigationEnd, Event } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HistorialAlumnosService } from 'src/app/modules/historial-alumnos/services/historial-alumnos.service';
+import { gestionPsico } from 'src/app/modules/gestion-psicologos/services/gestion-psico.services';
 
 interface HeaderRoute {
   title: string;
@@ -27,17 +28,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Agendar cita', path: '/agendar-cita', tipoUsuario: ['Alumno'] },
     { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
     { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
-    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo']},
-    // { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo'], action: this.resetAlumnosAtendidos.bind(this)},
+    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo'], action: this.resetAlumnosAtendidos.bind(this)},
     { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo externo'] },
-    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador']},
-    // { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'], action: this.resetGestion.bind(this) },
+    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'], action: this.resetGestion.bind(this)},
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
-    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador']}
-    // { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador'], action: this.logout.bind(this)}
+    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador'], action: this.logout.bind(this)}
   ];
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router, private gestionpsico: gestionPsico, private histoAlAte: HistorialAlumnosService) {}
 
   ngOnInit(): void {
     this.tipoUsuarioSubscription = this.loginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
@@ -88,11 +86,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   resetAlumnosAtendidos(): void {
-    window.location.reload();  
+    this.histoAlAte.historialTablaVisible = 1;
   }
 
   resetGestion():void {
-    //Reload page
-    window.location.reload();
+    this.gestionpsico.verPsicoVisible = false;
   }
 }

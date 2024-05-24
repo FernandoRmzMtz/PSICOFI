@@ -24,6 +24,8 @@ export class DatosCitaUrgenteComponent {
     'clavePsicologoExterno': "-1",
 };
 
+public isLoading = false;
+
   constructor(private citaUrgenteService: CitaUrgenteService, private loginService: LoginService) {}
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class DatosCitaUrgenteComponent {
   }
 
   buscarAlumno() {
+    this.isLoading = true;
     this.buscado = true;
     if(this.claveUnica) {
       this.citaUrgenteService.obtenerAlumno(this.claveUnica).subscribe(
@@ -43,25 +46,30 @@ export class DatosCitaUrgenteComponent {
           if(response.claveUnica){
             this.alumno = response;
             this.encontrado = true;
+            this.isLoading = false;
           }
           else{
             this.encontrado = false;
             this.claveUnica = null;
             this.citaUrgenteService.setDatosCitaLlenos(false);
             console.error('No se encontró el alumno con la clave unica introducida.');
+            this.isLoading = false;
           }
           console.log('Alumno encontrado: ',this.alumno);
+          this.isLoading = false;
         },
         error => {
           this.encontrado = false;
           this.claveUnica = null;
           console.error('Error al intentar obtener alumno:', error);
+          this.isLoading = false;
         }
       );
     } else {
       this.claveUnica = null;
       this.alumno = {};
       this.encontrado = false;
+      this.isLoading = false;
     }
     
   }

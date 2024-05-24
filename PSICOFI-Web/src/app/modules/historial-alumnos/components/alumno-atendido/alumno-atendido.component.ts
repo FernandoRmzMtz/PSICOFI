@@ -26,6 +26,7 @@ interface AlumnoAtendido {
 })
 
 export class AlumnoAtendidoComponent {
+  public isLoading = false;
   public clave: string = '';
   constructor(private histo: HistorialAlumnosService) {
     this.clave = histo.alumnoViendo;
@@ -34,11 +35,14 @@ export class AlumnoAtendidoComponent {
 
 
   public getAlumnoAtendidoInfo(): void {
+    this.isLoading = true;
     this.histo.getAlumnoInfo().subscribe((data) => {
       this.histo.infoAlumno = data;
+      this.isLoading = false;
     },
       (error) => {
         console.error('Error al obtener alumno:', error);
+        this.isLoading = false;
       })
   }
 
