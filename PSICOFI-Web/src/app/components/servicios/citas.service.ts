@@ -18,10 +18,15 @@ export interface Cita {
 export class CitasService {
 
   constructor(private http: HttpClient) {}
-  
+
   obtenerCitas(id: string): Observable<Cita[]> {
     const params = new HttpParams().set('id', id);
     return this.http.get<Cita[]>('http://psicofi-api.test/cita/getDates', { params: params });
+  }
+
+  obtenerTodasLasCitas(id: string): Observable<Cita[]> {
+    const params = new HttpParams().set('id', id);
+    return this.http.get<Cita[]>('http://psicofi-api.test/cita/getAllDates', { params: params });
   }
 
   agendarCita(cita: { id: string; claveUnica: number; fecha: string; hora: string; }): Observable<any[]> {

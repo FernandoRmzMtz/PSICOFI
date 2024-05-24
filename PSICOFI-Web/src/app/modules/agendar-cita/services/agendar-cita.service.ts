@@ -39,6 +39,15 @@ export class AgendarCita {
         );
     }
 
+    crearCitas(id: string, fecha: string, horas: string[], token: string): Observable<any> {
+        const url = 'http://localhost/PSICOFI-Api/public/cita/createDates';
+        const body = { id, fecha, horas };
+        const headers = new HttpHeaders()
+          .set('Content-Type', 'application/json')
+          .set('X-CSRF-TOKEN', token);
+        return this.http.post<any>(url, body, { headers });
+      }
+
     obtenerAlumno(id: number): Observable<any> {
         const url = 'http://localhost/PSICOFI-Api/public/alumno/getAlumno';
         const body = { id: id };

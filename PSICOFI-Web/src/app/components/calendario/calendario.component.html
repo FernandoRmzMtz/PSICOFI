@@ -38,16 +38,14 @@
         </div>
       </div>
     </div>
-    <!-- Menú de horas -->
     <div class="col-md-4 mt-sm-2 p-3" *ngIf="diaSeleccionado">
       <div *ngIf="diaSeleccionado">
         <h2>{{ diaSeleccionado | date: 'EEEE, d MMMM y' }}</h2>
-
-        
+    
         <!-- Esta parte permanece visible solo para alumnos -->
         <div *ngIf="tipoUsuario === 'Alumno'">
           <div *ngIf="citaAgendada">
-            <h4>Ya tienes una cita agendada, verificala en "Mis citas". Es necesario que confirmes la asistencia en dicha sección con un máximo de 48 horas antes de la cita.</h4>
+            <h4>Ya tienes una cita agendada, verifícala en "Mis citas". Es necesario que confirmes la asistencia en dicha sección con un máximo de 48 horas antes de la cita.</h4>
           </div>
           <div *ngIf="horariosDelDiaSeleccionado.length > 0 && !citaAgendada">
             <h4>Horas disponibles</h4>
@@ -57,14 +55,12 @@
                 {{ hora | slice:0:5 }}
               </button>
             </div>
-            <!-- Botón que abre modal de confirmación -->
           </div>
           <div *ngIf="horariosDelDiaSeleccionado.length == 0 && !citaAgendada">
             <h4>No hay citas disponibles para este día</h4>
           </div>
         </div>
-
-
+    
         <!-- Secciones específicas para psicólogos -->
         <div *ngIf="tipoUsuario === 'Psicologo'">
           <!-- Horarios sin cita agendada (Disponibles para cancelar) -->
@@ -82,8 +78,7 @@
               <p>Por el momento no hay horarios habilitados.</p>
             </ng-template>
           </div>
-
-
+    
           <!-- Horarios con citas ya agendadas -->
           <div>
             <h4>Horarios con citas ya agendadas</h4>
@@ -100,6 +95,7 @@
               <p>Por el momento no hay citas agendadas.</p>
             </ng-template>
           </div>
+    
           <!-- Agregar nueva hora disponible -->
           <div>
             <h4>Agregar hora disponible</h4>
@@ -108,6 +104,7 @@
         </div>
       </div>
     </div>
+  
   </div>
 </div>
 
@@ -192,7 +189,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" (click)="cerrarModalAgregarHora()">Cerrar</button>
-              <button type="submit" class="btn btn-primary">Agregar Horas</button>
+              <button type="button" class="btn btn-primary" (click)="cerrarModalAgregarHora()">Agregar Horas</button>
             </div>
           </form>
         </div>
