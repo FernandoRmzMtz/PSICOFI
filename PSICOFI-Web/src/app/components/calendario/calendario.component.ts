@@ -5,6 +5,9 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoginService } from 'src/app/modules/login/services/login.services';
 import { AgendarCita } from 'src/app/modules/agendar-cita/services/agendar-cita.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-calendario',
@@ -26,7 +29,9 @@ export class CalendarioComponent implements OnInit {
     private el: ElementRef,
     private citasService: CitasService,
     private LoginService: LoginService,
-    private agendarCitaService: AgendarCita
+    private agendarCitaService: AgendarCita,
+    private http: HttpClient,
+    private _router: Router
   ) {
     this.form = new FormGroup({
       diasSeleccionados: new FormGroup(this.generarDiasControl()),
@@ -370,11 +375,64 @@ private actualizarDisponibilidadPorDia(): void {
     this.cerrarModalAgregarHora();
   }
 
+  // agregarHoras() {
+
+  //   this.cerrarModalAgregarHora();
+  // }
+  
   agregarHoras() {
-    this.cerrarModalAgregarHora();
+    const diasSeleccionados = Object.keys(this.form.get('diasSeleccionados')?.value)
+      .filter(dia => this.form.get('diasSeleccionados')?.value[dia]);
+  
+    const horasSeleccionadas = Object.keys(this.form.get('horasSeleccionadas')?.value)
+      .filter(hora => this.form.get('horasSeleccionadas')?.value[hora]);
+  
+    // Generar una lista de fechas para los días seleccionados dentro de la semana de la fecha seleccionada
+    const startOfWeek = this.getStartOfWeek(this.fechaSeleccionada);
+    const fechasSeleccionadas = diasSeleccionados.map(dia => {
+      const dayIndex = this.dias.indexOf(dia);
+      const fecha = new Date(startOfWeek);
+      fecha.setDate(startOfWeek.getDate() + dayIndex);
+      return fecha.toISOString().split('T')[0];
+    });
+  
+    const id = this.LoginService.getClave();
+    const token = this.LoginService.getToken() ?? "token";
+    const numFechas = fechasSeleccionadas.length;
+    let cont = 0;
+    fechasSeleccionadas.forEach(fecha => {
+      const data = {
+        id,
+        fecha,
+        horas: horasSeleccionadas
+      };
+  
+      this.http.post('http://localhost/PSICOFI-Api/public/cita/createDates', data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': token
+        }
+      }).subscribe(response => {
+        console.log(`Respuesta del servidor para la fecha ${fecha}:`, response);
+        cont++;
+        if (cont === numFechas) {
+          this.cerrarModalAgregarHora();
+          window.location.reload();
+        }
+      }, error => {
+        console.error(`Error al enviar los datos para la fecha ${fecha}:`, error);
+        cont++;
+        if (cont === numFechas) {
+          this.cerrarModalAgregarHora();
+          window.location.reload();
+        }
+      });
+    });
   }
+  
 
   onSubmit() {
+
     console.log(this.form.value);
   }
 
