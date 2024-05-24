@@ -361,6 +361,8 @@ class DateController extends Controller
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);
 
+        // dd($idCita);
+
         $citaInfo = Cita::where('idCita', $idCita)
             ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
             ->first();

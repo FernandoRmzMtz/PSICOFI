@@ -493,10 +493,12 @@ private actualizarDisponibilidadPorDia(): void {
     );
     }else{
       if(cita.clavePsicologoExterno){
+        console.log("mandando psic externo a cancelar");
           const citaData = {
           idCita: cita.idCita,
           id: cita.clavePsicologoExterno.toString()
         }
+        console.log(cita.clavePsicologoExterno);
         this.citasService.cancelarCita(citaData);
       }
     }
