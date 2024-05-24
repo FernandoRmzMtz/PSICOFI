@@ -34,6 +34,7 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
+  fechaSeleccionada: Date = new Date();
   dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
   mostrarModalDetalles = false;
   citaSeleccionada: Cita | null = null;
@@ -262,13 +263,15 @@ private actualizarDisponibilidadPorDia(): void {
     cita.estado === "Libre"
   ).map(cita => cita.hora);
 
-  const citasDelDia = this.citas.filter(cita =>
+  this.citasAgendadas = this.citas.filter(cita =>
     cita.fecha === fechaSeleccionada &&
-    cita.clavePsicologo === this.psicologoId.toString()
-  );
+   (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
+  ).map(cita => cita);
 
-  this.citasAgendadas = citasDelDia.filter(cita => cita.estado === "Asistencia sin confirmar" || cita.estado === "Asistencia confirmada");
-  this.citasDisponibles = citasDelDia.filter(cita => cita.estado === "Libre");
+  this.citasDisponibles =this.citas.filter(cita =>
+    cita.fecha === fechaSeleccionada &&
+    cita.estado === "Libre"
+  ).map(cita => cita);
 
   if (this.diaSeleccionadoElemento) {
     this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
@@ -277,9 +280,7 @@ private actualizarDisponibilidadPorDia(): void {
     this.diaSeleccionadoElemento = (evento.target as HTMLElement);
     this.diaSeleccionadoElemento.classList.add('dia-seleccionado');
   }
-  console.log("Todasssss");
-  console.log(this.citas);
-  
+
 }
 
 
@@ -410,5 +411,37 @@ private actualizarDisponibilidadPorDia(): void {
       }
     }
   }
+
+
+  getSemanaSeleccionada(): string {
+    const startOfWeek = this.getStartOfWeek(this.fechaSeleccionada);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    };
+
+    return `${startOfWeek.toLocaleDateString('es-ES', options)} - ${endOfWeek.toLocaleDateString('es-ES', options)}`;
+  }
+
+  getStartOfWeek(date: Date): Date {
+    const startOfWeek = new Date(date);
+    const dayOfWeek = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    startOfWeek.setDate(diff);
+    return startOfWeek;
+  }
+
+  semanaAnterior(): void {
+    this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
+  }
+
+  semanaSiguiente(): void {
+    this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() + 7);
+  }
+
 }
 
