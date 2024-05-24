@@ -145,8 +145,13 @@ export class CalendarioComponent implements OnInit {
     this.psicologo = this.psicologoId;
     this.cargarCitasAlumno();
   } else if ((this.tipoUsuario === 'Psicologo' || this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) {
-    this.psicologo = this.usuarioActualId.toString();
-    this.cargarCitasPsicologo();
+    if(this.tipoUsuario === 'Psicologo externo') {
+      this.psicologo = this.LoginService.getClave();
+      this.cargarCitasPsicologo();
+    }else{
+      this.psicologo = this.usuarioActualId.toString();
+      this.cargarCitasPsicologo();
+    }
   }
   
   
@@ -166,6 +171,8 @@ private cargarCitasAlumno(): void {
 }
 
 private cargarCitasPsicologo(): void {
+  console.log("cargarCitasPsicologo con psicologo:"+this.psicologo);
+  console.log(this.psicologo);
   this.citasService.obtenerTodasLasCitas(this.psicologo).subscribe({
     next: (citas) => {
       this.citas = citas;

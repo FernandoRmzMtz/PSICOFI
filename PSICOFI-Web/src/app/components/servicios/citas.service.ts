@@ -27,6 +27,7 @@ export class CitasService {
 
   obtenerTodasLasCitas(id: string): Observable<Cita[]> {
     const params = new HttpParams().set('id', id);
+    console.log("Llamando a obetener todas citas con id: "+id);
     return this.http.get<Cita[]>('http://psicofi-api.test/cita/getAllDates', { params: params });
   }
 

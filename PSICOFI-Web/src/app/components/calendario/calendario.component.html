@@ -61,7 +61,7 @@
           </div>
         </div>
         <!-- Secciones específicas para psicólogos -->
-        <div *ngIf="tipoUsuario === 'Psicologo'">
+        <div *ngIf="tipoUsuario === 'Psicologo' || tipoUsuario ==='Psicologo externo'">
           <!-- Horarios sin cita agendada (Disponibles para cancelar) -->
           <div>
             <h4>Horario sin cita agendada</h4>
