@@ -27,11 +27,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Agendar cita', path: '/agendar-cita', tipoUsuario: ['Alumno'] },
     { title: 'Gestión de agenda', path: '/gestion-agenda', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
     { title: 'Cita urgente', path: '/cita-urgente', tipoUsuario: ['Psicologo', 'Psicologo externo'] },
-    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo'], action: this.resetAlumnosAtendidos.bind(this)},
+    { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo']},
+    // { title: 'Alumnos atendidos', path: '/historial-alumnos', tipoUsuario: ['Psicologo', 'Psicologo externo'], action: this.resetAlumnosAtendidos.bind(this)},
     { title: 'Cambiar contraseña', path: '/cambio-contrasena', tipoUsuario: ['Psicologo externo'] },
-    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'], action: this.resetGestion.bind(this) },
+    { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador']},
+    // { title: 'Gestionar psicólogos', path: '/gestion-psicologos', tipoUsuario: ['Administrador'], action: this.resetGestion.bind(this) },
     { title: 'Reportes', path: '/reportes', tipoUsuario: ['Administrador'] },
-    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador'], action: this.logout.bind(this)}
+    { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador']}
+    // { title: 'Cerrar sesión', path: '/cerrar-sesion', tipoUsuario: ['Alumno', 'Psicologo', 'Psicologo externo', 'Administrador'], action: this.logout.bind(this)}
   ];
 
   constructor(private loginService: LoginService, private router: Router) {}
