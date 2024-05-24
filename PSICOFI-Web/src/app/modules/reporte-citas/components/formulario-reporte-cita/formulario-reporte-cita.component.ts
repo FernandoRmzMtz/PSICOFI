@@ -17,7 +17,7 @@ export class FormularioReporteCitaComponent implements OnInit {
   tiposIntervencion: any[] = [];
   departamentos: any[] = [];
   datosCitaLlenos: boolean = false;
-
+  public isLoading = false;
   necesitaCanalizacion: boolean = false;
   tipoIntervencion: number | null = null;
   notas: string = '';
@@ -45,23 +45,30 @@ export class FormularioReporteCitaComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
       response => {
         this.tiposIntervencion = response;
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener tipos de intervención:', error);
+        this.isLoading = false;
       }
     );
+    this.isLoading = true;
     this.http.get<any[]>(environment.api+'/departamentos').subscribe(
       response => {
         this.departamentos = response;
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener tipos de intervención:', error);
+        this.isLoading = false;
       }
     );
 
+    this.isLoading = true;
     this.route.paramMap.subscribe(params => {
       this.idCita = +params.get('idCita')!;
       console.log("id de cita:"+this.idCita);
@@ -73,6 +80,7 @@ export class FormularioReporteCitaComponent implements OnInit {
         //   this._router.navigate(['/historial-alumnos']);
         // }
       }
+      this.isLoading = false;
     });  
   }
 
@@ -100,6 +108,7 @@ export class FormularioReporteCitaComponent implements OnInit {
   }
 
   getNotaCita(idCita: number): void {
+    this.isLoading = true;
     this.reporteCitaService.getNotaCita(idCita).subscribe(
       response => {
         this.notaCita = response;
@@ -116,9 +125,11 @@ export class FormularioReporteCitaComponent implements OnInit {
           this.departamento = this.notaCita.departamento;
           console.log("el departamento es: "+this.departamento+" y el tipo intervencion es:"+this.tipoIntervencion);
         }
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener la nota de la cita:', error);
+        this.isLoading = false;
         this._router.navigate(['/historial-alumnos']);
       }
     );
