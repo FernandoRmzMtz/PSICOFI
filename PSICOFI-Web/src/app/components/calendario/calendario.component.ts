@@ -157,6 +157,7 @@ private cargarCitasAlumno(): void {
     next: (citas) => {
       this.citas = citas.filter(cita => cita.estado === "Libre");
       this.actualizarDisponibilidadPorDia();
+      console.log("Se cargaron las citas del alumno");
     },
     error: (error) => {
       console.error('Error al cargar citas del alumno:', error);

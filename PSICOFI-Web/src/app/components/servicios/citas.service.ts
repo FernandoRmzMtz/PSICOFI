@@ -20,6 +20,7 @@ export class CitasService {
   constructor(private http: HttpClient) {}
 
   obtenerCitas(id: string): Observable<Cita[]> {
+    console.log("Llamando a obetener citas con id: "+id);
     const params = new HttpParams().set('id', id);
     return this.http.get<Cita[]>('http://psicofi-api.test/cita/getDates', { params: params });
   }
