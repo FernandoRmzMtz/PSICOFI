@@ -468,7 +468,31 @@ private actualizarDisponibilidadPorDia(): void {
   }
 
   cancelarCita(cita: Cita) {
-    // this.citasService.cancelarCita(cita);
+    console.log("la cita es:");
+    console.log(cita);
+    if(cita.clavePsicologo){
+        const citaData = {
+        idCita: cita.idCita,
+        id: cita.clavePsicologo.toString()
+      }
+      this.citasService.cancelarCita(citaData).subscribe(
+        (response)=>{
+          console.log(response);
+          cita.estado = "Cancelada";
+      },
+      (error)=>{
+        console.log(error);
+      }
+    );
+    }else{
+      if(cita.clavePsicologoExterno){
+          const citaData = {
+          idCita: cita.idCita,
+          id: cita.clavePsicologoExterno.toString()
+        }
+        this.citasService.cancelarCita(citaData);
+      }
+    }
     this.cerrarModalDetalles();
   }
 

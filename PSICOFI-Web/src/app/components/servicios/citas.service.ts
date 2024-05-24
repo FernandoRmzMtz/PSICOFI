@@ -51,6 +51,8 @@ export class CitasService {
   }
 
   cancelarCita(data: { idCita: number, id: string }): Observable<any> {
+    console.log("Llamada a cancelarCita de citas service, data:");
+    console.log(data);
     const url = 'http://localhost/PSICOFI-Api/public/cita/cancelDate';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
