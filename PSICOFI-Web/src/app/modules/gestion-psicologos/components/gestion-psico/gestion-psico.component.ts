@@ -31,7 +31,7 @@ export class GestionPsicoComponent implements OnInit {
   }
 
   loadPsicologos(): void {
-    this.isLoading = true; 
+    this.isLoading = true;
     this.psico.getPsicologos().subscribe(
       (data) => {
         this.psicologos = data;

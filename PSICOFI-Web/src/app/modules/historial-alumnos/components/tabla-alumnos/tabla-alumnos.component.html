@@ -29,6 +29,9 @@
       </tbody>
     </table>
   </div>
+  <div *ngIf="!isLoading && filteredPacientes.length === 0" class="alert alert-info" role="alert">
+    No se encontraron resultados
+  </div>
 </div>
 
 <app-loader *ngIf="isLoading"></app-loader>

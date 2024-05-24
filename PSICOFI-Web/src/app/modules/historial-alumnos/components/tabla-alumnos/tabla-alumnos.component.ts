@@ -14,7 +14,7 @@ export class TablaAlumnosComponent implements OnInit {
 
   @Input()
   set pacientes(value: number[]) {
-    this._pacientes = value;
+    this._pacientes = Array.isArray(value) ? value : [];
     this.filteredPacientes = [...this._pacientes];
   }
 
