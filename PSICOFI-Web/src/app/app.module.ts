@@ -10,6 +10,7 @@ import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
 import { FormsModule } from '@angular/forms'; 
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReportesModule } from './modules/reportes/reportes.module';
+import { LoaderComponent } from './components/loader/loader.component';
 
 
 @NgModule({
@@ -28,6 +29,6 @@ import { ReportesModule } from './modules/reportes/reportes.module';
     CitaUrgenteModule,
   ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

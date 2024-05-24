@@ -4,6 +4,7 @@ import { LoginInternoComponent } from './components/login-interno/login-interno.
 import { LoginPage } from './login.page';
 import { LoginExternoComponent } from './components/login-externo/login-externo.component';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/components/shared.module';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule, 
+    SharedModule
   ]
 })
 export class LoginModule { }
