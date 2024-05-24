@@ -66,7 +66,6 @@ export class CalendarioComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
     this.agendarCitaService.getCitaAgendada().subscribe((citaAgendada: boolean) => {
       this.citaAgendada = citaAgendada;
       if (this.citaAgendada) {

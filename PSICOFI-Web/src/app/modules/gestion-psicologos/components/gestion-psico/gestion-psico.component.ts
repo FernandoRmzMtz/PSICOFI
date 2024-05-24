@@ -13,6 +13,8 @@ export class GestionPsicoComponent implements OnInit {
   public psicologos: any[] = [];
   public psicologosBackup: any[] = [];
   public inputBuscar = "";
+  public isLoading = false; 
+  public isLoadingEditar = false;
   psicologo = {
     "activo": 0,
     "apellidoMaterno": "Nikolaus",
@@ -29,36 +31,46 @@ export class GestionPsicoComponent implements OnInit {
   }
 
   loadPsicologos(): void {
+    this.isLoading = true; 
     this.psico.getPsicologos().subscribe(
       (data) => {
         this.psicologos = data;
         this.psicologosBackup = [...data];
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error al obtener psicólogos:', error);
+        this.isLoading = false;
       }
     );
   }
 
   public verPsico(clave: string): void {
+    this.isLoading = true;
     this.psico.getPsicologoById(clave).subscribe(
       (psicologo) => {
         this.psico.psicologoViendo = psicologo;
         this.psico.verPsicoVisible = true;
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error al obtener psicólogo:', error);
+        this.isLoading = false;
       }
     );
   }
 
   public editarPsicologo(clave: string): void {
+    this.isLoadingEditar = true;
     this.psico.getPsicologoById(clave).subscribe(
       (psicologo) => {
         this.psico.psicologoEditar = psicologo;
+        this.isLoadingEditar = false;
+        this.openEditModal();
       },
       (error) => {
         console.error('Error al obtener psicólogo:', error);
+        this.isLoadingEditar = false;
       }
     );
   }
@@ -68,17 +80,20 @@ export class GestionPsicoComponent implements OnInit {
   }
 
   public GuardarEditarPsicologo(): void {
+    this.isLoading = true;
     this.psico.editarPsicologo().subscribe(
       (psicologo) => {
         this.visibleOK = true;
         setTimeout(() => {
           this.visibleOK = false;
         }, 3000);
-        this.loadPsicologos(); // Refresh the list of psychologists
-        this.closeModal(); // Close the modal
+        this.loadPsicologos(); 
+        this.closeModal(); 
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error al editar psicólogo:', error);
+        this.isLoading = false;
       }
     );
   }
@@ -100,9 +115,21 @@ export class GestionPsicoComponent implements OnInit {
       if (modalInstance) {
         modalInstance.hide();
       } else {
-        // If modalInstance is not found, create and hide it
         const modal = new bootstrap.Modal(modalElement);
         modal.hide();
+      }
+    }
+  }
+
+  private openEditModal(): void {
+    const modalElement = document.getElementById('editarpsico');
+    if (modalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.show();
+      } else {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
       }
     }
   }

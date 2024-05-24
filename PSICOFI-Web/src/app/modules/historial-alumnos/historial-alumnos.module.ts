@@ -5,6 +5,7 @@ import { TablaAlumnosComponent } from './components/tabla-alumnos/tabla-alumnos.
 import { AlumnoAtendidoComponent } from './components/alumno-atendido/alumno-atendido.component';
 import { TablaHistorialCitasComponent } from './components/tabla-historial-citas/tabla-historial-citas.component';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/components/shared.module';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ]
 })
 export class HistorialAlumnosModule { }

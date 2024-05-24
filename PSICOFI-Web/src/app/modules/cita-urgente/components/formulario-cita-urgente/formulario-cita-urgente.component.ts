@@ -21,6 +21,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   errorNotas = false;
   errorDepaCan = false;
   errorDetalleCan = false;
+  public isLoading = false;
 
   constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService,private loginService: LoginService) { }
 
@@ -37,28 +38,36 @@ export class FormularioCitaUrgenteComponent implements OnInit {
     console.log("neesita canalización:"+this.necesitaCanalizacion);
     this.necesitaCanalizacion = false;
 
-
+    this.isLoading = true;
     this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
       response => {
         this.tiposIntervencion = response;
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener tipos de intervención:', error);
+        this.isLoading = false;
       }
     );
+
+    this.isLoading = true;
 
     this.http.get<any[]>(environment.api+'/departamentos').subscribe(
       response => {
         this.departamentos = response;
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener departamentos:', error);
+        this.isLoading = false;
       }
     );
 
     // Suscribe al observable para mantenerse actualizado sobre el estado de los datos de la cita
+    this.isLoading = true;
     this.citaUrgenteService.datosCitaLlenos$.subscribe(value => {
       this.datosCitaLlenos = value;
+      this.isLoading = false;
     });
   }
   submitForm(): void {
@@ -75,18 +84,22 @@ export class FormularioCitaUrgenteComponent implements OnInit {
       clavePsicologoExterno: this.datosCita[5],
     };
 
+    this.isLoading = true;
     this.citaUrgenteService.crearCita(citaData).subscribe(
       (response: any) => {
         if(!this.tipoIntervencion) {
           //muestra error
+          this.isLoading = false;
           this.errorIntervencion = true;
           setTimeout(() => {
             this.errorIntervencion = false;
           }, 3000);
+          
         }
         else{
           if(!this.notas) {
             //muestra error
+            this.isLoading = false;
             this.errorNotas = true;
             setTimeout(() => {
             this.errorNotas = false;
@@ -94,6 +107,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
           }else{
             if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
               //muestra error
+              this.isLoading = false;
               this.errorDepaCan = true;
               setTimeout(() => {
               this.errorDepaCan = false;
@@ -101,12 +115,14 @@ export class FormularioCitaUrgenteComponent implements OnInit {
             }else{
               if(this.necesitaCanalizacion&& !this.detalleCanalizacion && this.departamento) {
                 //muestra error
+                this.isLoading = false;
                 this.errorDetalleCan = true;
                 setTimeout(() => {
                 this.errorDetalleCan = false;
               }, 5000);
                 }else{
                   const idCita = response.idCita;
+                  this.isLoading = false;
                   // Crear el objeto con los datos del formulario
                   const formData = {
                     tipoIntervencion: this.tipoIntervencion,
@@ -117,6 +133,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                     foraneo: this.foraneo
                   };
                   // Enviar los datos al servidor
+                  this.isLoading = false;
                   this.http.post<any>(environment.api+'/api/nota-cita', 
                   formData,
                   {
@@ -133,6 +150,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                       this.visible = false;
                     }, 3000);
                     console.log('Datos enviados correctamente:', response);
+                    this.isLoading = false;
                     window.location.reload();
                   },
                   error => {
@@ -141,6 +159,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                     setTimeout(() => {
                       this.error = false;
                     }, 3000);
+                    this.isLoading = false;
                     console.error('Error al enviar los datos:', error);
                   }
                 );

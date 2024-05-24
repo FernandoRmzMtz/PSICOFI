@@ -12,14 +12,16 @@ export class TablaHistorialCitasComponent {
   constructor(private histo: HistorialAlumnosService, private router: Router){
     this.getHistorialCitas();
   };
-
+  public isLoading = false;
   public getHistorialCitas(): void {
+    this.isLoading = true;
     this.histo.getHistorialCitas().subscribe((data) => {
       this.histo.records = data;
-      console.log(this.histo.records)
+      this.isLoading = false;
     },
       (error) => {
         console.error('Error al obtener alumno:', error);
+        this.isLoading = false;
       })
   }
 

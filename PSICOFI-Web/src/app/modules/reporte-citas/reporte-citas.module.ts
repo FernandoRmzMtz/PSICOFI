@@ -5,7 +5,7 @@ import { DatosReporteCitaComponent } from './components/datos-reporte-cita/datos
 import { FormularioReporteCitaComponent } from './components/formulario-reporte-cita/formulario-reporte-cita.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
+import { SharedModule } from 'src/app/components/shared.module';
 
 
 @NgModule({
@@ -17,7 +17,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ]
 })
 export class ReporteCitasModule { }

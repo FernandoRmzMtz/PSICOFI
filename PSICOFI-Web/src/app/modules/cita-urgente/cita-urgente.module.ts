@@ -5,7 +5,7 @@ import { DatosCitaUrgenteComponent } from './components/datos-cita-urgente/datos
 import { FormularioCitaUrgenteComponent } from './components/formulario-cita-urgente/formulario-cita-urgente.component';
 import { FormsModule } from '@angular/forms';
 import { CitaUrgenteService } from './services/cita-urgente.service';
-
+import { SharedModule } from 'src/app/components/shared.module';
 
 
 @NgModule({
@@ -18,6 +18,7 @@ import { CitaUrgenteService } from './services/cita-urgente.service';
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule
   ],
   providers: [
     CitaUrgenteService

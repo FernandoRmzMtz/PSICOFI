@@ -11,7 +11,7 @@ import { Alumno } from 'src/app/model/alumno.model';
   styleUrls: ['./datos-reporte-cita.component.css']
 })
 export class DatosReporteCitaComponent implements OnInit {
-
+  public isLoading = false;
   constructor(
     private route: ActivatedRoute,
     private http:HttpClient, 
@@ -25,38 +25,46 @@ export class DatosReporteCitaComponent implements OnInit {
   public alumno : Alumno | null = null;
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.route.paramMap.subscribe(params => {
       this.idCita = +params.get('idCita')!;
       console.log("id de cita:"+this.idCita);
       if (this.idCita) {
         this.getCita(this.idCita);
       }
+      this.isLoading = false;
     });  
   }
 
   getCita(idCita: number): void {
+    this.isLoading = true;
     this.reporteCitaService.getCita(idCita).subscribe(
       response => {
         this.cita = response;
         console.log('Cita obtenida:', this.cita);
         this.getAlumno(this.cita.claveUnica);
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener la cita:', error);
         this._router.navigate(['/historial-alumnos']);
+        this.isLoading = false;
       }
     );
   }
 
   getAlumno(claveUnica: number): void {
+    this.isLoading = true;
     this.reporteCitaService.getAlumno(claveUnica).subscribe(
       response => {
         this.alumno = response;
         console.log('Alumno obtenido:', this.alumno);
+        this.isLoading = false;
       },
       error => {
         console.error('Error al obtener la cita:', error);
         this._router.navigate(['/historial-alumnos']);
+        this.isLoading = false;
       }
     );
   }
