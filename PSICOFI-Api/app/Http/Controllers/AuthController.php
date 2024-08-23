@@ -44,9 +44,9 @@ class AuthController extends Controller
 
         $xml = new \SimpleXMLElement($response);
         $datos = $xml->xpath('//TablaMensaje');
-        //$jsonResult = json_encode($datos[0]);
+        $jsonResult = json_encode($datos[0]);
 
-        return $datos[1];
+        return $jsonResult;
     }
 
     public function login(Request $request){
