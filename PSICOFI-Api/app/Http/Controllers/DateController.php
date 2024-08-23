@@ -13,6 +13,7 @@ use App\Mail\cancelMailPsicologo;
 use App\Mail\scheduleDateMail;
 use App\Models\Alumno;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class DateController extends Controller
 {
@@ -21,33 +22,22 @@ class DateController extends Controller
 
         try{
             if(strlen($id) == 18){
-                $citas = Cita::where('clavePsicologoExterno', $id)
-                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                ->where('cita.clavePsicologoExterno', $id)
-                ->select('idCita',
-                        'cita.clavePsicologoExterno',
-                        'cita.hora',
-                        'cita.fecha',
-                        'estadocita.estado AS estado',
-                        'cita.claveUnica',
-                )
-                ->get();
+                $citas = DB::select('SELECT idCita, idPsicologo AS clavePsicologoExterno,
+                                                hora,fecha,estado,claveUnica
+                                        FROM view_citas 
+                                        WHERE idPsicologo = ?', [$id]);
             }else if(strlen($id) == 6){
-                $citas = Cita::where('clavePsicologo', $id)
-                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                ->where('cita.clavePsicologo', $id)
-                ->select('idCita',
-                        'cita.clavePsicologo',
-                        'cita.hora',
-                        'cita.fecha',
-                        'estadocita.estado AS estado',
-                        'cita.claveUnica',
-                )
-                ->get();
+                $citas = DB::select('SELECT idCita, idPsicologo AS clavePsicologo,
+                                                hora,fecha,estado,claveUnica
+                                        FROM view_citas 
+                                        WHERE idPsicologo = ?', [$id]);
             } else {
                 return response()->json(['error' => 'ID inválido'], 400);
             }
-            return json_encode($citas);
+            $citas = collect($citas);
+            if($citas->isNotEmpty()){
+                return json_encode($citas);
+            }
         }catch(\Exception $e){
             return $e;
         }
@@ -56,39 +46,14 @@ class DateController extends Controller
     public function getDates(Request $request){
         $id = $request->input('id',null);
 
-        try{
-            if(strlen($id) == 18){
-                $citas = Cita::where('clavePsicologoExterno', $id)
-                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                ->where('cita.clavePsicologoExterno', $id)
-                ->where('cita.estadoCita', 7)
-                ->select('idCita',
-                        'cita.clavePsicologoExterno',
-                        'cita.hora',
-                        'cita.fecha',
-                        'estadocita.estado AS estado',
-                        'cita.claveUnica',
-                )
-                ->get();
-            }else if(strlen($id) == 6){
-                $citas = Cita::where('clavePsicologo', $id)
-                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                ->where('cita.clavePsicologo', $id)
-                ->where('cita.estadoCita', 7)
-                ->select('idCita',
-                        'cita.clavePsicologo',
-                        'cita.hora',
-                        'cita.fecha',
-                        'estadocita.estado AS estado',
-                        'cita.claveUnica',
-                )
-                ->get();
-            } else {
-                return response()->json(['error' => 'ID inválido'], 400);
-            }
-            return json_encode($citas);
-        }catch(\Exception $e){
-            return $e;
+        $citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ?', [$id,"libre"]);
+
+        $citasPsciologo = collect($citas);
+
+        if($citasPsciologo->isNotEmpty()){
+            return json_encode($citasPsciologo);
+        }else{
+            return response()->json_encode(['error' => 'ID inválido'], 400);
         }
     }
 
@@ -350,9 +315,9 @@ class DateController extends Controller
         // Eliminar la cita de la base de datos
         try {
             Cita::where('idCita', $idCita)->delete();
-        return response()->json(['message' => 'Cita cancelada correctamente'], 200);
+        return response()->json(['message' => 'Cita eliminada correctamente'], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al cancelar la cita'], 500);
+            return response()->json(['error' => 'Error al eliminar la cita'], 500);
         }
     }
     
@@ -361,100 +326,50 @@ class DateController extends Controller
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);
 
-        // dd($idCita);
+        if(strlen($id) == 18 || strlen($id) == 6){
+            $citaInfo = DB::select('SELECT * FROM view_citas WHERE idCita = ?', [$idCita]);
 
-        $citaInfo = Cita::where('idCita', $idCita)
-            ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
-            ->first();
+            $cita = collect($citaInfo);
 
-        if($citaInfo->clavePsicologo == null){
-            $psicologo = PsicologoExterno::where('CURP', $citaInfo->clavePsicologoExterno)
-                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                ->first();
-        }else if($citaInfo->clavePsicologoExterno == null){
-            $psicologo = Psicologo::where('claveUnica', $citaInfo->clavePsicologo)
-                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                ->first();
-        }
-        
-        $alumno = Alumno::where('claveUnica', $citaInfo->claveUnica)
-                    ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                    ->first();
+            if($cita->isNotEmpty()){
 
-        $details = [
-            'email' => $_ENV['DESTINATARIO_CORREO'],
-            'hora' => $citaInfo->hora,
-            'fecha' => $citaInfo->fecha,
-            'name' => $alumno->nombreCompleto,
-            'psicologo' => $psicologo->nombreCompleto
-        ];
+                $alumno = DB::select('call get_info_alumno(?)',[$cita[0]->claveUnica]);
 
-        try{
-            if(strlen($id) == 18){
-                $cita = Cita::where('idCita', $idCita)
-                ->where('clavePsicologoExterno', $id)
-                ->value('estadoCita');
+                $alumno = collect($alumno);
 
-                if($cita == 2){
-                    $confirm = Cita::where('idCita', $idCita)
-                    ->update(['estadoCita' => '6']);
+                // Datos del correo electronico
+                $details = [
+                    'email' => $_ENV['DESTINATARIO_CORREO'],
+                    'hora' => $cita[0]->hora,
+                    'fecha' => $cita[0]->fecha,
+                    'name' => $alumno[0]->nombres . ' ' . $alumno[0]->apellidoPaterno . ' ' . $alumno[0]->apellidoMaterno,
+                    'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
+                ];
 
-                    if($confirm > 0){
+                $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);
+
+                if($cancel[0]->resultado == 1){
+                    if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
+                        Mail::to($details['email'])->send(new cancelMail($details));
+                                $respuesta = ['Cita cancelada correctamente'];
+                                return json_encode($respuesta);
+                    }else if($cita[0]->isPsicologo = $id) {
                         Mail::to($details['email'])->send(new cancelMailPsicologo($details));
-                        $respuesta = ['Cita cancelada correctamente'];
+                            $respuesta = ['Cita cancelada correctamente'];
+                            return json_encode($respuesta);
+                    }else{
+                        $respuesta = ['Error' => 'ID incorrecto'];
                         return json_encode($respuesta);
                     }
                 }else{
                     $respuesta = ['Error' => 'Cita NO cancelada'];
                     return json_encode($respuesta);
                 }
-            }else if(strlen($id) == 6){
-                $cita = Cita::where('idCita', $idCita)
-                    ->where('clavePsicologo', $id)
-                    ->value('estadoCita');
-
-                if($cita == 2){
-                    $confirm = Cita::where('idCita', $idCita)
-                    ->where('clavePsicologo', $id)
-                    ->update(['estadoCita' => '6']);
-
-                    if($confirm > 0){
-                        Mail::to($details['email'])->send(new cancelMailPsicologo($details));
-                        $respuesta = ['Cita cancelada correctamente'];
-                        return json_encode($respuesta);
-                    }else{
-                        $respuesta = ['Error' => 'Cita NO cancelada'];
-                        return json_encode($respuesta);
-                    }
-                }else{
-                    $cita = Cita::where('idCita', $idCita)
-                    ->where('claveUnica', $id)
-                    ->value('estadoCita');
-
-                    if($cita == 2){
-                        $confirm = Cita::where('idCita', $idCita)
-                        ->where('claveUnica', $id)
-                        ->update(['estadoCita' => '7',
-                                'claveUnica' => null]);
-
-                        if($confirm > 0){
-                            Mail::to($details['email'])->send(new cancelMail($details));
-                            $respuesta = ['Cita cancelada correctamente'];
-                            return json_encode($respuesta);
-                        }else{
-                            $respuesta = ['Error' => 'Cita NO cancelada'];
-                            return json_encode($respuesta);
-                        }
-                    }else{
-                        $respuesta = ['Error' => 'Cita NO cancelada'];
-                        return json_encode($respuesta);
-                    }
-                }
-            }else if(strlen($id) != 18 && strlen($id) != 6){
-                $respuesta = ['Error' => 'ID incorrecto'];
+            }else{
+                $respuesta = ['Sin cita agendada'];
                 return json_encode($respuesta);
             }
-        }catch(\Exception $e){
+        }else{
             $respuesta = ['Error' => 'Cita NO cancelada'];
             return json_encode($respuesta);
         }
@@ -464,54 +379,46 @@ class DateController extends Controller
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);
 
-        $citaInfo = Cita::where('idCita', $idCita)
-            ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
-            ->first();
+        if(strlen($id) == 18 || strlen($id) == 6){
+            $citaInfo = DB::select('SELECT * FROM view_citas WHERE idCita = ?', [$idCita]);
 
-        if($citaInfo->clavePsicologo == null){
-            $psicologo = PsicologoExterno::where('CURP', $citaInfo->clavePsicologoExterno)
-                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                ->first();
-        }else if($citaInfo->clavePsicologoExterno == null){
-            $psicologo = Psicologo::where('claveUnica', $citaInfo->clavePsicologo)
-                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                ->first();
-        }
-        
-        $alumno = Alumno::where('claveUnica', $citaInfo->claveUnica)
-                    ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                    ->first();
+            $cita = collect($citaInfo);
 
-        $details = [
-            'email' => $_ENV['DESTINATARIO_CORREO'],
-            'hora' => $citaInfo->hora,
-            'fecha' => $citaInfo->fecha,
-            'name' => $alumno->nombreCompleto,
-            'psicologo' => $psicologo->nombreCompleto
-        ];
+            if($cita->isNotEmpty()){
 
-        try{
-            if(strlen($id) == 6){
-                $cita = Cita::where('idCita', $idCita)
-                ->where('claveUnica', $id)
-                ->value('estadoCita');
+                $alumno = DB::select('call get_info_alumno(?)',[$cita[0]->claveUnica]);
 
-                if($cita == 2){
-                    $confirm = Cita::where('idCita', $idCita)
-                    ->where('claveUnica', $id)
-                    ->update(['estadoCita' => '1']);
+                $alumno = collect($alumno);
 
-                    if($confirm > 0){
+                // Datos del correo electronico
+                $details = [
+                    'email' => $_ENV['DESTINATARIO_CORREO'],
+                    'hora' => $cita[0]->hora,
+                    'fecha' => $cita[0]->fecha,
+                    'name' => $alumno[0]->nombres . ' ' . $alumno[0]->apellidoPaterno . ' ' . $alumno[0]->apellidoMaterno,
+                    'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
+                ];
+
+                $cancel = DB::select('SELECT confirmar_cita(?) AS resultado',[$idCita]);
+
+                if($cancel[0]->resultado == 1){
+                    if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
                         Mail::to($details['email'])->send(new confirmDateMail($details));
                         $respuesta = ['Cita confirmada correctamente'];
+                        return json_encode($respuesta);
+                    }else{
+                        $respuesta = ['Error' => 'ID incorrecto'];
                         return json_encode($respuesta);
                     }
                 }else{
                     $respuesta = ['Error' => 'Cita NO confirmada'];
                     return json_encode($respuesta);
                 }
+            }else{
+                $respuesta = ['Sin cita agendada'];
+                return json_encode($respuesta);
             }
-        }catch(\Exception $e){
+        }else{
             $respuesta = ['Error' => 'Cita NO confirmada'];
             return json_encode($respuesta);
         }

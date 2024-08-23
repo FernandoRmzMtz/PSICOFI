@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\psicologos;
 use Illuminate\Http\Request;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
 use App\Models\Cita;
+use Illuminate\Support\Facades\DB;
 
 class PsicoController extends Controller
 {
@@ -43,45 +45,38 @@ class PsicoController extends Controller
     public function searchPsicologo(Request $request){
         $id = $request->input('id',null);
 
-        if(strlen($id) == 18){
-            $psicologo = PsicologoExterno::where('CURP', $id)
-            ->select('psicologoexterno.curp',
-                    'psicologoexterno.nombres',
-                    'psicologoexterno.apellidoPaterno',
-                    'psicologoexterno.apellidoMaterno',
-                    'psicologoexterno.semestre',
-                    'psicologoexterno.correo',
-                    'psicologoexterno.activo',
-                    'psicologoexterno.carrera',
-            )
-            ->first();
-            if($psicologo == null){
-                $psicologo = ['Error' => 'Psicologo no encontrado'];
-                return json_encode($psicologo);
+        $psicologos = DB::select('SELECT idPsicologo,
+                                        nombres,
+                                        apellidoPaterno,
+                                        apellidoMaterno,
+                                        semestre,
+                                        correo,
+                                        activo,
+                                        carrera 
+                                FROM view_psicologos WHERE idPsicologo = ?', [$id]);
+        $psicologos = collect($psicologos);
+
+        $psicologo = $psicologos->first();
+
+        if($psicologo){
+            if(strlen($psicologo->idPsicologo) == 6){
+
+                $psicologo->claveUnica = $psicologo->idPsicologo;
+                unset($psicologo->idPsicologo); 
+
+                return json_encode($psicologo);   
+            }else if(strlen($psicologo->idPsicologo) == 18){
+
+                $psicologo->curp = $psicologo->idPsicologo;
+                unset($psicologo->idPsicologo);
+                
+                return json_encode($psicologo);   
             }else{
-                return json_encode($psicologo);
-            }
-        }else if(strlen($id) == 6){
-            $resultado = Psicologo::where('claveUnica', $id)
-                ->join('carreraspsico', 'psicologo.idCarrera', '=', 'carreraspsico.idCarrera')
-                ->select('psicologo.claveUnica',
-                    'psicologo.nombres',
-                    'psicologo.apellidoPaterno',
-                    'psicologo.apellidoMaterno',
-                    'psicologo.semestre',
-                    'psicologo.correo',
-                    'psicologo.activo',
-                    'carreraspsico.carrera',
-                )
-                ->first();
-            if($resultado == null){
-                $respuesta = ['Error' => 'Psicologo no encontrado'];
+                $respuesta = ['Error' => 'ID incorrecto'];
                 return json_encode($respuesta);
-            }else{
-                return json_encode($resultado);
             }
-        }else if(strlen($id) != 18 && strlen($id) != 18){
-            $respuesta = ['Error' => 'ID incorrecto'];
+        }else{
+            $respuesta = ['Error' => 'Psicologo no encontrado'];
             return json_encode($respuesta);
         }
     }

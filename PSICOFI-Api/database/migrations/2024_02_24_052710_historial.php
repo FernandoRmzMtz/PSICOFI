@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Historial',function(Blueprint $table){
-            $table->id('idHistorial');
-            $table->bigInteger('claveUnica');
-            $table->unsignedBigInteger('idNotaCita');
-            $table->boolean('alumnoForaneo');
+        // Schema::create('Historial',function(Blueprint $table){
+        //     $table->id('idHistorial');
+        //     $table->bigInteger('claveUnica');
+        //     $table->unsignedBigInteger('idNotaCita');
+        //     $table->boolean('alumnoForaneo');
 
-            // Foreign keys
-            $table->foreign('claveUnica')->references('claveUnica')->on('Alumno');
-            $table->foreign('idNotaCita')->references('idNotaCita')->on('NotaCita');
-        });
+        //     // Foreign keys
+        //     $table->foreign('claveUnica')->references('claveUnica')->on('Alumno');
+        //     $table->foreign('idNotaCita')->references('idNotaCita')->on('NotaCita');
+        // });
     }
 
     /**
@@ -28,10 +28,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('Historial', function (Blueprint $table) {
-            $table->dropForeign(['claveUnica']);
-            $table->dropForeign(['idNotaCita']);
-        });
+        // Schema::table('Historial', function (Blueprint $table) {
+        //     $table->dropForeign(['claveUnica']);
+        //     $table->dropForeign(['idNotaCita']);
+        // });
         Schema::dropIfExists('Historial');
     }
 };
