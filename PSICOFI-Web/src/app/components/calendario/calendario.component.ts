@@ -202,7 +202,7 @@ private actualizarDisponibilidadPorDia(): void {
     });
     this.generarDiasDelMes(this.fechaActual);
   }else{
-    console.log("El Psicologo no tiene horarios habilitados.");
+    console.log("El Psicologo no tiene horarios/citas habilitados.");
   }
 }
 
@@ -275,20 +275,25 @@ private actualizarDisponibilidadPorDia(): void {
   this.horaSeleccionada = "";
   const fechaSeleccionada = dia.toISOString().split('T')[0];
 
-  this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
-    cita.fecha === fechaSeleccionada &&
-    cita.estado === "Libre"
-  ).map(cita => cita.hora);
+  //Validación de que this.citas contiene citas
+  if(this.citas){
+    this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
+      cita.fecha === fechaSeleccionada &&
+      cita.estado === "Libre"
+    ).map(cita => cita.hora);
 
-  this.citasAgendadas = this.citas.filter(cita =>
-    cita.fecha === fechaSeleccionada &&
-   (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
-  ).map(cita => cita);
+    this.citasAgendadas = this.citas.filter(cita =>
+      cita.fecha === fechaSeleccionada &&
+    (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
+    ).map(cita => cita);
 
-  this.citasDisponibles =this.citas.filter(cita =>
-    cita.fecha === fechaSeleccionada &&
-    cita.estado === "Libre"
-  ).map(cita => cita);
+    this.citasDisponibles =this.citas.filter(cita =>
+      cita.fecha === fechaSeleccionada &&
+      cita.estado === "Libre"
+    ).map(cita => cita);
+  }else{
+    console.log("No se tienen registradas citas en el día seleccionado.");
+  }
 
   if (this.diaSeleccionadoElemento) {
     this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
