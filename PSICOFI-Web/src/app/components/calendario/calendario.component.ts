@@ -562,7 +562,23 @@ private actualizarDisponibilidadPorDia(): void {
   }
 
   semanaAnterior(): void {
-    this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
+    //Validación para no regresar a una semana anterior a la actual
+    const hoy = new Date();
+    // console.log("hoy:"+hoy);
+    const actualWeek = this.getStartOfWeek(hoy);
+    const selectedWeek = this.getStartOfWeek(this.fechaSeleccionada);
+    if((actualWeek.getDate() == selectedWeek.getDate()) &&
+       (actualWeek.getMonth() == selectedWeek.getMonth()) && 
+       (actualWeek.getFullYear() == selectedWeek.getFullYear())){
+        console.log("No puedes regresar a una semana anterior a la actual.");
+    }else{
+      this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
+    }
+    // console.log("Fecha del inicio de semana actual");
+    // console.log(actualWeek.getDate()+"/"+actualWeek.getMonth()+"/"+actualWeek.getFullYear());
+    // console.log("Fecha del inicio de semana seleccionada");
+    // console.log(selectedWeek.getDate()+"/"+selectedWeek.getMonth()+"/"+selectedWeek.getFullYear());
+
   }
 
   semanaSiguiente(): void {
