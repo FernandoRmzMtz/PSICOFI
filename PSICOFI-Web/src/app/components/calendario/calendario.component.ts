@@ -326,6 +326,9 @@ private actualizarDisponibilidadPorDia(): void {
             this.citaAgendada = true;
             this.agendarCitaService.emitirCitaAgendada();
           } else {
+            console.log("Resultado:");
+            console.log(resultado);
+            console.log(resultado[0]);
             console.error('Error al intentar agendar la cita.');
           }
         },
