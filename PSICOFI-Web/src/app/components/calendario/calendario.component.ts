@@ -188,17 +188,22 @@ private cargarCitasPsicologo(): void {
 
 private actualizarDisponibilidadPorDia(): void {
   this.disponibilidadPorDia = {};
-  this.citas.forEach(cita => {
-    const fecha = cita.fecha;
-    if (!this.disponibilidadPorDia[fecha]) {
-      this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
-    }
-    this.disponibilidadPorDia[fecha].total++;
-    if (cita.estado === "Libre") {
-      this.disponibilidadPorDia[fecha].disponibles++;
-    }
-  });
-  this.generarDiasDelMes(this.fechaActual);
+  //Validacion de que this.citas tiene citas
+  if(this.citas){
+    this.citas.forEach(cita => {
+      const fecha = cita.fecha;
+      if (!this.disponibilidadPorDia[fecha]) {
+        this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+      }
+      this.disponibilidadPorDia[fecha].total++;
+      if (cita.estado === "Libre") {
+        this.disponibilidadPorDia[fecha].disponibles++;
+      }
+    });
+    this.generarDiasDelMes(this.fechaActual);
+  }else{
+    console.log("El Psicologo no tiene horarios habilitados.");
+  }
 }
 
 
