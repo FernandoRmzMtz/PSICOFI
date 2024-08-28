@@ -45,15 +45,25 @@ class DateController extends Controller
 
     public function getDates(Request $request){
         $id = $request->input('id',null);
+        //Validación de que $id tenga un valor
+        if($id != null){
 
-        $citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ?', [$id,"libre"]);
+            $citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ?', [$id,"libre"]);
 
-        $citasPsciologo = collect($citas);
+            if(!empty($citas)){
+                $citasPsicologo = collect($citas);
 
-        if($citasPsciologo->isNotEmpty()){
-            return json_encode($citasPsciologo);
-        }else{
-            return response()->json_encode(['error' => 'ID inválido'], 400);
+                if($citasPsicologo->isNotEmpty()){
+                    return response()->json($citasPsicologo,200);
+                }else{
+                    return response()->json(['error' => 'ID inválido'], 400);
+                }
+            }else{
+                return response()->json(['error' => 'No se encontraron citas disponibles'], 404);
+            }
+        }
+        else{
+            return response()->json(['error' => 'ID no proporcionado, valor nulo encontrado'], 400);
         }
     }
 

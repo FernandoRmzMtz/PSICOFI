@@ -12,6 +12,7 @@ export class AgendarCitaComponent implements OnInit {
   nombre: string = '';
   psicologos: { id: any; nombre: string; }[] = [];
   psicologoSeleccionadoId: string = '';
+  psicologoCargado: boolean = false;
   constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { }
 
   ngOnInit(): void {
@@ -41,6 +42,10 @@ export class AgendarCitaComponent implements OnInit {
         this.psicologos = Object.values(data).map((psicologo: any) => {
           return { id: psicologo.identificador, nombre: `${psicologo.nombres} ${psicologo.apellidoPaterno} ${psicologo.apellidoMaterno}` };
         });
+        if(this.psicologos[0].id != null){
+          this.psicologoSeleccionadoId = this.psicologos[0].id;
+          this.psicologoCargado = true;
+        }
       },
       (error) => {
         console.error('Error al obtener los psicólogos:', error);

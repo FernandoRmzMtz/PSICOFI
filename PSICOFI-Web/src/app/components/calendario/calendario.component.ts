@@ -89,13 +89,13 @@ export class CalendarioComponent implements OnInit {
       const claveUnica = this.LoginService.getClave();
       this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
+      console.log("El tipo usuario es: "+this.tipoUsuario);
+
+      //Reacomodo de codigo para primero verificar que esté autenticado el usuario
+      this.generarDiasDelMes(this.fechaActual);
+      this.cargarCitas();
+      this.verificarCitaAgendada();
     }
-
-
-    this.generarDiasDelMes(this.fechaActual);
-    this.cargarCitas();
-
-    this.verificarCitaAgendada();
   }
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -143,6 +143,7 @@ export class CalendarioComponent implements OnInit {
 
   if (this.tipoUsuario === 'Alumno') {
     this.psicologo = this.psicologoId;
+    console.log("El id del psicologo es: "+this.psicologo);
     this.cargarCitasAlumno();
   } else if ((this.tipoUsuario === 'Psicologo' || this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) {
     if(this.tipoUsuario === 'Psicologo externo') {
@@ -153,8 +154,6 @@ export class CalendarioComponent implements OnInit {
       this.cargarCitasPsicologo();
     }
   }
-  
-  
 }
 
 private cargarCitasAlumno(): void {
@@ -165,7 +164,8 @@ private cargarCitasAlumno(): void {
       console.log("Se cargaron las citas del alumno");
     },
     error: (error) => {
-      console.error('Error al cargar citas del alumno:', error);
+      // console.error('Error al cargar citas:', error);
+      console.log('El psicologo seleccionado no tiene citas disponibles')
     },
   });
 }
