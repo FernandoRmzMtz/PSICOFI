@@ -18,8 +18,7 @@
                                 <!-- Desplegable -->
                                 <select class="form-control" (change)="seleccionarPsicologo($event)">
                                     <option *ngFor="let psicologo of psicologos" [value]="psicologo.id">{{psicologo.nombre}}</option>
-                                  </select>
-                                                                                                                       
+                                </select>                                                                                   
                             </td>
                         </tr>
                     </tbody>
@@ -34,5 +33,6 @@
             </div>
         </div>
     </div>
-    <app-calendario [psicologoId]="psicologoSeleccionadoId"></app-calendario>
+    <app-calendario *ngIf="psicologoCargado && psicologoSeleccionadoId" [psicologoId]="psicologoSeleccionadoId"></app-calendario>
+    <!-- <app-calendario [psicologoId]="psicologoSeleccionadoId"></app-calendario> -->
 </div>
