@@ -14,6 +14,7 @@ use App\Mail\scheduleDateMail;
 use App\Models\Alumno;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\SendEmail;
 
 class DateController extends Controller
 {
@@ -185,7 +186,8 @@ class DateController extends Controller
 
                         $details['psicologo'] = $psicologo->nombreCompleto;
 
-                        Mail::to($details['email'])->send(new scheduleDateMail($details));
+                        
+                        SendEmail::dispatch($details['email'],new scheduleDateMail($details));
 
                         $respuesta = ['Cita agendada correctamente'];
                         return json_encode($respuesta);
@@ -210,7 +212,7 @@ class DateController extends Controller
 
                         $details['psicologo'] = $psicologo->nombreCompleto;
 
-                        Mail::to($details['email'])->send(new scheduleDateMail($details));
+                        SendEmail::dispatch($details['email'],new scheduleDateMail($details));
 
                         $respuesta = ['Cita agendada correctamente'];
                         return json_encode($respuesta);
@@ -230,8 +232,6 @@ class DateController extends Controller
             $respuesta = ['Error' => 'Alumno invalido'];
             return json_encode($respuesta); 
         }
-        
-        
     }
 
     public function createDates(Request $request){
@@ -360,13 +360,15 @@ class DateController extends Controller
 
                 if($cancel[0]->resultado == 1){
                     if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
-                        Mail::to($details['email'])->send(new cancelMail($details));
-                                $respuesta = ['Cita cancelada correctamente'];
-                                return json_encode($respuesta);
+                        // Envío de correo en segundo plano
+                        SendEmail::dispatch($details['email'],new cancelMail($details));
+                        $respuesta = ['Cita cancelada correctamente'];
+                        return json_encode($respuesta);
                     }else if($cita[0]->isPsicologo = $id) {
-                        Mail::to($details['email'])->send(new cancelMailPsicologo($details));
-                            $respuesta = ['Cita cancelada correctamente'];
-                            return json_encode($respuesta);
+                        // Envío de correo en segundo plano
+                        SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
+                        $respuesta = ['Cita cancelada correctamente'];
+                        return json_encode($respuesta);
                     }else{
                         $respuesta = ['Error' => 'ID incorrecto'];
                         return json_encode($respuesta);
@@ -409,11 +411,12 @@ class DateController extends Controller
                     'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
                 ];
 
-                $cancel = DB::select('SELECT confirmar_cita(?) AS resultado',[$idCita]);
+                $confirm = DB::select('SELECT confirmar_cita(?) AS resultado',[$idCita]);
 
-                if($cancel[0]->resultado == 1){
+                if($confirm[0]->resultado == 1){
                     if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
-                        Mail::to($details['email'])->send(new confirmDateMail($details));
+                        // Envío de correo en segundo plano
+                        SendEmail::dispatch($details['email'],new confirmDateMail($details));
                         $respuesta = ['Cita confirmada correctamente'];
                         return json_encode($respuesta);
                     }else{
