@@ -3,42 +3,61 @@
     <div class="row my-5">
       <div class="col-6">
         <label for="selectArea" class="form-label mb-3">Área:</label>
-        <select class="form-select form-select-lg" name="area" id="selectArea">
-          <option value="1">Ciencias de la Computacion</option>
+        <select class="form-select form-select-lg" name="area" id="selectArea" [(ngModel)]="selectedArea">
+          <option value="1">Ciencias de la Computación</option>
           <option value="2">Mecánica Eléctrica</option>
-          <option value="3">Ciencias de la tierra</option>
-
+          <option value="3">Ciencias de la Tierra</option>
         </select>
       </div>
     </div>
     <div class="row">
-
       <div class="col-6">
         <label for="desde">Desde:</label>
-        <input class="form-control" type="date" name="desde" id="desde-input">
+        <input class="form-control" type="date" name="desde" id="desde-input" [(ngModel)]="fechaInicial">
       </div>
       <div class="col-6">
         <label for="hasta">Hasta:</label>
-        <input class="form-control" type="date" name="hasta" id="hasta-input">
-
+        <input class="form-control" type="date" name="hasta" id="hasta-input" [(ngModel)]="fechaFinal">
       </div>
-
     </div>
   </form>
 
   <div class="container d-flex justify-content-center my-5">
-    <button class="btn btn-primary" style="font-size: 15pt">Generar reporte</button>
+    <button class="btn btn-primary" (click)="generarReporte()" style="font-size: 15pt">Generar reporte</button>
   </div>
 
-  <div class="container my-5 ms-5" style="padding-bottom: 100px;">
-    <div class="row justify-content-around">
-      <div class="col-3 flex justify-content-end">
-        <button class="btn btn-primary" disabled style="font-size: 15pt">Visualizar</button>
-      </div>
-      <div class="col-3 justify-content-start">
-        <button class="btn btn-primary" disabled style="font-size: 15pt">Descargar</button>
-      </div>
+  <div *ngIf="showCharts" class="container my-5 ms-5" style="padding-bottom: 100px;">
+    <h3>Total de Alumnos Atendidos: {{datosReporte?.totalPersonasAtendidas}}</h3>
+
+    <!-- Gráficas -->
+
+    <div *ngIf="showCharts" style="width: 600px; height: 400px;">
+      <canvas baseChart [data]="chartDataPersonasPorCarrera" [type]="'bar'" [options]="chartOptions">
+      </canvas>
+    </div>
+
+    <!-- Gráfica de Horario de Atención -->
+    <div *ngIf="showCharts" style="width: 600px; height: 400px;">
+      <canvas baseChart [data]="chartDataHorarioAtencion" [type]="'bar'" [options]="chartOptions">
+      </canvas>
+    </div>
+
+    <!-- Gráfica de Semestres -->
+    <div *ngIf="showCharts" style="width: 600px; height: 400px;">
+      <canvas baseChart [data]="chartDataSemestres" [type]="'bar'" [options]="chartOptions">
+      </canvas>
+    </div>
+
+    <!-- Gráfica de Área de Consulta -->
+    <div *ngIf="showCharts" style="width: 600px; height: 400px;">
+      <canvas baseChart [data]="chartDataAreaConsulta" [type]="'bar'" [options]="chartOptions">
+      </canvas>
+    </div>
+
+    <!-- Gráfica de Motivo de Consulta -->
+    <div *ngIf="showCharts" style="width: 600px; height: 400px;">
+      <canvas baseChart [data]="chartDataMotivoConsulta" [type]="'bar'" [options]="chartOptions">
+      </canvas>
     </div>
   </div>
-
 </div>
