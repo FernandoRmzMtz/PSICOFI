@@ -10,6 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
+            DROP PROCEDURE IF EXISTS get_info_alumno;
             CREATE PROCEDURE get_info_alumno(IN id BIGINT)
             BEGIN
                 SELECT

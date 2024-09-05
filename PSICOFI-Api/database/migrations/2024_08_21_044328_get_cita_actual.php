@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
+            DROP PROCEDURE IF EXISTS get_cita_actual;
             CREATE PROCEDURE get_cita_actual(IN id BIGINT)
             BEGIN
                 SELECT

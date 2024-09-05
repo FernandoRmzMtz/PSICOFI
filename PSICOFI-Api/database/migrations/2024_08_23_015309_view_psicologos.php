@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
+            DROP VIEW IF EXISTS view_psicologos;
             CREATE VIEW view_psicologos AS
             SELECT 
                 psicologo.claveUnica AS idPsicologo, 
