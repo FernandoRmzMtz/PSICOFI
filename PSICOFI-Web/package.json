@@ -30,6 +30,8 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.4",
+    "chroma-js": "^3.0.0",
+    "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.1",
     "igniteui-angular": "^17.1.1",
     "jquery": "^3.7.1",
