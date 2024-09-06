@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
+            DROP FUNCTION IF EXISTS cancelar_cita;
             CREATE FUNCTION cancelar_cita(
                 idCita BIGINT
             )

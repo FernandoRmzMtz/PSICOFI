@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
+            DROP PROCEDURE IF EXISTS get_historial_alumno;
             CREATE PROCEDURE get_historial_alumno(IN id BIGINT)
             BEGIN
                 SELECT
