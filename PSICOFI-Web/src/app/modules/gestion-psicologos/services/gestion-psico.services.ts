@@ -49,13 +49,6 @@ export class gestionPsico {
 
 
   fetchPsicologos(): Observable<any> {
-    // return this.http.post(environment.api + '/psicologo/getPsicologos').pipe(
-    //   catchError(error => {
-    //     console.error('Error fetching psychologists:', error);
-    //     return of([]);
-    //   })
-    // );
-
       return this.http.post(environment.api+'/psicologo/getPsicologos', {}, 
       {
           headers: {
@@ -93,7 +86,6 @@ export class gestionPsico {
       "activo": 0,
       "carrera": "",
       "curp": ""
-
     }
 
     const body = { clave: clave };
