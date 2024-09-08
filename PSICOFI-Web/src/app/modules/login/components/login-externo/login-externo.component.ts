@@ -74,6 +74,7 @@ export class LoginExternoComponent {
           this.loginService.setTipoUsuario(data.rol);
           this._router.navigate(['/inicio']);
           this.isLoading = false;
+          this.loginService.restartTimeout();
         }
 
       } else {
