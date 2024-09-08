@@ -81,7 +81,9 @@ Route::get('/getNotaCita/{idCita}', [NotaCitaController::class, 'getNotaCita'])-
 
 Route::put('/api/nota-cita/{id}', [NotaCitaController::class, 'updateCita'])->name('updateCita');
 
-Route::get('/reporte', [ReporteController::class, 'getReporte'])->name('getReporte');
+Route::post('/reporte/getReporte', [ReporteController::class, 'getReporte'])->name('getReporte');
+
+Route::post('/reporte/getAreasCarreras', [ReporteController::class, 'getAreasCarreras'])->name('getAreasCarreras');
 
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);
