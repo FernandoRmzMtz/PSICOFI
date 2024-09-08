@@ -22,7 +22,7 @@ export class LoginService {
   private readonly CLAVEUNICA = 'clave_user';
   private readonly TIPOUSUARIO = 'rol';
 
-  private readonly TIMEOUT = 60000; // 1 minute
+  private TIMEOUT = 60000; // 1 minute
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -108,10 +108,27 @@ export class LoginService {
   }
 
   restartTimeout(): void {
+    this.setupEventsListenerSession();
     setTimeout(() => {
       console.log("El tiempo se acabó, cerrando sesión automáticamente");
       this.logout();
     }, this.TIMEOUT);
+  }
+  /**
+   * Esta función inicializa los eventos del mouse y teclado para restablecer el tiempo de espera
+   */
+  private setupEventsListenerSession() {
+    window.addEventListener("mouseup", () => this.resetActivityTimer());
+    window.addEventListener("keydown", () => this.resetActivityTimer());
+  }
+  /**
+   * Esta función restablece el tiempo de espera después de que un aevento ha sido activado
+   *  - Keydown
+   *  - Mouseup
+   */
+  private resetActivityTimer() {
+    this.TIMEOUT = 60000;
+    console.log("Se ha activado un evento" + this.TIMEOUT);
   }
   
 }
