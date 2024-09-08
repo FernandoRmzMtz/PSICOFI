@@ -5,85 +5,252 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ReporteController extends Controller
-{
+{   
+    public function getAreasCarreras(Request $request){
+        $tipo = $request->input('tipo',null);
+
+        $consulta = null;
+        $datos = [];
+
+        if($tipo == "carrera"){
+            $consulta = DB::select("SELECT DISTINCT carrera FROM view_reportes;");
+
+            foreach ($consulta as $fila => $dato) {
+                array_push($datos,$dato->carrera);
+            }
+
+        }else if($tipo == "area"){
+            $consulta = DB::select("SELECT DISTINCT areaConsulta FROM view_reportes;");
+
+            foreach ($consulta as $fila => $dato) {
+                array_push($datos,$dato->areaConsulta);
+            }
+
+        }else{
+            $respuesta = ['Error' => 'Consulta incorrecta'];
+            return json_encode($respuesta);
+        }
+
+        return $datos;
+    }
+
     public function getReporte(Request $request){
-        $tipo = $request->input('tipo_reporte',null);
+        $tipo = $request->input('tipo',null);
+        $nombre = $request->input('nombre',null);
         $inicio = $request->input('fecha_inicio',null);
         $final = $request->input('fecha_final',null);
 
-        $total_alumnos = DB::select('SELECT count(distinct claveUnica) AS "totalPersonasAtendidas"
-                    FROM view_reportes
-                    WHERE carrera LIKE "%%"
-                    AND areaConsulta LIKE "%%";');
-        
-        $total_citas = DB::select('SELECT COUNT(*) AS "total" FROM view_reportes;');
+        $consulta = null;
 
-        $horario_atencion = DB::select('SELECT horarioAtencion, COUNT(*) AS "total"
-                                        FROM view_reportes
-                                        WHERE estado = "Atendida"
-                                        GROUP BY horarioAtencion;');
+        if($tipo == "carrera"){
+            $consulta = DB::select("SELECT * FROM view_reportes 
+                                    WHERE fecha BETWEEN ? AND ?
+                                    AND carrera LIKE ?", [$inicio,$final,'%'.$nombre.'%']);
+
+            if(!$consulta){
+                $respuesta = ['Error' => 'Sin datos'];
+                return json_encode($respuesta);
+            }
+        }else if($tipo == "area"){
+            $consulta = DB::select("SELECT * FROM view_reportes 
+                                    WHERE fecha BETWEEN ? AND ?
+                                    AND areaConsulta LIKE ?", [$inicio,$final,'%'.$nombre.'%']);
+                                    
+            if(!$consulta){
+                $respuesta = ['Error' => 'Sin datos'];
+                return json_encode($respuesta);
+            }
+        }else if($tipo == "facultad"){
+            $consulta = DB::select("SELECT * FROM view_reportes 
+                                    WHERE fecha BETWEEN ? AND ?", [$inicio,$final]);
+
+            if(!$consulta){
+                $respuesta = ['Error' => 'Sin datos'];
+                return json_encode($respuesta);
+            }
+        }else{
+            $respuesta = ['Error' => 'Consulta incorrecta'];
+            return json_encode($respuesta);
+        }
+
+        $collection = collect($consulta);
+
+        $alumnos = $collection->unique('claveUnica')->count();
+
+        $citas = $collection->count();
+
+        $total_horarios = $collection->pluck('horarioAtencion')->countBy();
 
         $horarios = [];
-        foreach ($horario_atencion as $hora) {
-            array_push($horarios,[$hora->horarioAtencion,$hora->total]);
+
+        foreach ($total_horarios as $horario => $cantidad) {
+            $horarios[] = [$horario, $cantidad];
         }
-        
-        $semestre_atencion = DB::select('SELECT semestre, COUNT(*) AS "total"
-                                        FROM (SELECT DISTINCT claveUnica, semestre FROM view_reportes) AS dt
-                                        GROUP BY semestre;');
+
+        $total_semestres = $collection->select(['claveUnica','semestre'])->unique();
+        $t_semestres = $total_semestres->pluck('semestre')->countBy();
 
         $semestres = [];
-        foreach ($semestre_atencion as $semestre) {
-            array_push($semestres,[$semestre->semestre,$semestre->total]);
+
+        foreach ($t_semestres as $semestre => $cantidad){
+            $semestres[] = ["{$semestre}° Semestre", $cantidad];
         }
 
-        $motivo_consulta = DB::select('SELECT motivoConsulta, COUNT(*) AS "total" FROM view_reportes GROUP BY motivoConsulta;');
+        $total_areaConsultas = $collection->pluck('Area')->map(function ($area) {
+            return preg_replace('/^Licenciatura en\s+/i', '', $area);
+        })->countBy();
+
+        $areaConsultas = [];
+
+        foreach ($total_areaConsultas as $area => $cantidad){
+            $areaConsultas[] = [$area, $cantidad];
+        }
+
+        $total_motivos = $collection->pluck('motivoConsulta')->countBy();
 
         $motivos = [];
-        foreach ($motivo_consulta as $motivo) {
-            array_push($motivos,[$motivo->motivoConsulta,$motivo->total]);
-        }
-
-        $departamento_consulta = DB::select('SELECT AREA, COUNT(*) AS "total" FROM view_reportes GROUP BY AREA;');
-
-        $departamentos = [];
-        foreach ($departamento_consulta as $departamento) {
-            array_push($departamentos,[$departamento->Area,$departamento->total]);
+        foreach ($total_motivos as $motivo => $cantidad){
+            $motivos[] = [$motivo, $cantidad];
         }
 
         $result = [
-            'totalCitas' => $total_citas[0]->total,
-            'totalPersonasAtendidas' => $total_alumnos[0]->totalPersonasAtendidas,
+            'totalPersonasAtendidas' => $alumnos,
+            'totalCitas' => $citas,
             'horarioAtencion' => $horarios,
             'semestre' => $semestres,
-            'motivoConsulta' => $motivos,
-            'areaConsulta' => $departamentos
+            'areaConsulta' => $areaConsultas,
+            'motivoConsulta' => $motivos
         ];
+
+        if($tipo == "area"){
+
+            $total_carreras = $collection->select(['claveUnica','carrera'])->unique();
+            $t_carreras = $total_carreras->pluck('carrera')->countBy();
+
+            $carreras = [];
+            foreach ($t_carreras as $carrera => $cantidad){
+                $carreras[] = [$carrera, $cantidad];
+            }
+            
+            $result['personasPorCarrera'] = $carreras;
+        }else if($tipo == "facultad"){
+            $total_carreras = $collection->select(['claveUnica','carrera'])->unique();
+            $t_carreras = $total_carreras->pluck('carrera')->countBy();
+
+            $carreras = [];
+            foreach ($t_carreras as $carrera => $cantidad){
+                $carreras[] = [$carrera, $cantidad];
+            }
+
+            $total_areas = $collection->select(['claveUnica','areaConsulta'])->unique();
+            $t_areas = $total_areas->pluck('areaConsulta')->countBy();
+
+            $areas = [];
+            foreach ($t_areas as $area => $cantidad){
+                $areas[] = [$area, $cantidad];
+            }
+
+            $result['personasPorCarrera'] = $carreras;
+            $result['personasPorArea'] = $areas;
+        }
 
         return $result;
     }
 }
 
-// {
-//   "totalPersonasAtendidas": 50,
-//   "totalCitas": 90,
-//   "horarioAtencion": [
-//     ["9:00", 30],
-//     ["10:00", 45],
-//     ["11:00", 15]
-//   ],
-//   "semestre": [
-//     ["1°", 20],
-//     ["9°", 30]
-//   ],
-//   "areaConsulta": {
-//     "Psicologica": 20,
-//     "Pedagogica": 30
-//   },
-//   "motivoConsulta": {
-//     "Academica": 30,
-//     "Emocional": 40,
-//     "Social": 15,
-//     "Otra": 5
-//   }
-// }
+// switch (tipoReporte) {
+//     case 'carrera':
+//       datosSimulados = {
+//         "totalPersonasAtendidas": 50,
+//         "totalCitas": 90,
+//         "horarioAtencion": [
+//           ["9:00", 30],
+//           ["10:00", 45],
+//           ["11:00", 15]
+//         ],
+//         "semestre": [
+//           ["1°", 20],
+//           ["9°", 30]
+//         ],
+//         "areaConsulta": [
+//           ["Psicologica", 20],
+//           ["Pedagogica", 30]
+//         ],
+//         "motivoConsulta": [
+//           ["Academica", 30],
+//           ["Emocional", 40],
+//           ["Social", 15],
+//           ["Otra", 5]
+//         ]
+//       }
+//       break;
+//     case 'area':
+//       datosSimulados = {
+//         "totalPersonasAtendidas": 40,
+//         "totalCitas": 90,
+//         "Horario de Atención": [
+//           ["9:00", 40],
+//           ["10:00", 15],
+//           ["11:00", 35]
+//         ],
+//         "Semestre": [
+//           ["1°", 20],
+//           ["9°", 10],
+//           ["3°", 10]
+//         ],
+//         "Area de la consulta": [
+//           ["Psicologica", 35],
+//           ["Pedagogica", 5]
+//         ],
+//         "Motivo de la consulta": [
+//           ["Academica", 25],
+//           ["Emocional", 50],
+//           ["Social", 10],
+//           ["Otra", 5]
+//         ],
+//         "Personas por carrera": [
+//           ["Computación", 10],
+//           ["Medicina", 15],
+//           ["Derecho", 15]
+//         ]
+//       }
+//       break;
+//     case 'facultad':
+//       datosSimulados = {
+//         "totalPersonasAtendidas": 70,
+//         "totalCitas": 90,
+//         "horarioAtencion": [
+//           ["9:00", 30],
+//           ["10:00", 20],
+//           ["11:00", 40]
+//         ],
+//         "semestre": [
+//           ["1°", 35],
+//           ["9°", 35]
+//         ],
+//         "areaConsulta": [
+//           ["Psicologica", 50],
+//           ["Pedagogica", 40]
+//         ],
+//         "motivoConsulta": [
+//           ["Academica", 40],
+//           ["Emocional", 25],
+//           ["Social", 20],
+//           ["Otra", 5]
+//         ],
+//         "personasPorCarrera": [
+//           ["Computación", 20],
+//           ["Sistemas", 15],
+//           ["Diseño", 35]
+//         ]
+//         ,
+//         "personasPorArea": [
+//           ["Ciencias de la Computacion", 35],
+//           ["Habitat", 35]
+//         ]
+//       }
+
+//       break;
+//     default:
+//       throw new Error("Tipo de reporte no válido");
+//     }
