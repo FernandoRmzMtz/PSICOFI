@@ -6,4 +6,3 @@ export const environment = {
     usuario: null,
     api: "http://psicofi-api.test",
   };
-  

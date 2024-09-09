@@ -89,13 +89,13 @@ export class CalendarioComponent implements OnInit {
       const claveUnica = this.LoginService.getClave();
       this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
+      console.log("El tipo usuario es: "+this.tipoUsuario);
+
+      //Reacomodo de codigo para primero verificar que esté autenticado el usuario
+      this.generarDiasDelMes(this.fechaActual);
+      this.cargarCitas();
+      this.verificarCitaAgendada();
     }
-
-
-    this.generarDiasDelMes(this.fechaActual);
-    this.cargarCitas();
-
-    this.verificarCitaAgendada();
   }
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -143,6 +143,7 @@ export class CalendarioComponent implements OnInit {
 
   if (this.tipoUsuario === 'Alumno') {
     this.psicologo = this.psicologoId;
+    console.log("El id del psicologo es: "+this.psicologo);
     this.cargarCitasAlumno();
   } else if ((this.tipoUsuario === 'Psicologo' || this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) {
     if(this.tipoUsuario === 'Psicologo externo') {
@@ -153,8 +154,6 @@ export class CalendarioComponent implements OnInit {
       this.cargarCitasPsicologo();
     }
   }
-  
-  
 }
 
 private cargarCitasAlumno(): void {
@@ -165,7 +164,8 @@ private cargarCitasAlumno(): void {
       console.log("Se cargaron las citas del alumno");
     },
     error: (error) => {
-      console.error('Error al cargar citas del alumno:', error);
+      // console.error('Error al cargar citas:', error);
+      console.log('El psicologo seleccionado no tiene citas disponibles')
     },
   });
 }
@@ -188,17 +188,22 @@ private cargarCitasPsicologo(): void {
 
 private actualizarDisponibilidadPorDia(): void {
   this.disponibilidadPorDia = {};
-  this.citas.forEach(cita => {
-    const fecha = cita.fecha;
-    if (!this.disponibilidadPorDia[fecha]) {
-      this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
-    }
-    this.disponibilidadPorDia[fecha].total++;
-    if (cita.estado === "Libre") {
-      this.disponibilidadPorDia[fecha].disponibles++;
-    }
-  });
-  this.generarDiasDelMes(this.fechaActual);
+  //Validacion de que this.citas tiene citas
+  if(this.citas){
+    this.citas.forEach(cita => {
+      const fecha = cita.fecha;
+      if (!this.disponibilidadPorDia[fecha]) {
+        this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+      }
+      this.disponibilidadPorDia[fecha].total++;
+      if (cita.estado === "Libre") {
+        this.disponibilidadPorDia[fecha].disponibles++;
+      }
+    });
+    this.generarDiasDelMes(this.fechaActual);
+  }else{
+    console.log("El Psicologo no tiene horarios/citas habilitados.");
+  }
 }
 
 
@@ -270,20 +275,25 @@ private actualizarDisponibilidadPorDia(): void {
   this.horaSeleccionada = "";
   const fechaSeleccionada = dia.toISOString().split('T')[0];
 
-  this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
-    cita.fecha === fechaSeleccionada &&
-    cita.estado === "Libre"
-  ).map(cita => cita.hora);
+  //Validación de que this.citas contiene citas
+  if(this.citas){
+    this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
+      cita.fecha === fechaSeleccionada &&
+      cita.estado === "Libre"
+    ).map(cita => cita.hora);
 
-  this.citasAgendadas = this.citas.filter(cita =>
-    cita.fecha === fechaSeleccionada &&
-   (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
-  ).map(cita => cita);
+    this.citasAgendadas = this.citas.filter(cita =>
+      cita.fecha === fechaSeleccionada &&
+    (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
+    ).map(cita => cita);
 
-  this.citasDisponibles =this.citas.filter(cita =>
-    cita.fecha === fechaSeleccionada &&
-    cita.estado === "Libre"
-  ).map(cita => cita);
+    this.citasDisponibles =this.citas.filter(cita =>
+      cita.fecha === fechaSeleccionada &&
+      cita.estado === "Libre"
+    ).map(cita => cita);
+  }else{
+    console.log("No se tienen registradas citas en el día seleccionado.");
+  }
 
   if (this.diaSeleccionadoElemento) {
     this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
@@ -326,6 +336,9 @@ private actualizarDisponibilidadPorDia(): void {
             this.citaAgendada = true;
             this.agendarCitaService.emitirCitaAgendada();
           } else {
+            console.log("Resultado:");
+            console.log(resultado);
+            console.log(resultado[0]);
             console.error('Error al intentar agendar la cita.');
           }
         },
@@ -493,10 +506,12 @@ private actualizarDisponibilidadPorDia(): void {
     );
     }else{
       if(cita.clavePsicologoExterno){
+        console.log("mandando psic externo a cancelar");
           const citaData = {
           idCita: cita.idCita,
           id: cita.clavePsicologoExterno.toString()
         }
+        console.log(cita.clavePsicologoExterno);
         this.citasService.cancelarCita(citaData);
       }
     }
@@ -547,7 +562,23 @@ private actualizarDisponibilidadPorDia(): void {
   }
 
   semanaAnterior(): void {
-    this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
+    //Validación para no regresar a una semana anterior a la actual
+    const hoy = new Date();
+    // console.log("hoy:"+hoy);
+    const actualWeek = this.getStartOfWeek(hoy);
+    const selectedWeek = this.getStartOfWeek(this.fechaSeleccionada);
+    if((actualWeek.getDate() == selectedWeek.getDate()) &&
+       (actualWeek.getMonth() == selectedWeek.getMonth()) && 
+       (actualWeek.getFullYear() == selectedWeek.getFullYear())){
+        console.log("No puedes regresar a una semana anterior a la actual.");
+    }else{
+      this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
+    }
+    // console.log("Fecha del inicio de semana actual");
+    // console.log(actualWeek.getDate()+"/"+actualWeek.getMonth()+"/"+actualWeek.getFullYear());
+    // console.log("Fecha del inicio de semana seleccionada");
+    // console.log(selectedWeek.getDate()+"/"+selectedWeek.getMonth()+"/"+selectedWeek.getFullYear());
+
   }
 
   semanaSiguiente(): void {

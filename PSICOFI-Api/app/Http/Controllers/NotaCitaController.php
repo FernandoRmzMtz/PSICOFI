@@ -10,16 +10,12 @@ class NotaCitaController extends Controller
 {
 
     public function getCita($idCita){
-        // dd($idCita);
         $cita = Cita::where('idCita', $idCita)->first();
         return $cita;
-        // return response()->json(['cita' => $cita]);
     }
     public function getNotaCita($idCita){
-        // dd($idCita);
         $notaCita = NotaCita::where('idCita', $idCita)->first();
         return $notaCita;
-        // return response()->json(['cita' => $cita]);
     }
 
     public function getReporteCita($idCita)

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AlumnoController extends Controller
 {
@@ -104,31 +105,14 @@ class AlumnoController extends Controller
 
         try{
             if(strlen($id) == 6){
-                $alumno = Alumno::where('claveUnica', $id)
-                ->select('claveUnica',
-                    'nombres',
-                    'apellidoPaterno',
-                    'apellidoMaterno',
-                    'area',
-                    'carrera',
-                    'semestre',
-                    'asesor',
-                    'condicionAcademica',
-                    'promedioGral',
-                    'creditosAprobados',
-                    'creditosInscritos',
-                    'sexo',
-                    'edad'
-                )
-                ->first();
+
+                $alumno = DB::select('call get_info_alumno(?)',[$id]);
 
                 if($alumno){
-                    return json_encode($alumno);
+                    return json_encode($alumno[0]);
                 }else{
                     $respuesta = ['Error' => 'Alumno NO encontrado'];
                     return json_encode($respuesta);
-                    // $alumno = $this->obtainAlumno($id);
-                    // return $alumno;
                 }
             }else{
                 $respuesta = ['Error' => 'ID invalida'];
@@ -147,59 +131,12 @@ class AlumnoController extends Controller
             if(strlen($id) == 6){
                 $Record = [];
 
-                $citas = Cita::where('claveUnica', $id)
-                ->where('estadoCita', 4)
-                ->select(
-                    'idCita',
-                    'clavePsicologo',
-                    'clavePsicologoExterno'
-                )
-                ->get();
+                $citas = DB::select('call get_historial_alumno(?)',[$id]);
+
+                $citas = collect($citas);
 
                 if($citas->isNotEmpty()){
-                    foreach ($citas as $cita) {
-                        if (is_null($cita->clavePsicologo) && !is_null($cita->clavePsicologoExterno)) {
-                            $detalleCita = Cita::where('idCita', $cita->idCita)
-                                ->join('psicologoexterno', 'cita.clavePsicologoExterno', '=', 'psicologoexterno.curp')
-                                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                                ->select(
-                                    'cita.idCita',
-                                    'cita.hora',
-                                    'cita.fecha',
-                                    'estadocita.estado AS estado',
-                                    'cita.claveUnica',
-                                    'psicologoexterno.nombres as Nombres psicologo',
-                                    'psicologoexterno.apellidoPaterno as Apellido Pat psicologo',
-                                    'psicologoexterno.apellidoMaterno as Apellido Mat psicologo'
-                                )
-                                ->first();
-
-                                if ($detalleCita) {
-                                    $Record[] = $detalleCita;
-                                }
-                        }else if(!is_null($cita->clavePsicologo) && is_null($cita->clavePsicologoExterno)){
-                            $detalleCita = Cita::where('idCita', $cita->idCita)
-                                ->join('psicologo', 'cita.clavePsicologo', '=', 'psicologo.claveUnica')
-                                ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                                ->select(
-                                    'cita.idCita',
-                                    'cita.hora',
-                                    'cita.fecha',
-                                    'estadocita.estado AS estado',
-                                    'cita.claveUnica',
-                                    'psicologo.nombres as Nombres psicologo',
-                                    'psicologo.apellidoPaterno as Apellido Pat psicologo',
-                                    'psicologo.apellidoMaterno as Apellido Mat psicologo'
-                                )
-                                ->first();
-
-                                if ($detalleCita) {
-                                    $Record[] = $detalleCita;
-                                }
-                        }
-                    }
-
-                    return json_encode($Record);
+                    return json_encode($citas);
                 }else{
                     $respuesta = ['Sin historial'];
                     return json_encode($respuesta);
@@ -219,64 +156,12 @@ class AlumnoController extends Controller
         
         try{
             if(strlen($id) == 6){
-                $cita = Cita::where('claveUnica', $id)
-                ->whereIn('estadoCita', [1, 2])
-                ->select(
-                    'idCita',
-                    'clavePsicologo',
-                    'clavePsicologoExterno'
-                )
-                ->first();
+                $cita = DB::select('call get_cita_actual(?)',[$id]);
 
-                if($cita != null){
-                    if (is_null($cita->clavePsicologo) && !is_null($cita->clavePsicologoExterno)) {
-                        $detalleCita = Cita::where('idCita', $cita->idCita)
-                            ->join('psicologoexterno', 'cita.clavePsicologoExterno', '=', 'psicologoexterno.curp')
-                            ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                            ->select(
-                                'cita.idCita',
-                                'cita.hora',
-                                'cita.fecha',
-                                'estadocita.estado AS estado',
-                                'cita.claveUnica',
-                                'psicologoexterno.nombres as Nombres psicologo',
-                                'psicologoexterno.apellidoPaterno as Apellido Pat psicologo',
-                                'psicologoexterno.apellidoMaterno as Apellido Mat psicologo'
-                            )
-                            ->first();
+                $cita = collect($cita);
 
-                            if ($detalleCita) {
-                                return json_encode($detalleCita);
-                            }else{
-                                $respuesta = ['Cita no encontrada'];
-                                return json_encode($respuesta);
-                            }
-                    }else if(!is_null($cita->clavePsicologo) && is_null($cita->clavePsicologoExterno)){
-                        $detalleCita = Cita::where('idCita', $cita->idCita)
-                            ->join('psicologo', 'cita.clavePsicologo', '=', 'psicologo.claveUnica')
-                            ->join('estadocita', 'cita.estadoCita', '=', 'estadocita.idEstadoCita')
-                            ->select(
-                                'cita.idCita',
-                                'cita.hora',
-                                'cita.fecha',
-                                'estadocita.estado AS estado',
-                                'cita.claveUnica',
-                                'psicologo.nombres as Nombres psicologo',
-                                'psicologo.apellidoPaterno as Apellido Pat psicologo',
-                                'psicologo.apellidoMaterno as Apellido Mat psicologo'
-                            )
-                            ->first();
-
-                            if ($detalleCita) {
-                                return json_encode($detalleCita);
-                            }else{
-                                $respuesta = ['Cita no encontrada'];
-                                return json_encode($respuesta);
-                            }
-                    }else{
-                        $respuesta = ['Error' => 'Ocurrio un error'];
-                        return json_encode($respuesta);
-                    }
+                if($cita->isNotEmpty()){
+                    return json_encode($cita[0]);
                 }else{
                     $respuesta = ['Sin cita agendada'];
                     return json_encode($respuesta);

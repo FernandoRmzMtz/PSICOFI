@@ -90,7 +90,7 @@ class DatabaseSeeder extends Seeder
             'departamento' => "TrabajoSocial",
         ]);
 
-        Cita::factory(7)->create();
+        //Cita::factory(7)->create();
 
         Administrador::factory(1)->create();
     }

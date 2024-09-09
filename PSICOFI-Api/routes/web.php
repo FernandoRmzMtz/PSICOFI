@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DateController;
 use App\Http\Controllers\PsicoController;
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\ReporteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +80,10 @@ Route::get('/getCita/{idCita}', [NotaCitaController::class, 'getCita'])->name('g
 Route::get('/getNotaCita/{idCita}', [NotaCitaController::class, 'getNotaCita'])->name('getNotaCita');
 
 Route::put('/api/nota-cita/{id}', [NotaCitaController::class, 'updateCita'])->name('updateCita');
+
+Route::post('/reporte/getReporte', [ReporteController::class, 'getReporte'])->name('getReporte');
+
+Route::post('/reporte/getAreasCarreras', [ReporteController::class, 'getAreasCarreras'])->name('getAreasCarreras');
 
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);
