@@ -1,3 +1,4 @@
+// reportes.page.ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./reportes.page.css']
 })
 export class ReportesPage {
+  selectedArea: string = '';
+  fechaInicial: string = '';
+  fechaFinal: string = '';
 
+  onReportGenerated(event: { area: string, fechaInicial: string, fechaFinal: string }) {
+    this.selectedArea = event.area;
+    this.fechaInicial = event.fechaInicial;
+    this.fechaFinal = event.fechaFinal;
+  }
 }

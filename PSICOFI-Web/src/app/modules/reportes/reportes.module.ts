@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgChartsModule } from 'ng2-charts';
+import { GraficasComponent } from './components/graficas/graficas.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { NgChartsModule } from 'ng2-charts';
     CarreraComponent,
     AreaComponent,
     FacultadComponent,
+    GraficasComponent,
   ],
   imports: [
     CommonModule,

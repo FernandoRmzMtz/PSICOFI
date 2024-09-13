@@ -40,7 +40,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.tipoUsuarioSubscription = this.loginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
       this.tipoUsuario = tipoUsuario;
-      console.log('Tipo de usuario:', this.tipoUsuario);
     });
 
     if (this.loginService.isAuthenticated()) {

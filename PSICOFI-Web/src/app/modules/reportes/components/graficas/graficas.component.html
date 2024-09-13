@@ -1,0 +1,91 @@
+<div class="container d-flex justify-content-center my-5">
+    <button class="btn btn-primary" (click)="generarReporte()" style="font-size: 15pt">Generar reporte</button>
+</div>
+
+<div *ngIf="showCharts" class="container">
+    <!-- Selector para elegir el tipo de gráfico -->
+    <div class="mb-3">
+        <label for="chartTypeSelect" class="form-label">Selecciona el tipo de gráfico</label>
+        <select id="chartTypeSelect" class="form-select" [(ngModel)]="selectedChartType">
+            <option value="bar">Barra</option>
+            <option value="pie">Pie</option>
+            <option value="doughnut">Doughnut</option>
+        </select>
+    </div>
+
+    <div class="container d-flex justify-content-center my-5">
+        <button class="btn btn-primary" (click)="descargarComoImagen()" style="font-size: 15pt">Descargar como PNG</button>
+        <button class="btn btn-primary mx-3" (click)="descararComoPDF()" style="font-size: 15pt">Descargar como PDF</button>
+    </div>
+
+    <h3>Total de Alumnos atendidos: {{datosReporte?.totalPersonasAtendidas}}</h3>
+    <h3>Total de consultas atendidas: {{datosReporte?.totalCitas}}</h3>
+
+    <!-- Gráfico de personas por area -->
+    <div *ngIf="showArea" class="container my-5 text-center">
+        <h4 class="mt-4">Personas Atendidas por Area</h4>
+        <div class="chart-container chart-personas-por-carrera">
+            <canvas baseChart [type]="selectedChartType" [datasets]="chartDataPersonasPorArea"
+                [labels]="chartLabelsPersonasPorArea" [legend]="selectedChartType !== 'bar' ? chartLegend : false"
+                [options]="chartOptions" [plugins]="chartPlugins">
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de personas por carrera -->
+    <div *ngIf="showCarrera" class="container my-5 text-center">
+        <h4 class="mt-4">Personas Atendidas por Carrera</h4>
+        <div class="chart-container chart-personas-por-carrera">
+            <canvas baseChart [type]="selectedChartType" [datasets]="chartDataPersonasPorCarrera"
+                [labels]="chartLabelsPersonasPorCarrera" [legend]="selectedChartType !== 'bar' ? chartLegend : false"
+                [options]="chartOptions" [plugins]="chartPlugins">
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de horario de atención -->
+    <div class="container my-5 text-center">
+        <h4 class="mt-4">Horario de Atención</h4>
+        <div class="chart-container">
+            <canvas baseChart [type]="selectedChartType" [datasets]="chartDataHorarioAtencion"
+                [labels]="chartLabelsHorarioAtencion" [legend]="selectedChartType !== 'bar' ? chartLegend : false"
+                [options]="chartOptions" [plugins]="chartPlugins">
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de semestres -->
+    <div class="container my-5 text-center">
+        <h4 class="mt-4">Semestre</h4>
+        <div class="chart-container">
+            <canvas baseChart [type]="selectedChartType" [datasets]="chartDataSemestres" [labels]="chartLabelsSemestres"
+                [options]="chartOptions" [legend]="selectedChartType !== 'bar' ? chartLegend : false"
+                [plugins]="chartPlugins">
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de área de consulta -->
+    <div class="container my-5 text-center">
+        <h4 class="mt-4">Área de la Consulta</h4>
+        <div class="chart-container">
+            <canvas baseChart [type]="selectedChartType" [datasets]="chartDataAreaConsulta"
+                [labels]="chartLabelsAreaConsulta" [options]="chartOptions"
+                [legend]="selectedChartType !== 'bar' ? chartLegend : false" [plugins]="chartPlugins">
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de motivo de consulta -->
+    <div class="container my-5 text-center">
+        <h4 class="mt-4">Motivo de la Consulta</h4>
+        <div class="chart-container">
+            <canvas baseChart [type]="selectedChartType" [datasets]="chartDataMotivoConsulta"
+                [labels]="chartLabelsMotivoConsulta" [options]="chartOptions"
+                [legend]="selectedChartType !== 'bar' ? chartLegend : false" [plugins]="chartPlugins">
+            </canvas>
+        </div>
+    </div>
+
+
+</div>
