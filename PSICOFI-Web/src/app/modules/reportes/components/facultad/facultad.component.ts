@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-facultad',
@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./facultad.component.css']
 })
 export class FacultadComponent {
+  fechaInicial: string = '';
+  fechaFinal: string = '';
+
+  @Output() onGenerateReport = new EventEmitter<{ fechaInicial: string, fechaFinal: string }>();
+
 
 }
