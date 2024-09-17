@@ -83,21 +83,47 @@ export class GraficasComponent {
   chartOptions: any = {};
   chartLegend = true;
   chartPlugins: any[] = [];
+  alertaVisible: boolean = false;
+  errorMessage: string = '';
 
   constructor(private reportesService: ReportesService) { }
 
   generarReporte() {
-    if (this.fechaInicial && this.fechaFinal) {
+    if (this.fechaInicial && this.fechaFinal && (this.fechaFinal>=this.fechaInicial)) {
+      if(this.tipo!='facultad' && this.nombre==undefined) {
+        this.errorMessage = 'Por favor, selecciona la carrera o el área.';
+        this.alertaVisible = true;
+        setTimeout(() => {
+          this.alertaVisible = false;
+        }, 3000);
+        return;
+      }
       this.reportesService.obtenerReporte(this.tipo, this.nombre, this.fechaInicial, this.fechaFinal)
         .subscribe(data => {
-          this.datosReporte = data;
-          this.prepararDatos();
-          this.showCharts = true;
+          if (data.Error) {
+            this.errorMessage = "No hay citas en las fechas seleccionadas. Por favor, elija otras fechas.";
+            this.showCharts = false;
+            this.alertaVisible = true;
+              setTimeout(() => {
+              this.alertaVisible = false;
+            }, 3000);
+  
+          } else {
+            this.datosReporte = data;
+            this.prepararDatos();
+            this.showCharts = true;
+          }
         });
     } else {
-      alert('Por favor seleccione las fechas correctamente');
+      this.errorMessage = 'Por favor seleccione las fechas correctamente.';
+      this.alertaVisible = true;
+      setTimeout(() => {
+        this.alertaVisible = false;
+      }, 3000);
     }
   }
+  
+  
 
   prepararDatos() {
     if (this.datosReporte) {

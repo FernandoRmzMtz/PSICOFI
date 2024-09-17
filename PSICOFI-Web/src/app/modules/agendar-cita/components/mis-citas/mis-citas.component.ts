@@ -69,7 +69,6 @@ export class MisCitasComponent implements OnInit {
       (data: any) => {
         if (Array.isArray(data) && data[0] === 'Sin cita agendada') {
           this.tieneCita = false;
-          console.log('No hay citas en proceso.');
         } else if (data) {
           this.citasProceso = [];
           this.idCitaActual = data.idCita;
@@ -92,7 +91,6 @@ export class MisCitasComponent implements OnInit {
     if (this.idCitaActual !== null) {
       this.agendarCitaService.cancelarCita(this.idCitaActual, this.claveUnica).subscribe(
         (response) => {
-          console.log('Cita cancelada:', response);
           this.visible = true;
             this.success_msg = 'Cita cancelada con éxito.'
             setTimeout(() => {
@@ -114,7 +112,6 @@ export class MisCitasComponent implements OnInit {
     if (this.idCitaActual !== null) {
       this.agendarCitaService.confirmarCita(this.idCitaActual, this.claveUnica).subscribe(
         (response) => {
-          console.log('Cita confirmada:', response);
           this.visible = true;
             this.success_msg = 'Cita confirmada con éxito.'
             setTimeout(() => {

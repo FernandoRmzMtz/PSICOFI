@@ -38,7 +38,6 @@ export class AgendarCitaComponent implements OnInit {
   obtenerPsicologos(): void {
     this.agendarCitaService.obtenerPsicologos().subscribe(
       (data) => {
-        console.log('Datos de psicólogos:', data);
         this.psicologos = Object.values(data).map((psicologo: any) => {
           return { id: psicologo.identificador, nombre: `${psicologo.nombres} ${psicologo.apellidoPaterno} ${psicologo.apellidoMaterno}` };
         });
