@@ -138,12 +138,8 @@ export class CalendarioComponent implements OnInit {
   }
   
   cargarCitas(): void {
-  console.log("Tipo");
-  console.log(this.tipoUsuario);
-
   if (this.tipoUsuario === 'Alumno') {
     this.psicologo = this.psicologoId;
-    console.log("El id del psicologo es: "+this.psicologo);
     this.cargarCitasAlumno();
   } else if ((this.tipoUsuario === 'Psicologo' || this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) {
     if(this.tipoUsuario === 'Psicologo externo') {
@@ -182,8 +178,6 @@ private cargarCitasPsicologo(): void {
       console.error('Error al cargar citas del psicólogo:', error);
     },
   });
-  console.log("Todas");
-  console.log(this.citas);
 }
 
 private actualizarDisponibilidadPorDia(): void {
@@ -322,9 +316,6 @@ private actualizarDisponibilidadPorDia(): void {
         fecha: this.diaSeleccionado.toISOString().split('T')[0],
         hora: this.horaSeleccionada
       };
-
-      console.log('Datos de la cita a agendar:', cita);
-
       this.citasService.agendarCita(cita).subscribe(
         resultado => {
           if (resultado && resultado[0] === 'Cita agendada correctamente') {
@@ -339,7 +330,6 @@ private actualizarDisponibilidadPorDia(): void {
             console.log("Resultado:");
             console.log(resultado);
             console.log(resultado[0]);
-            console.error('Error al intentar agendar la cita.');
           }
         },
         error => {
@@ -358,7 +348,6 @@ private actualizarDisponibilidadPorDia(): void {
   agregarHoraDisponible(): void {
     const nuevaHora = `${this.horasDisponibles.length + 13}:00`;
     this.horasDisponibles.push(nuevaHora);
-    console.log(`Nueva hora disponible agregada: ${nuevaHora}`);
   }
 
 
@@ -474,7 +463,6 @@ private actualizarDisponibilidadPorDia(): void {
 
   onSubmit() {
 
-    console.log(this.form.value);
   }
 
   abrirModalDetalles(cita: Cita) {

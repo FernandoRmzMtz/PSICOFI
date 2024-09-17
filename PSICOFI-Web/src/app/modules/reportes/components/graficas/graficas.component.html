@@ -1,7 +1,11 @@
 <div class="container d-flex justify-content-center my-5">
     <button class="btn btn-primary" (click)="generarReporte()" style="font-size: 15pt">Generar reporte</button>
 </div>
-
+<!-- Error Message -->
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="alertaVisible" style="z-index: 1000;">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#check-circle-fill"/></svg>
+    <div>{{errorMessage}}</div>
+</div>
 <div *ngIf="showCharts" class="container">
     <!-- Selector para elegir el tipo de gráfico -->
     <div class="mb-3">
@@ -86,6 +90,5 @@
             </canvas>
         </div>
     </div>
-
-
 </div>
+
