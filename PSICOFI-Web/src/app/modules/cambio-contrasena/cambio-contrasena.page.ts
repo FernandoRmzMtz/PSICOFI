@@ -47,7 +47,7 @@ export class CambioContrasenaPage {
             }
         },
           (error) => {
-            alert("Error al cambiar la contrasena")
+            alert("Error al cambiar la contrasena");
           });
       }
       else {

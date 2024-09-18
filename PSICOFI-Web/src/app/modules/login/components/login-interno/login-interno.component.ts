@@ -52,8 +52,6 @@ export class LoginInternoComponent {
     this.isLoading = true;
     this.loginService.loginInterno(this.cvunica, this.contrasena).subscribe((data) => {
       if (data) {
-        console.log("data");
-        console.log(data);
         if (data.validacion == "USUARIO-INVALIDO") {
           this.errorMessage = "Usuario o contraseña incorrecta";  
           this.isLoading = false;
