@@ -22,9 +22,12 @@ export class LoginService {
   private readonly CLAVEUNICA = 'clave_user';
   private readonly TIPOUSUARIO = 'rol';
 
-  private TIMEOUT = 600000; // 1 minute
+  private readonly TIMEOUT_LIMIT = 6000; // 6 seconds for testing
+  private timeoutHandle: any;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {
+    this.setupEventsListenerSession();
+   }
 
   public toggleForm() {
     this.formVisible = this.formVisible === 1 ? 2 : 1;
@@ -49,6 +52,7 @@ export class LoginService {
     this.tipoUsuarioSubject.next('');
 
     this.router.navigate(['/login']);
+    this.clearTimeout();
   }
 
   isAuthenticated(): boolean {
@@ -79,7 +83,6 @@ export class LoginService {
   
 
   setClave(claveUnica: string): void {
-    console.log("clave unica"+ this.CLAVEUNICA)
     localStorage.setItem(this.CLAVEUNICA, claveUnica);
   }
 
@@ -108,27 +111,38 @@ export class LoginService {
   }
 
   restartTimeout(): void {
-    this.setupEventsListenerSession();
-    setTimeout(() => {
-      console.log("El tiempo se acabó, cerrando sesión automáticamente");
+    this.clearTimeout();
+    this.timeoutHandle = setTimeout(() => {
       this.logout();
-    }, this.TIMEOUT);
+    }, this.TIMEOUT_LIMIT);
   }
+
   /**
    * Esta función inicializa los eventos del mouse y teclado para restablecer el tiempo de espera
    */
   private setupEventsListenerSession() {
     window.addEventListener("mouseup", () => this.resetActivityTimer());
     window.addEventListener("keydown", () => this.resetActivityTimer());
+    this.restartTimeout();
   }
+
   /**
-   * Esta función restablece el tiempo de espera después de que un aevento ha sido activado
-   *  - Keydown
-   *  - Mouseup
+   * Establkece el tiempo de espera después de que un evento ha sido activado, tales como:
+   * - Keydown
+   * - Mouseup
    */
   private resetActivityTimer() {
-    this.TIMEOUT = 60000;
-    console.log("Se ha activado un evento" + this.TIMEOUT);
+    this.restartTimeout();
   }
-  
+
+  /**
+   * Limpia el timeout que está activo en caso de existir
+   */
+
+  private clearTimeout() {
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+      this.timeoutHandle = null;
+    }
+  }
 }
