@@ -22,7 +22,7 @@ export class LoginService {
   private readonly CLAVEUNICA = 'clave_user';
   private readonly TIPOUSUARIO = 'rol';
 
-  private readonly TIMEOUT_LIMIT = 6000; // 6 seconds for testing
+  private readonly TIMEOUT_LIMIT = 900000; // 15 minutos
   private timeoutHandle: any;
 
   constructor(private http: HttpClient, private router: Router) {
