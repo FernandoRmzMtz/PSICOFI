@@ -68,10 +68,8 @@ export class AnadirPsicoComponent {
   public registraPsicologoInterno(psicologo: any): void {
     this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
       (psicologo) => {
-        console.log("Psicologo agregado", psicologo);
       },
       (error) => {
-        console.log("ERROR!");
       }
     )
   }
@@ -79,11 +77,8 @@ export class AnadirPsicoComponent {
   public registraPsicologoExterno(psicologo: any): void {
     this.gestionPsicoService.agregarPsicologoExterno(psicologo).subscribe(
       (psicologo) => {
-        console.log("Psicologo agregado", psicologo);
       },
       (error) => {
-        console.log(error);
-        console.log("ERROR!");
       }
     )
   }
