@@ -59,6 +59,9 @@ export class LoginService {
     );
   }
 
+  /**
+   * Esta función cierra la sesión del navegador y redirige al usuario a la página de login.
+   */
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_ACTIVE);
@@ -70,18 +73,34 @@ export class LoginService {
     this.clearTimeout();
   }
 
+  /**
+   * Esta función verifica si el usuario está autenticado.
+   * @returns boolean
+   */
   isAuthenticated(): boolean {
     return localStorage.getItem(this.TOKEN_KEY) !== null;
   }
 
+  /**
+   * Esta función obtiene el token del usuario.
+   * @returns Token del usuario
+   */
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
-
+  
+  /**
+   * Esta función recibe un token y lo guarda en el localStorage.
+   * @param token token del usuario
+   */
   setToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
   }
 
+  /**
+   * Esta función obtiene la clave del usuario.
+   * @returns Clave del usuario
+   */
   getClave(): string {
     this.clave = localStorage.getItem(this.CLAVEUNICA);
     if (this.clave != null) {
@@ -91,29 +110,51 @@ export class LoginService {
     }
   }
 
+  /**
+   * Esta función obtiene el tipo de usuario.
+   * @returns Tipo de usuario
+   */
   getTipoUsuario(): string {
     return localStorage.getItem(this.TIPOUSUARIO) ?? '';
   }
   
-  
-
+  /**
+   * Esta función recibe la clave única del usuario y la guarda en el localStorage.
+   * @param claveUnica clave única del usuario
+   */
   setClave(claveUnica: string): void {
     localStorage.setItem(this.CLAVEUNICA, claveUnica);
   }
 
+  /**
+   * Esta función recibe el tipo de usuario y lo guarda en el localStorage.
+   * @param tipoUsuario Tipo de usuario
+   */
   setTipoUsuario(tipoUsuario: string): void {
     localStorage.setItem(this.TIPOUSUARIO, tipoUsuario);
     this.tipoUsuarioSubject.next(tipoUsuario);
   }
 
+  /**
+   * Esta función recibe el nombre del usuario y lo guarda en el localStorage.
+   * @param user Nombre del usuario
+   */
   setActiveUser(user: string): void {
     localStorage.setItem(this.USER_ACTIVE, user);
   }
 
+  /**
+   * Esta función obtiene  usuario activo.
+   * @returns usuario activo
+   */
   getActiveUser(): string | null {
     return localStorage.getItem(this.USER_ACTIVE);
   }
 
+  /**
+   * Esta función verifica si el usuario está logueado.
+   * @returns boolean
+   */
   isLoggedIn(): boolean {
     return (
       localStorage.getItem(this.TOKEN_KEY) !== null &&
@@ -121,10 +162,17 @@ export class LoginService {
     );
   }
 
+  /**
+   * Esta función obtiene el tipo de usuario como un observable.
+   * @returns Tipo de usuario observable
+   */
   getTipoUsuarioObservable(): Observable<string> {
     return this.tipoUsuarioSubject.asObservable();
   }
 
+  /**
+   * Esta función reinicia el tiempo de espera.
+   */
   restartTimeout(): void {
     this.clearTimeout();
     this.timeoutHandle = setTimeout(() => {
