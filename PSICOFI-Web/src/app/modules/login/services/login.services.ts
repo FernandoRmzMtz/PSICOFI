@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Router } from '@angular/router';
 
@@ -36,12 +37,26 @@ export class LoginService {
   public getFormVisible() {
     return this.formVisible;
   }
-
+  
+  /**
+   * Esta función envía una petición al servidor para verificar los datos y a través de los catch maneja los errores.
+   * @param clave clave del usuario
+   * @param contrasena contraseña del usuario
+   * @returns Validacion de login
+   */
   loginInterno(clave: string, contrasena: string): Observable<any> {
     return this.http.post('http://psicofi-api.test/login', {
       id: clave,
       password: contrasena
-    });
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // console.error('Error en la petición:', error);
+        if (error.status === 500) {
+          return "Ha ocurrido un error, por favor intenta más tarde.";
+        }
+        return throwError(error);
+      })
+    );
   }
 
   logout(): void {
@@ -138,7 +153,6 @@ export class LoginService {
   /**
    * Limpia el timeout que está activo en caso de existir
    */
-
   private clearTimeout() {
     if (this.timeoutHandle) {
       clearTimeout(this.timeoutHandle);
