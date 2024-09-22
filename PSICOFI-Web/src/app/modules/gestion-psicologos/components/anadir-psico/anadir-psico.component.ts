@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { gestionPsico } from '../../services/gestion-psico.services';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-anadir-psico',
@@ -9,6 +10,10 @@ import { gestionPsico } from '../../services/gestion-psico.services';
 export class AnadirPsicoComponent {
   visible = false;
   public claveNuevo: string = '';
+  claveError: string = '';
+
+  mensaje = ''; // Mensaje a mostrar
+  mensajeTipo = ''; // 'success' o 'error'
   public nuevoPsicologo = {
     "nombres": "",
     "apellidoPaterno": "",
@@ -19,25 +24,37 @@ export class AnadirPsicoComponent {
     "correo": "",
     "contrasena": "password"
   };
-  constructor(private gestionPsicoService: gestionPsico) { }
 
-  public agregarPsicologo(): void {
+  constructor(private gestionPsicoService: gestionPsico) { }
+  /**
+   * Esta función se encarga de agregar un psicólogo a la base de datos
+   * @param form Formulario de agregar
+   * @returns 
+   */
+  public agregarPsicologo(form: NgForm): void {
+    if (form.invalid) {
+      return; // No enviar si el formulario no es válido
+    }
+
     let tipo = 0;
     if (this.claveNuevo.length == 6) {
-      //Es interno
+      // Es interno
+      this.claveError = '';
       tipo = 1;
       let clave = parseInt(this.claveNuevo);
       (this.nuevoPsicologo as any)['claveUnica'] = clave;
     }
     else if (this.claveNuevo.length == 18) {
-      //Es externo
+      // Es externo
+      this.claveError = '';
       tipo = 2;
       (this.nuevoPsicologo as any)['curp'] = this.claveNuevo;
     }
     else {
-      alert("La clave no tiene el formato correcto Curp = 18 caracteres y clave única = 6")
+      this.claveError = 'La clave debe tener exactamente 6 o 18 caracteres';
       return;
     }
+
     this.nuevoPsicologo.activo = 1;
     if (tipo == 1) {
       this.registraPsicologoInterno(this.nuevoPsicologo);
@@ -45,6 +62,16 @@ export class AnadirPsicoComponent {
     else if (tipo == 2) {
       this.registraPsicologoExterno(this.nuevoPsicologo);
     }
+
+    this.resetForm(form);
+  }
+
+  /**
+   * Esta función se encarga de resetear el formulario
+   * @param form form
+   */
+  private resetForm(form: NgForm) {
+    form.resetForm();
     this.claveNuevo = '';
     this.nuevoPsicologo = {
       "nombres": "",
@@ -56,31 +83,58 @@ export class AnadirPsicoComponent {
       "correo": "",
       "contrasena": "password"
     };
-
-    this.visible = true;
-    //esperamos unos segundos
-    setTimeout(() => {
-      this.visible = false;
-    }, 3000);
   }
 
-
+  /**
+   * Esta función se encarga de registrar un psicólogo interno
+   * @param psicologo Objeto de psicologo
+   */
   public registraPsicologoInterno(psicologo: any): void {
     this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
-      (psicologo) => {
+      (response) => {
+        if (response == 0) {
+          this.mostrarMensaje('El psicólogo ya está registrado', 'error');
+        } else {
+          this.mostrarMensaje('El psicólogo se ha añadido con éxito', 'success');
+        }
       },
       (error) => {
+        this.mostrarMensaje('Ocurrió un error al intentar agregar el psicólogo', 'error');
       }
-    )
+    );
   }
 
+  /**
+   * Esta función se encarga de registrar un psicólogo externo
+   * @param psicologo Objeto de psicologo
+   */
   public registraPsicologoExterno(psicologo: any): void {
     this.gestionPsicoService.agregarPsicologoExterno(psicologo).subscribe(
-      (psicologo) => {
+      (response) => {
+        if (response == 0) {
+          this.mostrarMensaje('El psicólogo ya está registrado', 'error');
+        } else {
+          this.mostrarMensaje('El psicólogo se ha añadido con éxito', 'success');
+        }
       },
       (error) => {
+        this.mostrarMensaje('Ocurrió un error al intentar agregar el psicólogo', 'error');
       }
-    )
+    );
   }
+  /**
+   * Esta función se encarga de mostrar un mensaje en pantalla
+   * @param mensaje mensaje a mostrar
+   * @param tipo tipo error o success
+   */
+  private mostrarMensaje(mensaje: string, tipo: string) {
+    this.mensaje = mensaje;
+    this.mensajeTipo = tipo;
+    this.visible = true;
 
+    setTimeout(() => {
+      this.visible = false;
+      this.mensaje = '';
+    }, 3000);
+  }
 }

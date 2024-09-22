@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReportesModule } from './modules/reportes/reportes.module';
 import { LoaderComponent } from './components/loader/loader.component';
+import { GestionPsicoComponent } from './modules/gestion-psicologos/components/gestion-psico/gestion-psico.component';
 
 
 @NgModule({
