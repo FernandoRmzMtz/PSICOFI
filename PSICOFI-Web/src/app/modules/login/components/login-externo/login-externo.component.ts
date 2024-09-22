@@ -63,11 +63,7 @@ export class LoginExternoComponent {
     this.isLoading = true;
     this.loginService.loginInterno(this.cvunica, this.contrasena).subscribe((data) => {
       if (data) {
-        if (data.validacion == "USUARIO-INVALIDO") {
-          this.errorMessage = "Usuario o contraseña incorrecta";
-          this.isLoading = false;
-        }
-        else {
+        if(data.validacion == "USUARIO-VALIDO") {
           this.loginService.setToken(data.token);
           this.loginService.setActiveUser(data.nombre);
           this.loginService.setClave(data.id);
@@ -76,10 +72,14 @@ export class LoginExternoComponent {
           this.isLoading = false;
           this.loginService.restartTimeout();
         }
-
-      } else {
-        this.errorMessage = "Usuario o contraseña incorrecta";
-        this.isLoading = false;
+        else if (data.validacion == "USUARIO-INVALIDO") {
+          this.errorMessage = "Usuario o contraseña incorrecta";  
+          this.isLoading = false;
+        }
+        else {
+          this.errorMessage = "Ha ocurrido un error, favor inténtalo más tarde.";  
+          this.isLoading = false;
+        }
       }
     });
   }
