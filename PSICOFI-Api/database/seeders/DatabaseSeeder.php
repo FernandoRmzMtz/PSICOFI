@@ -14,13 +14,14 @@ use App\Models\EstadoCita;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
 use App\Models\TipoIntervencion;
+use App\Models\NotaCita;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        Alumno::factory(10)->create();
-        PsicologoExterno::factory(3)->create();
+        Alumno::factory(500)->create();
+        PsicologoExterno::factory(6)->create();
         CarrerasPsico::create(['carrera' => 'Licenciatura en psicopedagogia']);
         CarrerasPsico::create(['carrera' => 'Licenciatura en psicologia']);
         EstadoCita::create(['estado' => 'Asistencia confirmada']);
@@ -30,7 +31,7 @@ class DatabaseSeeder extends Seeder
         EstadoCita::create(['estado' => 'No atendida']);
         EstadoCita::create(['estado' => 'Cancelada']);
         EstadoCita::create(['estado' => 'Libre']);
-        Psicologo::factory(3)->create();
+        Psicologo::factory(6)->create();
 
         $tiposIntervencion = [
             ['tipoIntervencion' => 'Emocional'],
@@ -52,8 +53,7 @@ class DatabaseSeeder extends Seeder
                 'edad' => 21,
                 'sexo' => 'M',
                 'area' => 'Ciencias de la computación',
-                'carrera' => 'Ing. en sistemas inteligentes',
-                // 'psicologoAsociado' => '',
+                'carrera' => 'Ing. en Sistemas Inteligentes',
                 'semestre' => 8,
                 'condicionAcademica' => 'INSCRITO',
                 'creditosAprobados' => 345,
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
                 'asesor' => 'Dra. Sandra Edith Nava Muñoz',
                 'contrasena' => '1234567890',
                 'habilitado' => true,
-            ],
+            ]
         ];
 
         // Inserta los datos en la tabla alumno
@@ -90,8 +90,8 @@ class DatabaseSeeder extends Seeder
             'departamento' => "TrabajoSocial",
         ]);
 
-        //Cita::factory(7)->create();
-
         Administrador::factory(1)->create();
+
+        NotaCita::factory(5000)->create();
     }
 }

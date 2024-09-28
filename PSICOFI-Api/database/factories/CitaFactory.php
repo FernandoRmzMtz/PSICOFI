@@ -7,6 +7,7 @@ use App\Models\Cita;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
 use App\Models\Alumno;
+use App\Models\NotaCita;
 use Psy\Readline\Hoa\Console;
 
 /**
@@ -22,35 +23,31 @@ class CitaFactory extends Factory
      */
     public function definition(): array
     {
-        $horasDisponibles = ["08:00:00", "09:00:00", "10:00:00", "11:00:00", "12:00:00",
-                            "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00"];
-        $horaElegida = $this->faker->randomElement($horasDisponibles);
-        $indice = array_search($horaElegida, $horasDisponibles);
-        unset($horasDisponibles[$indice]);
+        $psicologo = $psicologoExterno = null;
+        
+        $horas = ["08:00:00", "09:00:00", "10:00:00", "11:00:00", "12:00:00",
+                "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00"];
 
-        $alumnosDisponibles = Alumno::distinct()->pluck('claveUnica')->toArray();
-        $claveElegida = $this->faker->randomElement($alumnosDisponibles);
-        $indice = array_search($claveElegida, $alumnosDisponibles);
-        unset($alumnosDisponibles[$indice]);
+        $dt = $this->faker->dateTimeBetween($startDate = '-10 months', $endDate = 'now');
+        $date = $dt->format("Y-m-d"); 
 
-        $elegirPsicologoExterno = $this->faker->randomElement([1,2]); 
+        $hora = $this->faker->randomElement($horas);
 
-        if ($elegirPsicologoExterno == 1) {
-            $psicologoExterno = PsicologoExterno::select('curp')
-            ->inRandomOrder()
-            ->first();
-            $psicologo = null;
-            $psicologoExterno = $psicologoExterno["curp"];
-        } else {
-            $psicologo = Psicologo::inRandomOrder()->first()->claveUnica;
-            $psicologoExterno = null;
+        $alumno = Alumno::select('claveUnica')->inRandomOrder()->first();
+        
+        $rand = $this->faker->randomElement([1,2]);
+
+        if($rand == 1){
+            $psicologo = Psicologo::select('claveUnica')->inRandomOrder()->first()->claveUnica;
+        }else if($rand == 2){
+            $psicologoExterno = PsicologoExterno::select('curp')->inRandomOrder()->first()->curp;
         }
 
         return [
-            'fecha' => $this->faker->randomElement(['2024-05-16', '2024-05-17', '2024-05-18', '2024-05-19', '2024-05-20']),
-            'hora' => $horaElegida,
-            'claveUnica' => $claveElegida,
-            'estadoCita' => $this->faker->randomElement([2,4]),
+            'fecha' => $date,
+            'hora' => $hora,
+            'claveUnica' => $alumno->claveUnica,
+            'estadoCita' => 4,
             'clavePsicologo' => $psicologo,
             'clavePsicologoExterno' => $psicologoExterno,
         ];

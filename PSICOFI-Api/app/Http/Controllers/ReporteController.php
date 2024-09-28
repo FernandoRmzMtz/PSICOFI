@@ -46,7 +46,6 @@ class ReporteController extends Controller
             $consulta = DB::select("SELECT * FROM view_reportes 
                                     WHERE fecha BETWEEN ? AND ?
                                     AND carrera LIKE ?", [$inicio,$final,'%'.$nombre.'%']);
-
             if(!$consulta){
                 $respuesta = ['Error' => 'Sin datos'];
                 return json_encode($respuesta);

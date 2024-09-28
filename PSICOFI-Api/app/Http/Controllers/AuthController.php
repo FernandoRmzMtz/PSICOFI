@@ -56,6 +56,7 @@ class AuthController extends Controller
         if(strlen($id) == 6){
             $alumno = Alumno::where('claveUnica', $id)
             ->where('contrasena', $password)
+            ->where('condicionAcademica', '=', 'INSCRITO')
             ->select('alumno.claveUnica',
                     'alumno.nombres',
                     'alumno.apellidoPaterno',
@@ -66,10 +67,11 @@ class AuthController extends Controller
 
             $psicologo = Psicologo::where('claveUnica', $id)
             ->where('contrasena', $password)
+            ->where('activo', '=', 1)
             ->select('psicologo.claveUnica',
                     'psicologo.nombres',
                     'psicologo.apellidoPaterno',
-                    'psicologo.apellidoMaterno',
+                    'psicologo.apellidoMaterno'
             )
             ->first();
 
@@ -145,6 +147,7 @@ class AuthController extends Controller
         }else if(strlen($id) == 18){
             $psicologoexterno = PsicologoExterno::where('CURP', $id)
             ->where('contrasena', $password)
+            ->where('activo', '=', 1)
             ->select('psicologoexterno.curp',
                     'psicologoexterno.nombres',
                     'psicologoexterno.apellidoPaterno',

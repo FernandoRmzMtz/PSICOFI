@@ -27,7 +27,7 @@ class PsicologoExternoFactory extends Factory
             'semestre' => $this->faker->numberBetween(1,9),
             'activo' => $this->faker->boolean(),
             'correo' => $this->faker->email(),
-            'contrasena' => $this->faker->bothify('###???###???')
+            'contrasena' => 12345
         ];
     }
 }

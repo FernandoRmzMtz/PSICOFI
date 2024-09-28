@@ -15,9 +15,9 @@ return new class extends Migration
             $table->string('CURP',18)->primary();
             $table->string('nombres',60);
             $table->string('apellidoPaterno',60);
-            $table->string('apellidoMaterno',60);
+            $table->string('apellidoMaterno',60)->nullable()->default(null);
             $table->string('Carrera');
-            $table->string('semestre');
+            $table->bigInteger('semestre');
             $table->boolean('activo');
             $table->string('correo');
             $table->string('contrasena',20);

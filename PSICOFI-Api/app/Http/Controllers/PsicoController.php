@@ -209,13 +209,23 @@ class PsicoController extends Controller
     }
 
     public function registerPsicologo(Request $request){
-        $clave = $request->input('claveUnica',null);
-        $curp = $request->input('curp',null);
+        if(!$request->all()){
+            $respuesta = ['Error' => 'Datos invalidos'];
+            return json_encode($respuesta);
+        }
 
-        if($clave == null){
+        $clave = $request->input('claveUnica',null);
+        $curp = $request->input('CURP',null);
+
+        if($clave == null && strlen($curp) == 18){
+            if(PsicologoExterno::where('CURP',$curp)->exists()){
+                $respuesta = ['Error' => 'Psicologo duplicado'];
+                return json_encode($respuesta);
+            }
+
             $psicologo = new PsicologoExterno;
 
-            $psicologo -> CURP = $request->CURP;
+            $psicologo -> CURP = $curp;
             $psicologo -> nombres = $request->nombres;
             $psicologo -> apellidoPaterno = $request->apellidoPaterno;
             $psicologo -> apellidoMaterno = $request->apellidoMaterno;
@@ -225,35 +235,51 @@ class PsicoController extends Controller
             $psicologo -> correo = $request->correo;
             $psicologo -> contrasena = $request->contrasena;
 
-            if($psicologo->save()){
-                return true;
-            }else{
-                return 0;
-            }
-        }else if($curp == null){
-            $psicologo = new Psicologo;
-
-            $psicologo -> claveUnica = $request->claveUnica;
-            $psicologo -> nombres = $request->nombres;
-            $psicologo -> apellidoPaterno = $request->apellidoPaterno;
-            $psicologo -> apellidoMaterno = $request->apellidoMaterno;
-            $psicologo -> idCarrera = $request->idCarrera;
-            $psicologo -> semestre = $request->semestre;
-            $psicologo -> activo = $request->activo;
-            $psicologo -> correo = $request->correo;
-            $psicologo -> contrasena = $request->contrasena;
-
             try {
                 if ($psicologo->save()) {
-                    return true;
+                    $respuesta = ['Psicologo registrado correctamente'];
+                    return json_encode($respuesta);
                 }else{
-                    return 0;
+                    $respuesta = ['Error' => 'Datos invalidos'];
+                    return json_encode($respuesta);
                 }
             } catch (\Exception $e) {
-                return 0;
+                $respuesta = ['Error' => 'Datos invalidos'];
+                return json_encode($respuesta);
             }
-        }else if($clave !== null && $curp !== null){
-            return 0;
+        }else if($curp == null){
+            if(Psicologo::where('claveUnica',$clave)->exists()){
+                $respuesta = ['Error' => 'Psicologo duplicado'];
+                return json_encode($respuesta);
+            }else{
+                $psicologo = new Psicologo;
+
+                $psicologo -> claveUnica = $clave;
+                $psicologo -> nombres = $request->nombres;
+                $psicologo -> apellidoPaterno = $request->apellidoPaterno;
+                $psicologo -> apellidoMaterno = $request->apellidoMaterno;
+                $psicologo -> idCarrera = $request->idCarrera;
+                $psicologo -> semestre = $request->semestre;
+                $psicologo -> activo = $request->activo;
+                $psicologo -> correo = $request->correo;
+                $psicologo -> contrasena = $request->contrasena;
+
+                try {
+                    if ($psicologo->save()) {
+                        $respuesta = ['Psicologo registrado correctamente'];
+                        return json_encode($respuesta);
+                    }else{
+                        $respuesta = ['Error' => 'Datos invalidos'];
+                        return json_encode($respuesta);
+                    }
+                } catch (\Exception $e) {
+                    $respuesta = ['Error' => 'Datos invalidos'];
+                    return json_encode($respuesta);
+                }
+            }
+        }else if($clave !== null && $curp !== null || strlen($curp) != 18){
+            $respuesta = ['Error' => 'Datos invalidos'];
+            return json_encode($respuesta);
         }
     }
 
