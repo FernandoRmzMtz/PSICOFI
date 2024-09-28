@@ -15,7 +15,7 @@ return new class extends Migration
             $table->bigInteger('claveUnica')->primary();
             $table->string('nombres',60);
             $table->string('apellidoPaterno',60);
-            $table->string('apellidoMaterno',60);
+            $table->string('apellidoMaterno',60)->nullable()->default(null);;
             $table->unsignedBigInteger('idCarrera');
             $table->bigInteger('semestre');
             $table->string('correo');

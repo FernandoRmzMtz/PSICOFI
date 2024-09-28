@@ -11,16 +11,15 @@ class NotaCita extends Model
 
     public $timestamps = false;
 
-    protected $table = 'NotaCita'; // Nombre de la tabla en la base de datos
+    protected $table = 'notacita'; 
 
-    protected $primaryKey = 'idNotaCita'; // Nombre de la clave primaria en la tabla
-
-    protected $fillable = [ // Lista de campos que pueden ser asignados masivamente (mediante el método create, por ejemplo)
+    protected $primaryKey = 'idNotaCita'; 
+    protected $fillable = [ 
         'tipoIntervencion',
         'notas',
         'departamento',
         'detalleCanalizacion',
         'idCita',
-        // Agrega otros campos según sea necesario
+        'foraneo'
     ];
 }

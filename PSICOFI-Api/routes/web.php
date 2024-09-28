@@ -3,8 +3,8 @@
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NotaCitaController;
 use App\Http\Controllers\TipoIntervencionController;
+use App\Http\Controllers\NotaCitaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DateController;
@@ -84,6 +84,8 @@ Route::put('/api/nota-cita/{id}', [NotaCitaController::class, 'updateCita'])->na
 Route::post('/reporte/getReporte', [ReporteController::class, 'getReporte'])->name('getReporte');
 
 Route::post('/reporte/getAreasCarreras', [ReporteController::class, 'getAreasCarreras'])->name('getAreasCarreras');
+
+Route::get('/reporte/prueba', [NotaCitaController::class, 'prueba'])->name('prueba');
 
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cita;
-use App\Models\NotaCita;
 use Illuminate\Http\Request;
+use App\Models\NotaCita;
 
 class NotaCitaController extends Controller
 {
-
     public function getCita($idCita){
         $cita = Cita::where('idCita', $idCita)->first();
         return $cita;
