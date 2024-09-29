@@ -1,10 +1,16 @@
 <div class="container d-flex justify-content-center">
-    <table class="my-4 table-striped">
-        <tr>
-            <td class="bg-primary text-white px-2">Clave &uacute;nica del alumno</td>
-        </tr>
-        <tr>
-            <td *ngFor="let alumno of alumnos" class="text-center">{{ alumno }}</td>
-        </tr>
-    </table>
+    <div class="table-container" style="width: 50%; max-height: 400px;">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th class="bg-primary text-white px-3">Clave Única</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let alumno of alumnos">
+                    <td class="text-center">{{ alumno }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
