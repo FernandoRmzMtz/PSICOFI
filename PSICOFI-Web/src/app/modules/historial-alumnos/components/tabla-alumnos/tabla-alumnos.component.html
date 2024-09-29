@@ -1,20 +1,10 @@
-<div class="row my-4">
-  <div class="col-11" *ngIf="!isLoading">
-    <input type="text" name="inputBuscar" class="form-control" placeholder="Buscar alumno por clave única"
-      [(ngModel)]="inputBuscar" (ngModelChange)="buscarChange()" />
-  </div>
-  <div class="col-1" *ngIf="!isLoading">
-    <div class="btn btn-primary"><i class="bi bi-search"></i></div>
-  </div>
-</div>
-
-<div class="container my-5" style="height: 35vh" >
-  <div class="table-responsive" style="max-height: 460px;" *ngIf="!isLoading">
+<div class="container my-5" style="height: 35vh;">
+  <div class="overflow-auto" style="max-height: 460px;" *ngIf="!isLoading">
     <table class="table table-striped">
       <thead>
         <tr>
-          <th scope="col" class="ps-3">Clave única</th>
-          <th scope="col" class="text-center">Ver historial</th>
+          <th scope="col" class="ps-3 sticky-header">Clave única</th>
+          <th scope="col" class="text-center sticky-header">Ver historial</th>
         </tr>
       </thead>
       <tbody>
@@ -33,5 +23,3 @@
     No se encontraron resultados
   </div>
 </div>
-
-<app-loader *ngIf="isLoading"></app-loader>
