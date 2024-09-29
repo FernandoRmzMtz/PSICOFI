@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { gestionPsico } from '../../services/gestion-psico.services';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tabla-alumnos-atendidos',
