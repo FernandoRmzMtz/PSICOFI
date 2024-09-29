@@ -92,29 +92,46 @@ export class AnadirPsicoComponent {
   public registraPsicologoInterno(psicologo: any): void {
     this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
       (response) => {
-        if (response == 0) {
-          this.mostrarMensaje('El psicólogo ya está registrado', 'error');
+        if (Array.isArray(response)) {
+          this.mostrarMensaje(response[0], 'success');
+        } else if (response.Error) {
+          if (response.Error === 'Psicologo duplicado') {
+            this.mostrarMensaje('El psicólogo ya está registrado', 'error');
+          } else if (response.Error === 'Datos invalidos') {
+            this.mostrarMensaje('Datos inválidos. Verifique los campos y vuelva a intentarlo', 'error');
+          } else {
+            this.mostrarMensaje('Ocurrió un error no identificado', 'error');
+          }
         } else {
-          this.mostrarMensaje('El psicólogo se ha añadido con éxito', 'success');
+          this.mostrarMensaje('Respuesta inesperada del servidor', 'error');
         }
       },
       (error) => {
         this.mostrarMensaje('Ocurrió un error al intentar agregar el psicólogo', 'error');
       }
     );
-  }
+}
+
 
   /**
    * Esta función se encarga de registrar un psicólogo externo
    * @param psicologo Objeto de psicologo
    */
   public registraPsicologoExterno(psicologo: any): void {
-    this.gestionPsicoService.agregarPsicologoExterno(psicologo).subscribe(
+    this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
       (response) => {
-        if (response == 0) {
-          this.mostrarMensaje('El psicólogo ya está registrado', 'error');
+        if (Array.isArray(response)) {
+          this.mostrarMensaje(response[0], 'success');
+        } else if (response.Error) {
+          if (response.Error === 'Psicologo duplicado') {
+            this.mostrarMensaje('El psicólogo ya está registrado', 'error');
+          } else if (response.Error === 'Datos invalidos') {
+            this.mostrarMensaje('Datos inválidos. Verifique los campos y vuelva a intentarlo', 'error');
+          } else {
+            this.mostrarMensaje('Ocurrió un error no identificado', 'error');
+          }
         } else {
-          this.mostrarMensaje('El psicólogo se ha añadido con éxito', 'success');
+          this.mostrarMensaje('Respuesta inesperada del servidor', 'error');
         }
       },
       (error) => {
