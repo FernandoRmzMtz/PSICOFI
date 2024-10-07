@@ -44,41 +44,31 @@ class DatabaseSeeder extends Seeder
             TipoIntervencion::create($tipoIntervencionData);
         }
 
-        $alumnos = [
-            [
-                'claveUnica' => '324109',
-                'nombres' => 'Fernando Antonio',
-                'apellidoPaterno' => 'Ramírez',
-                'apellidoMaterno' => 'Martínez',
-                'edad' => 21,
-                'sexo' => 'M',
-                'area' => 'Ciencias de la computación',
-                'carrera' => 'Ing. en Sistemas Inteligentes',
-                'semestre' => 8,
-                'condicionAcademica' => 'INSCRITO',
-                'creditosAprobados' => 345,
-                'creditosInscritos' => 48,
-                'promedioGral' => 9.4,
-                'asesor' => 'Dra. Sandra Edith Nava Muñoz',
-                'contrasena' => '1234567890',
-                'habilitado' => true,
-            ]
-        ];
+        // $alumnos = [
+        //     [
+        //         'claveUnica' => '324109',
+        //         'nombres' => 'Fernando Antonio',
+        //         'apellidoPaterno' => 'Ramírez',
+        //         'apellidoMaterno' => 'Martínez',
+        //         'edad' => 21,
+        //         'sexo' => 'M',
+        //         'area' => 'Ciencias de la computación',
+        //         'carrera' => 'Ing. en Sistemas Inteligentes',
+        //         'semestre' => 8,
+        //         'condicionAcademica' => 'INSCRITO',
+        //         'creditosAprobados' => 345,
+        //         'creditosInscritos' => 48,
+        //         'promedioGral' => 9.4,
+        //         'asesor' => 'Dra. Sandra Edith Nava Muñoz',
+        //         'contrasena' => '1234567890',
+        //         'habilitado' => true,
+        //     ]
+        // ];
 
         // Inserta los datos en la tabla alumno
-        foreach ($alumnos as $alumnoData) {
-            Alumno::create($alumnoData);
-        }
-
-        Cita::create([
-            'idCita' => 1,
-            'fecha' => '2024-05-07', // Coloca la fecha deseada
-            'hora' => '10:00:00', // Coloca la hora deseada
-            'claveUnica' => 324109, // Coloca el valor deseado o null si es nullable
-            'estadoCita' => 1, // Coloca el ID del estado de cita deseado
-            'clavePsicologo' => null, // Coloca el valor deseado o null si es nullable
-            'clavePsicologoExterno' => null, // Coloca el valor deseado o null si es nullable
-        ]);
+        // foreach ($alumnos as $alumnoData) {
+        //     Alumno::create($alumnoData);
+        // }
 
         Departamento::create([
             'departamento' => "Psiquiatría",
