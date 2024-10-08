@@ -416,20 +416,50 @@ private actualizarDisponibilidadPorDia(): void {
   
     const horasSeleccionadas = Object.keys(this.form.get('horasSeleccionadas')?.value)
       .filter(hora => this.form.get('horasSeleccionadas')?.value[hora]);
+
+      
   
     // Generar una lista de fechas para los días seleccionados dentro de la semana de la fecha seleccionada
     const startOfWeek = this.getStartOfWeek(this.fechaSeleccionada);
+    
+    // Error corregido de agenda en sabados
+    // const fechasSeleccionadas = diasSeleccionados.map(dia => {
+    //   console.log("\nfechaSeleccionada:");
+    //   const dayIndex = this.dias.indexOf(dia); console.log(dayIndex);
+    //   const fecha = new Date(startOfWeek); console.log(fecha);
+    //   fecha.setDate(startOfWeek.getDate() + dayIndex); console.log(fecha);
+    //   console.log(fecha.toISOString().split('T')[0]);
+    //   return fecha.toISOString().split('T')[0];
+    // });
+
     const fechasSeleccionadas = diasSeleccionados.map(dia => {
+      console.log("\nfechaSeleccionada:");
       const dayIndex = this.dias.indexOf(dia);
+      console.log(dayIndex);
+      
       const fecha = new Date(startOfWeek);
+      console.log(fecha);
+      
       fecha.setDate(startOfWeek.getDate() + dayIndex);
-      return fecha.toISOString().split('T')[0];
+      console.log(fecha);
+    
+      // Aquí formateamos la fecha manualmente para evitar el cambio de zona horaria
+      const year = fecha.getFullYear();
+      const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Mes en formato 2 dígitos
+      const day = fecha.getDate().toString().padStart(2, '0'); // Día en formato 2 dígitos
+    
+      const fechaFormateada = `${year}-${month}-${day}`;
+      console.log(fechaFormateada);
+    
+      return fechaFormateada;
     });
+    //
   
     const id = this.LoginService.getClave();
     const token = this.LoginService.getToken() ?? "token";
     const numFechas = fechasSeleccionadas.length;
     let cont = 0;
+
     fechasSeleccionadas.forEach(fecha => {
       const data = {
         id,
