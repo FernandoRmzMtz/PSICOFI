@@ -1,6 +1,5 @@
-<div class="container my-5" style="height: 35vh;">
-  <div class="overflow-auto" style="max-height: 460px;" *ngIf="!isLoading">
-    <table class="table table-striped">
+<div class="container my-5" style="max-height: 45vh;">
+    <table class="table ">
       <thead>
         <tr>
           <th scope="col" class="ps-3 sticky-header">Clave única</th>
@@ -8,7 +7,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paciente of filteredPacientes">
+        <tr *ngFor="let paciente of filteredPacientes" >
           <td class="ps-3">{{ paciente }}</td>
           <td class="text-center clickable">
             <button type="button" class="btn btn-secondary" (click)="verAlumnoAtendido(paciente)">
@@ -18,7 +17,7 @@
         </tr>
       </tbody>
     </table>
-  </div>
+
   <div *ngIf="!isLoading && filteredPacientes.length === 0" class="alert alert-info" role="alert">
     No se encontraron resultados
   </div>
