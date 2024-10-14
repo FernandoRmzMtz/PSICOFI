@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('NotaCita',function(Blueprint $table){
             $table->id('idNotaCita');
             $table->unsignedBigInteger('tipoIntervencion');
-            $table->text('notas');
+            // $table->text('notas');
             $table->unsignedBigInteger('departamento')->nullable();
-            $table->text('detalleCanalizacion')->nullable();
+            // $table->text('detalleCanalizacion')->nullable();
             $table->unsignedBigInteger('idCita');
             $table->boolean('foraneo')->nullable();
 
