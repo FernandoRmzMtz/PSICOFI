@@ -16,9 +16,11 @@ export class gestionPsico {
   fetchedPsico = [];
 
   constructor(private http: HttpClient, private loginService: LoginService) {
-    this.fetchPsicologos().subscribe((data) => {
-      this.fetchedPsico = data;
-    });
+    if(loginService.isAuthenticated()){
+      this.fetchPsicologos().subscribe((data) => {
+        this.fetchedPsico = data;
+      });
+    }
   }
 
   public verPsicoVisible: boolean = false;
