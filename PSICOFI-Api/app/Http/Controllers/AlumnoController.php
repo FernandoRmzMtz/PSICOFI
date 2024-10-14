@@ -19,11 +19,11 @@ class AlumnoController extends Controller
 
     private function obtainAlumno($id){
         $clave_unica = (int) $id; 
-        $location = 'https://servicios.ing.uaslp.mx/ws_psico/ws_psico.svc';
+        $location = env('WEB_SERVICE');
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
                         <s:Body>
                         <alumno xmlns="http://tempuri.org/">
-                            <key_sw>461E-ABD0-252D79762A23</key_sw>
+                            <key_sw>'.env('SERVICE_KEY').'</key_sw>
                             <clave_unica>' . $clave_unica . '</clave_unica>
                         </alumno>
                         </s:Body>
@@ -111,8 +111,21 @@ class AlumnoController extends Controller
                 if($alumno){
                     return json_encode($alumno[0]);
                 }else{
-                    $respuesta = ['Error' => 'Alumno NO encontrado'];
-                    return json_encode($respuesta);
+                    $jsonResult = $this->obtainAlumno($id);
+                    $arrayDatos = json_decode($jsonResult, true);
+
+                    if($arrayDatos){
+                        $response = [
+                            'claveUnica' => $arrayDatos['clave_unica'],
+                            'nombres' => $arrayDatos['nombres_alumno'],
+                            'apellidoMaterno' => $arrayDatos['segundo_apellido_alumno'],
+                            'apellidoPaterno' => $arrayDatos['primer_apellido_alumno'],
+                        ];
+                        return json_encode($response);
+                    }else{
+                        $respuesta = ['Error' => 'Alumno NO encontrado'];  
+                        return json_encode($respuesta);
+                    }
                 }
             }else{
                 $respuesta = ['Error' => 'ID invalida'];

@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        Alumno::factory(500)->create();
+        Alumno::factory(10)->create();
         PsicologoExterno::factory(6)->create();
         CarrerasPsico::create(['carrera' => 'Licenciatura en psicopedagogia']);
         CarrerasPsico::create(['carrera' => 'Licenciatura en psicologia']);
@@ -82,6 +82,6 @@ class DatabaseSeeder extends Seeder
 
         Administrador::factory(1)->create();
 
-        NotaCita::factory(5000)->create();
+        NotaCita::factory(10)->create();
     }
 }

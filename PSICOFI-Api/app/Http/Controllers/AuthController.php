@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Administrador;
 use Illuminate\Http\Request;
-use App\Models\Auth;
-use RicorocksDigitalAgency\Soap\Facades\Soap;
+use Illuminate\Http\Response;
 use App\Models\Alumno;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
@@ -13,11 +12,11 @@ use App\Models\PsicologoExterno;
 class AuthController extends Controller
 {
     private function authUser($clave,$password){
-        $location = 'https://servicios.ing.uaslp.mx/ws_psico/ws_psico.svc';
+        $location = env('WEB_SERVICE');
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
                         <s:Body>
                         <valida_alumno xmlns="http://tempuri.org/">
-                            <key_sw>461E-ABD0-252D79762A23</key_sw>
+                            <key_sw>'.env('SERVICE_KEY').'</key_sw>
                             <clave_unica>'. $clave .'</clave_unica>
                             <contrasena>'. $password .'</contrasena>
                         </valida_alumno>
@@ -85,31 +84,27 @@ class AuthController extends Controller
             ->first();
 
             if($alumno || $psicologo || $administrador){
-                $token = csrf_token();
                 if($alumno){
                     $jsonArray = [
                         'id' => $alumno->claveUnica,
                         'nombre' => $alumno->nombres . ' ' . $alumno->apellidoPaterno . ' ' . $alumno->apellidoMaterno,
                         'validacion' => "USUARIO-VALIDO",
                         'rol' => "Alumno",
-                        'situacion' => $alumno->condicionAcademica,
-                        'token' => $token
+                        'situacion' => $alumno->condicionAcademica
                     ];
                 }else if($psicologo){
                     $jsonArray = [
                         'id' => $psicologo->claveUnica,
                         'nombre' => $psicologo->nombres . ' ' . $psicologo->apellidoPaterno . ' ' . $psicologo->apellidoMaterno,
                         'validacion' => "USUARIO-VALIDO",
-                        'rol' => "Psicologo",
-                        'token' => $token
+                        'rol' => "Psicologo"
                     ];
                 }else if($administrador){
                     $jsonArray = [
                         'id' => $administrador->idUsuario,
                         'nombre' => $administrador->nombres . ' ' . $administrador->apellidoPaterno . ' ' . $administrador->apellidoMaterno,
                         'validacion' => "USUARIO-VALIDO",
-                        'rol' => "Administrador",
-                        'token' => $token
+                        'rol' => "Administrador"
                     ];
                 }
                 
@@ -133,12 +128,7 @@ class AuthController extends Controller
 
                     unset($arrayDatos['situacion_alumno']);
 
-                    $token = csrf_token();
-
                     $arrayDatos['rol'] = "Alumno";
-
-                    $arrayDatos['token'] = $token;
-
                     $jsonResult = json_encode($arrayDatos);
                     
                     return $jsonResult;
@@ -156,13 +146,11 @@ class AuthController extends Controller
             ->first();
 
             if($psicologoexterno){
-                $token = csrf_token();
                 $jsonArray = [
                     'id' => $psicologoexterno->curp,
                     'nombre' => $psicologoexterno->nombres . ' ' . $psicologoexterno->apellidoPaterno . ' ' . $psicologoexterno->apellidoMaterno,
                     'validacion' => "USUARIO-VALIDO",
-                    'rol' => "Psicologo externo",
-                    'token' => $token
+                    'rol' => "Psicologo externo"
                 ];
 
                 return json_encode($jsonArray);
@@ -179,7 +167,15 @@ class AuthController extends Controller
     public function getAlumno(Request $request){
         $clave = $request->input('clave');
 
-        return $clave;
+        if($clave){
+            return $clave;
+        }else{
+            $jsonResult = $this->getUser($clave);
+
+            $arrayDatos = json_decode($jsonResult, true);
+
+            return $arrayDatos;
+        }
     }
 
     public function index(){
