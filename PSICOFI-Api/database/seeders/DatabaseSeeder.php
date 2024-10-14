@@ -82,6 +82,6 @@ class DatabaseSeeder extends Seeder
 
         Administrador::factory(1)->create();
 
-        NotaCita::factory(10)->create();
+        // NotaCita::factory(10)->create();
     }
 }
