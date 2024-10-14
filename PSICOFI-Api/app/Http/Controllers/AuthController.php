@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Administrador;
 use Illuminate\Http\Request;
-use App\Models\Auth;
-use RicorocksDigitalAgency\Soap\Facades\Soap;
+use Illuminate\Http\Response;
 use App\Models\Alumno;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
@@ -13,11 +12,11 @@ use App\Models\PsicologoExterno;
 class AuthController extends Controller
 {
     private function authUser($clave,$password){
-        $location = 'https://servicios.ing.uaslp.mx/ws_psico/ws_psico.svc';
+        $location = env('WEB_SERVICE');
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
                         <s:Body>
                         <valida_alumno xmlns="http://tempuri.org/">
-                            <key_sw>461E-ABD0-252D79762A23</key_sw>
+                            <key_sw>'.env('SERVICE_KEY').'</key_sw>
                             <clave_unica>'. $clave .'</clave_unica>
                             <contrasena>'. $password .'</contrasena>
                         </valida_alumno>
@@ -136,9 +135,7 @@ class AuthController extends Controller
                     $token = csrf_token();
 
                     $arrayDatos['rol'] = "Alumno";
-
                     $arrayDatos['token'] = $token;
-
                     $jsonResult = json_encode($arrayDatos);
                     
                     return $jsonResult;
@@ -179,7 +176,15 @@ class AuthController extends Controller
     public function getAlumno(Request $request){
         $clave = $request->input('clave');
 
-        return $clave;
+        if($clave){
+            return $clave;
+        }else{
+            $jsonResult = $this->getUser($clave);
+
+            $arrayDatos = json_decode($jsonResult, true);
+
+            return $arrayDatos;
+        }
     }
 
     public function index(){

@@ -28,7 +28,6 @@ Route::post('/crear-cita', [NotaCitaController::class, 'crearCita'])->name('crea
 Route::get('/tipos-intervencion', [TipoIntervencionController::class, 'index']);
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
 Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
-
 // Route::get('alumno/{claveUnica}', 'AlumnoController@obtenerAlumno');
 
 

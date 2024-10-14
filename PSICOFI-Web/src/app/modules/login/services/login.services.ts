@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-
+import { catchError, switchMap } from 'rxjs/operators';
+import { environment } from 'environments/enviroment';
 import { Router } from '@angular/router';
+import { CsrfServiceService } from '../../../servicios/csrfService/csrf-service.service'
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class LoginService {
   private readonly TIMEOUT_LIMIT = 900000; // 15 minutos
   private timeoutHandle: any;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private csrfService: CsrfServiceService) {
     this.setupEventsListenerSession();
    }
 
@@ -44,15 +45,47 @@ export class LoginService {
    * @param contrasena contraseña del usuario
    * @returns Validacion de login
    */
+  // loginInterno(clave: string, contrasena: string): Observable<any> {
+  //   return this.http.post('http://psicofi-api.test/login', {
+  //     id: clave,
+  //     password: contrasena
+  //   }).pipe(
+  //     catchError((error: HttpErrorResponse) => {
+  //       // console.error('Error en la petición:', error);
+  //       if (error.status === 500) {
+  //         return "Ha ocurrido un error, por favor intenta más tarde.";
+  //       }
+  //       return throwError(error);
+  //     })
+  //   );
+  // }
+
   loginInterno(clave: string, contrasena: string): Observable<any> {
-    return this.http.post('http://psicofi-api.test/login', {
-      id: clave,
-      password: contrasena
-    }).pipe(
+    return this.csrfService.getCsrfCookie().pipe(
+      switchMap(() => {
+        const csrfToken = this.csrfService.getCsrf();
+        this.setToken(csrfToken ?? "token");
+        if (!csrfToken) {
+          return throwError('No se pudo obtener el token CSRF.');
+        }
+        
+        return this.http.post(environment.api + '/login', 
+          {
+            id: clave,
+            password: contrasena,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+            },
+            withCredentials: true,
+          }
+        );
+      }),
       catchError((error: HttpErrorResponse) => {
-        // console.error('Error en la petición:', error);
         if (error.status === 500) {
-          return "Ha ocurrido un error, por favor intenta más tarde.";
+          return ("Ha ocurrido un error, por favor intenta más tarde.");
         }
         return throwError(error);
       })
