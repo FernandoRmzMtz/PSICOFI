@@ -6,13 +6,14 @@ import { environment } from 'environments/enviroment';
 import { Cita } from 'src/app/components/servicios/citas.service';
 import { Alumno } from 'src/app/model/alumno.model';
 import { NotaCita } from 'src/app/model/nota-cita.model';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReporteCitasService {
 
-  constructor(private http: HttpClient, private loginService:LoginService) { 
+  constructor(private http: HttpClient, private loginService:LoginService, private csrfService:CsrfServiceService) { 
 
   } 
   getCita(idCita: number): Observable<Cita> {

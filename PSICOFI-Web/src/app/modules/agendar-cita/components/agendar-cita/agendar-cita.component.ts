@@ -24,6 +24,8 @@ export class AgendarCitaComponent implements OnInit {
     const clave = this.loginService.getClave();
     const id = parseInt(clave, 10);
 
+    console.log("alumno: "+id);
+
     this.agendarCitaService.obtenerAlumno(id).subscribe(
       (data) => {
         this.claveUnica = data.claveUnica.toString();

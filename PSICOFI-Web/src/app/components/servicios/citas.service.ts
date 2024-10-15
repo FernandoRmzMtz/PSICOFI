@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
+
 
 export interface Cita {
   idCita: number;
@@ -17,11 +20,12 @@ export interface Cita {
 })
 export class CitasService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private csrfService:CsrfServiceService) {}
 
   obtenerCitas(id: string): Observable<Cita[]> {
     console.log("Llamando a obetener citas con id: "+id);
     const params = new HttpParams().set('id', id);
+
     return this.http.get<Cita[]>('http://psicofi-api.test/cita/getDates', { params: params });
   }
 
@@ -32,44 +36,56 @@ export class CitasService {
   }
 
   agendarCita(cita: { id: string; claveUnica: number; fecha: string; hora: string; }): Observable<any[]> {
+    const csrfToken = this.csrfService.getCsrf();
+
     const url = 'http://psicofi-api.test/cita/scheduleDate';
     const token = localStorage.getItem('auth_token'); 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': token || ''
+      // 'X-CSRF-TOKEN': token || ''
+      'X-CSRF-TOKEN': csrfToken || ''
     });
-    return this.http.put<any[]>(url, cita, { headers });
+    return this.http.put<any[]>(url, cita, { headers: headers, withCredentials:true });
   }
 
   crearCitas(data: { id: string, fecha: string, horas: string[] }): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     const url = 'http://localhost/PSICOFI-Api/public/cita/createDates';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': token || ''
+      // 'X-CSRF-TOKEN': token || ''
+      'X-CSRF-TOKEN': csrfToken || ''
     });
-    return this.http.post<any>(url, data, { headers });
+    return this.http.post<any>(url, data, { headers: headers, withCredentials:true });
   }
 
   cancelarCita(data: { idCita: number, id: string }): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     console.log("Llamada a cancelarCita de citas service, data:");
     console.log(data);
     const url = 'http://localhost/PSICOFI-Api/public/cita/cancelDate';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': token || ''
+      // 'X-CSRF-TOKEN': token || ''
+      'X-CSRF-TOKEN': csrfToken || ''
     });
-    return this.http.post<any>(url, data, { headers });
+    return this.http.post<any>(url, data, { headers: headers, withCredentials:true });
   }
 
   confirmarCita(data: { idCita: number, id: string }): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     const url = 'http://localhost/PSICOFI-Api/public/cita/confirmDate';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': token || ''
+      // 'X-CSRF-TOKEN': token || ''
+      'X-CSRF-TOKEN': csrfToken || ''
     });
-    return this.http.post<any>(url, data, { headers });
+    return this.http.post<any>(url, data, { headers:headers, withCredentials:true });
   }
 }

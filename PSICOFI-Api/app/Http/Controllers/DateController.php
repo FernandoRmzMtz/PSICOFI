@@ -60,6 +60,7 @@ class DateController extends Controller
                     return response()->json(['error' => 'ID inválido'], 400);
                 }
             }else{
+                // return response([]);
                 return response()->json(['error' => 'No se encontraron citas disponibles'], 404);
             }
         }

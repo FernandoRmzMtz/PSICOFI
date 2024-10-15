@@ -6,6 +6,7 @@ import { ReporteCitasService } from '../../services/reporte-citas.service';
 import { Cita } from 'src/app/components/servicios/citas.service';
 import { NotaCita } from 'src/app/model/nota-cita.model';
 import { LoginService } from 'src/app/modules/login/services/login.services';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 
 @Component({
@@ -30,7 +31,8 @@ export class FormularioReporteCitaComponent implements OnInit {
     private http: HttpClient,
     private _router:Router, 
     private reporteCitaService:ReporteCitasService,
-    private loginService:LoginService
+    private loginService:LoginService,
+    private csrfService: CsrfServiceService
   ) { }
 
     idCita = 0;
@@ -144,21 +146,22 @@ export class FormularioReporteCitaComponent implements OnInit {
       }, 3000);
     }
     else{
-      if(!this.notas) {
-        //muestra error
-        this.errorNotas = true;
-      setTimeout(() => {
-        this.errorNotas = false;
-      }, 3000);
-      }else{
-        if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
+      // if(!this.notas) {
+      //   //muestra error
+      //   this.errorNotas = true;
+      // setTimeout(() => {
+      //   this.errorNotas = false;
+      // }, 3000);
+      // }else{
+        // if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
+        if(this.necesitaCanalizacion && !this.departamento) {
           //muestra error
           this.errorDepaCan = true;
         setTimeout(() => {
           this.errorDepaCan = false;
         }, 5000);
         }else{
-          if(this.necesitaCanalizacion&& !this.detalleCanalizacion && this.departamento) {
+          if(this.necesitaCanalizacion && this.departamento) {
             //muestra error
             this.errorDetalleCan = true;
           setTimeout(() => {
@@ -167,20 +170,24 @@ export class FormularioReporteCitaComponent implements OnInit {
             }else{
             const formData = {
               tipoIntervencion: this.tipoIntervencion,
-              notas: this.notas,
+              // notas: this.notas,
               departamento: this.necesitaCanalizacion? this.departamento ? this.departamento: null : null,
-              detalleCanalizacion: this.necesitaCanalizacion? this.detalleCanalizacion ? this.detalleCanalizacion : "" :"",
+              // detalleCanalizacion: this.necesitaCanalizacion? this.detalleCanalizacion ? this.detalleCanalizacion : "" :"",
               idCita: this.idCita,
               foraneo: this.foraneo
             };
             // Enviar los datos al servidor
+            const csrfToken = this.csrfService.getCsrf();
+
             this.http.put<any>(environment.api+'/api/nota-cita/'+this.idCita, 
             formData,
             {
               headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-              }
+                // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+                'X-CSRF-TOKEN': csrfToken || ''
+              },
+              withCredentials:true
             },
             ).subscribe(
               response => {
@@ -201,7 +208,7 @@ export class FormularioReporteCitaComponent implements OnInit {
             );
           } 
         } 
-      }
+      // }
     }
   }
 }

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
 import { LoginService } from 'src/app/modules/login/services/login.services';
 import { environment } from 'environments/enviroment';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 @Component({
   selector: 'app-formulario-cita-urgente',
@@ -23,7 +24,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   errorDetalleCan = false;
   public isLoading = false;
 
-  constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService,private loginService: LoginService) { }
+  constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService,private loginService: LoginService, private csrfService: CsrfServiceService) { }
 
   // Propiedades para los datos del formulario
   tipoIntervencion: number | null = null;
@@ -97,15 +98,17 @@ export class FormularioCitaUrgenteComponent implements OnInit {
           
         }
         else{
-          if(!this.notas) {
-            //muestra error
-            this.isLoading = false;
-            this.errorNotas = true;
-            setTimeout(() => {
-            this.errorNotas = false;
-          }, 3000);
-          }else{
-            if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
+          // if(!this.notas) {
+          //   //muestra error
+          // //   this.isLoading = false;
+          // //   this.errorNotas = true;
+          // //   setTimeout(() => {
+          // //   this.errorNotas = false;
+          // // }, 3000);
+          // }
+          // else{
+            // if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
+            if(this.necesitaCanalizacion && !this.departamento) {
               //muestra error
               this.isLoading = false;
               this.errorDepaCan = true;
@@ -113,7 +116,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
               this.errorDepaCan = false;
             }, 5000);
             }else{
-              if(this.necesitaCanalizacion&& !this.detalleCanalizacion && this.departamento) {
+              if(this.necesitaCanalizacion && this.departamento) {
                 //muestra error
                 this.isLoading = false;
                 this.errorDetalleCan = true;
@@ -126,21 +129,25 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                   // Crear el objeto con los datos del formulario
                   const formData = {
                     tipoIntervencion: this.tipoIntervencion,
-                    notas: this.notas,
+                    // notas: this.notas,
                     departamento: this.necesitaCanalizacion ? this.departamento ? this.departamento: null : null,
-                    detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion ? this.detalleCanalizacion : "": "", // Si necesita canalización, incluir los detalles
+                    // detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion ? this.detalleCanalizacion : "": "", // Si necesita canalización, incluir los detalles
                     idCita: idCita,
                     foraneo: this.foraneo
                   };
                   // Enviar los datos al servidor
+                  const csrfToken = this.csrfService.getCsrf();
+
                   this.isLoading = false;
                   this.http.post<any>(environment.api+'/api/nota-cita', 
                   formData,
                   {
                     headers: {
                       'Content-Type': 'application/json',
-                      'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-                    }
+                      // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+                      'X-CSRF-TOKEN': csrfToken || ''
+                    },
+                    withCredentials:true
                   },
                 ).subscribe(
                   response => {
@@ -165,7 +172,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                 );
               }
             }
-          }
+          // }
         }
       },
       (error: any) => {

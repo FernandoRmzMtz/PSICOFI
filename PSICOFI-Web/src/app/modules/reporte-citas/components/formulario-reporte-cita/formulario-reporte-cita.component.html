@@ -18,12 +18,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <!-- <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="observacionesRepCcita" class="form-label">Observaciones:</label>
                         <textarea class="form-control" id="observacionesRepCcita" name="observaciones" rows="3" required [(ngModel)]="notas">{{notaCita?.notas}}</textarea>
                     </div>
-                </div>
+                </div> -->
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="form-check">
@@ -43,12 +43,12 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mt-3" *ngIf="necesitaCanalizacion">
+                <!-- <div class="row mt-3" *ngIf="necesitaCanalizacion">
                     <div class="col-md-12">
                         <label for="detallesRepCita" class="form-label">Detalles de canalizaci&oacute;n:</label>
                         <textarea class="form-control" id="detallesRepCita" name="detalles" rows="3" [(ngModel)]="detalleCanalizacion">{{ notaCita?.detalleCanalizacion }}</textarea>
                     </div>
-                </div>
+                </div> -->
                 <div class="row mt-3">
                     <div class="col-md-12 d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary btn-lg px-5">Guardar</button>
@@ -84,7 +84,7 @@
     </div>
 </div>
 
-<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorNotas" style="z-index: 1000;">
+<!-- <div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorNotas" style="z-index: 1000;">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
     <div>
         Error, debe ingresar observaciones.
@@ -96,7 +96,7 @@
     <div>
         Error, ingrese el detalle de canalización.
     </div>
-</div>
+</div> -->
 
 <div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorDepaCan" style="z-index: 1000;">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
