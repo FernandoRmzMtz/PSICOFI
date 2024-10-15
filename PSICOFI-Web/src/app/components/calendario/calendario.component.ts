@@ -7,6 +7,7 @@ import { LoginService } from 'src/app/modules/login/services/login.services';
 import { AgendarCita } from 'src/app/modules/agendar-cita/services/agendar-cita.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 
 @Component({
@@ -31,7 +32,8 @@ export class CalendarioComponent implements OnInit {
     private LoginService: LoginService,
     private agendarCitaService: AgendarCita,
     private http: HttpClient,
-    private _router: Router
+    private _router: Router,
+    private csrfService: CsrfServiceService
   ) {
     this.form = new FormGroup({
       diasSeleccionados: new FormGroup(this.generarDiasControl()),
@@ -355,6 +357,8 @@ private actualizarDisponibilidadPorDia(): void {
 
 
   confirmarCancelacion(): void {
+    const csrfToken = this.csrfService.getCsrf();
+
     if (!this.citaSeleccionada) {
       console.error('No hay cita seleccionada para cancelar.');
       return;
@@ -367,8 +371,10 @@ private actualizarDisponibilidadPorDia(): void {
     this.http.delete(`http://localhost/PSICOFI-Api/public/cita/deleteDate/${idCita}`, {
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': this.LoginService.getToken() ?? "token"
-      }
+        // 'X-CSRF-TOKEN': this.LoginService.getToken() ?? "token"
+        'X-CSRF-TOKEN': csrfToken || ''
+      },
+      withCredentials:true
     }).subscribe(
       () => {
         console.log('El horario de la cita ha sido cancelada correctamente.');
@@ -414,6 +420,9 @@ private actualizarDisponibilidadPorDia(): void {
   // }
   
   agregarHoras() {
+
+    const csrfToken = this.csrfService.getCsrf();
+
     const diasSeleccionados = Object.keys(this.form.get('diasSeleccionados')?.value)
       .filter(dia => this.form.get('diasSeleccionados')?.value[dia]);
   
@@ -473,8 +482,10 @@ private actualizarDisponibilidadPorDia(): void {
       this.http.post('http://localhost/PSICOFI-Api/public/cita/createDates', data, {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': token
-        }
+          // 'X-CSRF-TOKEN': token
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }).subscribe(response => {
         console.log(`Respuesta del servidor para la fecha ${fecha}:`, response);
         cont++;
