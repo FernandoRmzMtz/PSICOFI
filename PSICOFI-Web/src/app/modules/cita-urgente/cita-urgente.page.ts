@@ -24,7 +24,7 @@ export class CitaUrgentePage {
 
   onSubmit(data: any) {
     const headers = { 'X-CSRF-TOKEN': this.csrfToken };
-    this.http.post(environment.api+'/nota-cita', data, { headers }).subscribe(response => {
+    this.http.post(environment.api+'/nota-cita', data, { headers, withCredentials:true }).subscribe(response => {
       console.log('Respuesta del servidor:', response);
     }, error => {
       console.error('Error en la solicitud:', error);

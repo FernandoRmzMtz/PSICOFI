@@ -4,6 +4,7 @@ import { Observable, of } from "rxjs";
 import { catchError } from 'rxjs/operators';
 import { LoginService } from "../../login/services/login.services";
 import { environment } from "environments/enviroment";
+import { CsrfServiceService } from "src/app/servicios/csrfService/csrf-service.service";
 
 
 
@@ -12,10 +13,12 @@ import { environment } from "environments/enviroment";
 })
 
 export class CambioContra {
-    constructor(private http: HttpClient, private loginService: LoginService){}
+    constructor(private http: HttpClient, private loginService: LoginService, private csrfService: CsrfServiceService){}
 
     public cambiarContrasena(curp: string, contrasena: string, nueva: string): Observable<any> 
     {
+        const csrfToken = this.csrfService.getCsrf();
+
         return this.http.put(environment.api + '/psicologo/updatePassword', {
             "curp": curp,
             "contrasena": contrasena,
@@ -24,8 +27,10 @@ export class CambioContra {
     {
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': this.loginService.getToken()?? "token"
-        }
+            // 'X-CSRF-TOKEN': this.loginService.getToken()?? "token"
+            'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
     })
     }
 }

@@ -3,6 +3,7 @@ import { LoginService } from "../../login/services/login.services";
 import { Observable } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { environment } from "environments/enviroment";
+import { CsrfServiceService } from "src/app/servicios/csrfService/csrf-service.service";
 
 interface AlumnoAtendido {
   claveUnica: number;
@@ -51,7 +52,7 @@ export class HistorialAlumnosService {
     edad: 0
   }
 
-  constructor(private loginService: LoginService, private http: HttpClient) {
+  constructor(private loginService: LoginService, private http: HttpClient, private csrfService: CsrfServiceService) {
     this.historialTablaVisible = 1;
   }
   public verAlumno(clave: number): void {
@@ -65,6 +66,8 @@ export class HistorialAlumnosService {
   }
 
   public getPacientes(): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post(environment.api + '/psicologo/getPatients',
       {
         "id": this.loginService.getClave()
@@ -73,13 +76,17 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }
     )
   }
 
   public getAlumnoInfo(): Observable<AlumnoAtendido> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post<AlumnoAtendido>(environment.api + '/alumno/getAlumno',
       {
         "id": this.alumnoViendo
@@ -88,13 +95,17 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }
     )
   }
 
   public getHistorialCitas(): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post(environment.api + '/alumno/getRecord',
       {
         "id": this.alumnoViendo
@@ -103,8 +114,10 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }
     )
   }

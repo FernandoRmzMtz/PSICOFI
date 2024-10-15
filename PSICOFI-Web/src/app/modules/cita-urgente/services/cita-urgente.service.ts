@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from 'environments/enviroment';
 import { LoginService } from 'src/app/modules/login/services/login.services';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 
 @Injectable({
@@ -18,10 +19,12 @@ export class CitaUrgenteService {
   private csrfToken: string | null = null;
 
 
-  constructor(private http: HttpClient, private loginService:LoginService) {
+  constructor(private http: HttpClient, private loginService:LoginService, private csrfService: CsrfServiceService) {
   }
 
   obtenerAlumno(claveUnica: number): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post<any>(environment.api+'/alumno/getAlumno',
       {
         "id":claveUnica
@@ -29,8 +32,10 @@ export class CitaUrgenteService {
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }
     );
   }
@@ -62,14 +67,18 @@ export class CitaUrgenteService {
   }
 
   crearCita(citaData: any): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     console.log("estos son los datos de la cita:"+citaData);
     console.log(citaData);
     return this.http.post<any>(environment.api+'/api/crear-cita', citaData,
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-      }
+        // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+        'X-CSRF-TOKEN': csrfToken || ''
+      },
+      withCredentials:true
     }
     );
   }

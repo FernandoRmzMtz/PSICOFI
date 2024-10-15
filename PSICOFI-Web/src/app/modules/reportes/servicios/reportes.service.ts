@@ -2,14 +2,17 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from "rxjs";
 import { environment } from "environments/enviroment";
-import { catchError } from 'rxjs/operators'; @Injectable({
+import { catchError } from 'rxjs/operators';import { CsrfServiceService } from "src/app/servicios/csrfService/csrf-service.service";
+ @Injectable({
   providedIn: 'root'
 })
 export class ReportesService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private csrfService: CsrfServiceService) { }
 
   obtenerAreasCarreras(tipo: string): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     if (tipo !== 'carrera' && tipo !== 'area') {
       return of({ error: 'Consulta incorrecta' });
     }
@@ -19,10 +22,11 @@ export class ReportesService {
     const token = localStorage.getItem('auth_token'); 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': token || '' 
+      // 'X-CSRF-TOKEN': token || '' 
+      'X-CSRF-TOKEN': csrfToken || '' 
     });
 
-    return this.http.post<any>(url, data, { headers: headers }).pipe(
+    return this.http.post<any>(url, data, { headers: headers, withCredentials:true }).pipe(
       catchError(error => of({ error: 'Sin datos' }))
     );
   }
@@ -30,6 +34,8 @@ export class ReportesService {
 
   // Método para obtener el reporte
   obtenerReporte(tipo: string, nombre: string = '', fechaInicio: string = '', fechaFin: string = ''): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     if (tipo !== 'carrera' && tipo !== 'area' && tipo !== 'facultad') {
       return of({ error: 'Consulta incorrecta' });
     }
@@ -44,10 +50,11 @@ export class ReportesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': token || '' 
+      // 'X-CSRF-TOKEN': token || '' 
+      'X-CSRF-TOKEN': csrfToken || '' 
     });
 
-    return this.http.post<any>(url, body, { headers: headers }).pipe(
+    return this.http.post<any>(url, body, { headers: headers, withCredentials:true }).pipe(
       catchError(error => of({ error: 'Sin datos' }))
     );
   }

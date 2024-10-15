@@ -155,13 +155,16 @@ export class CalendarioComponent implements OnInit {
 private cargarCitasAlumno(): void {
   this.citasService.obtenerCitas(this.psicologo).subscribe({
     next: (citas) => {
+      if(!citas){
+        console.log("No se encontraron citas");
+      }
       this.citas = citas.filter(cita => cita.estado === "Libre");
       this.actualizarDisponibilidadPorDia();
       console.log("Se cargaron las citas del alumno");
     },
     error: (error) => {
       // console.error('Error al cargar citas:', error);
-      console.log('El psicologo seleccionado no tiene citas disponibles')
+      console.log('El psicologo seleccionado no tiene citas disponibles');
     },
   });
 }

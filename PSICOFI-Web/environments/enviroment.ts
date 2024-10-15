@@ -5,5 +5,5 @@ export const environment = {
     // url: 'http://psicofi-api.test:80/api',
     usuario: null,
     //api: "http://psicofi-api.test",
-    api: 'http://localhost:8001'
+    api: 'http://localhost:8000'
   };

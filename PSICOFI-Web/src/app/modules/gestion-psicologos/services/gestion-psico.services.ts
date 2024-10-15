@@ -4,6 +4,7 @@ import { Observable, of } from "rxjs";
 import { catchError } from 'rxjs/operators';
 import { LoginService } from "../../login/services/login.services";
 import { environment } from "environments/enviroment";
+import { CsrfServiceService } from "src/app/servicios/csrfService/csrf-service.service";
 
 
 
@@ -15,10 +16,13 @@ export class gestionPsico {
 
   fetchedPsico = [];
 
-  constructor(private http: HttpClient, private loginService: LoginService) {
-    this.fetchPsicologos().subscribe((data) => {
-      this.fetchedPsico = data;
-    });
+  constructor(private http: HttpClient, private loginService: LoginService, private csrfService: CsrfServiceService
+  ) {
+    if(loginService.isAuthenticated()){
+      this.fetchPsicologos().subscribe((data) => {
+        this.fetchedPsico = data;
+      });
+    }
   }
 
   public verPsicoVisible: boolean = false;
@@ -49,12 +53,15 @@ export class gestionPsico {
 
 
   fetchPsicologos(): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
       return this.http.post(environment.api+'/psicologo/getPsicologos', {}, 
       {
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-          }
+            // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+            'X-CSRF-TOKEN': csrfToken || ''
+          },
+          withCredentials:true,
       });
   }
 
@@ -63,6 +70,7 @@ export class gestionPsico {
   }
 
   getPsicologoById(clave: string): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
 
     this.psicologoViendo = {
       "claveUnica": "",
@@ -89,6 +97,7 @@ export class gestionPsico {
     }
 
     const body = { clave: clave };
+    
 
     return this.http.post(environment.api + '/psicologo/searchPsicologo',
       {
@@ -97,13 +106,17 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials: true
       }
     );
   }
 
   agregarPsicologoInterno(psicologoNuevo: any): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post(environment.api + '/psicologo/registerPsicologo',
       {
         "nombres": psicologoNuevo.nombres,
@@ -119,13 +132,17 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }
     );
   }
 
   agregarPsicologoExterno(psicologoNuevo: any): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post(environment.api + "/psicologo/registerPsicologo", {
       "CURP": psicologoNuevo.curp,
       "nombres": psicologoNuevo.nombres,
@@ -140,8 +157,10 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
       }
     );
 
@@ -149,6 +168,8 @@ export class gestionPsico {
 
 
   editarPsicologo() {
+    const csrfToken = this.csrfService.getCsrf();
+
     const body: any = {
       nombres: this.psicologoEditar.nombres,
       apellidoPaterno: this.psicologoEditar.apellidoPaterno,
@@ -165,8 +186,10 @@ export class gestionPsico {
     return this.http.put(environment.api + '/psicologo/updatePsicologo', body, {
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-      }
+        // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
+        'X-CSRF-TOKEN': csrfToken || ''
+      },
+      withCredentials: true
     });
   }
   

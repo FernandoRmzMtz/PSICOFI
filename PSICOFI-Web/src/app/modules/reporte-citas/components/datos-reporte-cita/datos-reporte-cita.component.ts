@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReporteCitasService } from '../../services/reporte-citas.service';
 import { Cita } from 'src/app/components/servicios/citas.service';
 import { Alumno } from 'src/app/model/alumno.model';
+import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 @Component({
   selector: 'app-datos-reporte-cita',
@@ -16,7 +17,8 @@ export class DatosReporteCitaComponent implements OnInit {
     private route: ActivatedRoute,
     private http:HttpClient, 
     private _router:Router, 
-    private reporteCitaService:ReporteCitasService
+    private reporteCitaService:ReporteCitasService,
+    private csrfService: CsrfServiceService
   ){
 
   }
