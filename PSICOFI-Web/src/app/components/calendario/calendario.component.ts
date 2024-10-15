@@ -8,7 +8,7 @@ import { AgendarCita } from 'src/app/modules/agendar-cita/services/agendar-cita.
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
-
+import { environment } from 'environments/enviroment';
 
 @Component({
   selector: 'app-calendario',
@@ -368,7 +368,7 @@ private actualizarDisponibilidadPorDia(): void {
     console.log("el idCita seleccionado es: "+idCita);
 
     // Realizar la llamada para eliminar la cita de la base de datos
-    this.http.delete(`http://localhost/PSICOFI-Api/public/cita/deleteDate/${idCita}`, {
+    this.http.delete(environment.api + `/cita/deleteDate/${idCita}`, {
       headers: {
         'Content-Type': 'application/json',
         // 'X-CSRF-TOKEN': this.LoginService.getToken() ?? "token"
@@ -479,7 +479,7 @@ private actualizarDisponibilidadPorDia(): void {
         horas: horasSeleccionadas
       };
   
-      this.http.post('http://localhost/PSICOFI-Api/public/cita/createDates', data, {
+      this.http.post(environment.api + '/cita/createDates', data, {
         headers: {
           'Content-Type': 'application/json',
           // 'X-CSRF-TOKEN': token

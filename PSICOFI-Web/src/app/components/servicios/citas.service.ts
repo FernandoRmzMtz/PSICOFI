@@ -3,6 +3,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
+import { environment } from 'environments/enviroment';
 
 
 export interface Cita {
@@ -26,19 +27,19 @@ export class CitasService {
     console.log("Llamando a obetener citas con id: "+id);
     const params = new HttpParams().set('id', id);
 
-    return this.http.get<Cita[]>('http://psicofi-api.test/cita/getDates', { params: params });
+    return this.http.get<Cita[]>(environment.api + '/cita/getDates', { params: params });
   }
 
   obtenerTodasLasCitas(id: string): Observable<Cita[]> {
     const params = new HttpParams().set('id', id);
     console.log("Llamando a obetener todas citas con id: "+id);
-    return this.http.get<Cita[]>('http://psicofi-api.test/cita/getAllDates', { params: params });
+    return this.http.get<Cita[]>(environment.api + '/cita/getAllDates', { params: params });
   }
 
   agendarCita(cita: { id: string; claveUnica: number; fecha: string; hora: string; }): Observable<any[]> {
     const csrfToken = this.csrfService.getCsrf();
 
-    const url = 'http://psicofi-api.test/cita/scheduleDate';
+    const url = environment.api + '/cita/scheduleDate';
     const token = localStorage.getItem('auth_token'); 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ export class CitasService {
   crearCitas(data: { id: string, fecha: string, horas: string[] }): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
 
-    const url = 'http://localhost/PSICOFI-Api/public/cita/createDates';
+    const url = environment.api + '/cita/createDates';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ export class CitasService {
 
     console.log("Llamada a cancelarCita de citas service, data:");
     console.log(data);
-    const url = 'http://localhost/PSICOFI-Api/public/cita/cancelDate';
+    const url = environment.api + '/cita/cancelDate';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -79,7 +80,7 @@ export class CitasService {
   confirmarCita(data: { idCita: number, id: string }): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
 
-    const url = 'http://localhost/PSICOFI-Api/public/cita/confirmDate';
+    const url = environment.api + '/cita/confirmDate';
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',

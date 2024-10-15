@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject, catchError, switchMap, throwError , of } from "rxjs";
 import { CsrfServiceService } from "src/app/servicios/csrfService/csrf-service.service";
+import { environment } from 'environments/enviroment';
 @Injectable({
     providedIn: 'root'
 })
@@ -13,7 +14,7 @@ export class AgendarCita {
     obtenerHistorialCitas(id: number): Observable<any> {
         const csrfToken = this.csrfService.getCsrf();
 
-        const url = 'http://localhost/PSICOFI-Api/public/alumno/getRecord';
+        const url = environment.api + '/alumno/getRecord';
         const body = { id: id };
         const token = localStorage.getItem('auth_token'); 
         const headers = new HttpHeaders({
@@ -34,7 +35,7 @@ export class AgendarCita {
         //         if (!csrfToken) {
         //             return throwError('No se pudo obtener el token CSRF.');
         //         }
-                const url = 'http://localhost/PSICOFI-Api/public/alumno/getDate';
+                const url = environment.api + '/alumno/getDate';
                 const body = { id: id };
                 const token = localStorage.getItem('auth_token'); 
                 const headers = new HttpHeaders({
@@ -56,7 +57,7 @@ export class AgendarCita {
     crearCitas(id: string, fecha: string, horas: string[], token: string): Observable<any> {
         const csrfToken = this.csrfService.getCsrf();
 
-        const url = 'http://localhost/PSICOFI-Api/public/cita/createDates';
+        const url = environment.api + '/cita/createDates';
         const body = { id, fecha, horas };
         const headers = new HttpHeaders()
           .set('Content-Type', 'application/json')
@@ -67,7 +68,7 @@ export class AgendarCita {
     obtenerAlumno(id: number): Observable<any> {
         const csrfToken = this.csrfService.getCsrf();
 
-        const url = 'http://localhost/PSICOFI-Api/public/alumno/getAlumno';
+        const url = environment.api + '/alumno/getAlumno';
         const body = { id: id };
         const token = localStorage.getItem('auth_token'); 
         const headers = new HttpHeaders({
@@ -90,7 +91,7 @@ export class AgendarCita {
     obtenerPsicologos(): Observable<any> {
         const csrfToken = this.csrfService.getCsrf();
 
-        const url = 'http://localhost/PSICOFI-Api/public/psicologo/getPsicologos';
+        const url = environment.api + '/psicologo/getPsicologos';
         const body = { activo: 1 };
         const token = localStorage.getItem('auth_token'); 
         const headers = new HttpHeaders({
@@ -105,7 +106,7 @@ export class AgendarCita {
     cancelarCita(idCita: number, id: string): Observable<any> {
         const csrfToken = this.csrfService.getCsrf();
 
-        const url = 'http://localhost/PSICOFI-Api/public/cita/cancelDate';
+        const url = environment.api + '/cita/cancelDate';
         const body = { idCita, id };
         const token = localStorage.getItem('auth_token');
         const headers = new HttpHeaders({
@@ -120,7 +121,7 @@ export class AgendarCita {
     confirmarCita(idCita: number, id: string): Observable<any> {
         const csrfToken = this.csrfService.getCsrf();
 
-        const url = 'http://localhost/PSICOFI-Api/public/cita/confirmDate';
+        const url = environment.api + '/cita/confirmDate';
         const body = { idCita, id };
         const token = localStorage.getItem('auth_token');
         const headers = new HttpHeaders({
