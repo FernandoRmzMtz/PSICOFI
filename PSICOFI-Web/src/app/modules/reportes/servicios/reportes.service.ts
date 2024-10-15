@@ -40,7 +40,7 @@ export class ReportesService {
       return of({ error: 'Consulta incorrecta' });
     }
 
-    const url = 'http://localhost/PSICOFI-Api/public/reporte/getReporte';
+    const url = environment.api + '/reporte/getReporte';
     const body: any = { tipo: tipo, nombre: nombre, fecha_inicio: fechaInicio, fecha_final: fechaFin };
     const token = localStorage.getItem('auth_token'); 
 
