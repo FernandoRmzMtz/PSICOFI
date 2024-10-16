@@ -1,3 +1,20 @@
+/* 
+.icon-circle {
+    display: inline-block;
+    width: 60px; 
+    height: 60px; 
+    border-radius: 50%; 
+    background-color: #f0f0f0; 
+    line-height: 60px; 
+    color: #333; 
+    text-decoration: none; 
+    transition: background-color 0.3s;
+}
+
+.icon-circle:hover {
+    background-color: #e0e0e0; 
+} */
+
 /*Contenido general*/
 body {
     padding: 0px;
