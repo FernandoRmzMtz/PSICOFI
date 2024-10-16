@@ -25,6 +25,7 @@ export class FormularioReporteCitaComponent implements OnInit {
   departamento: number | null = null;
   detalleCanalizacion: string = '';
   foraneo: boolean | undefined | null = null;
+  atendida: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -176,6 +177,8 @@ export class FormularioReporteCitaComponent implements OnInit {
               idCita: this.idCita,
               foraneo: this.foraneo
             };
+            // Cambiar estatus de cita
+            this.updateStatusCita();
             // Enviar los datos al servidor
             const csrfToken = this.csrfService.getCsrf();
 
@@ -196,7 +199,7 @@ export class FormularioReporteCitaComponent implements OnInit {
                   this.visible = false;
                 }, 3000);
                 console.log('Datos enviados correctamente:', response);
-                window.location.reload();
+                // window.location.reload();
               },
               error => {
                 this.error = true;
@@ -211,4 +214,39 @@ export class FormularioReporteCitaComponent implements OnInit {
       // }
     }
   }
+
+  updateStatusCita(): void {
+    const status = this.atendida ? 4 : 5; //4: atendida, 5: no atendida
+    
+    // Prepara los datos para actualizar el estatus de la cita
+    const statusData = {
+      idCita: this.idCita,
+      estadoCita: status
+    };
+  
+    // Obtiene el token CSRF
+    const csrfToken = this.csrfService.getCsrf();
+  
+    // Enviar los datos al servidor para actualizar el estatus de la cita
+    this.http.put<any>(`${environment.api}/actualizar-estado-cita/${this.idCita}`, 
+      statusData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials: true
+      }
+    ).subscribe(
+      response => {
+        console.log('Estatus de cita actualizado correctamente:', response);
+        // Puedes recargar la página o manejar alguna acción adicional
+        // window.location.reload();
+      },
+      error => {
+        console.error('Error al actualizar el estatus de la cita:', error);
+      }
+    );
+  }
+  
 }

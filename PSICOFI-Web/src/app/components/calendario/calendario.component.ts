@@ -519,6 +519,22 @@ private actualizarDisponibilidadPorDia(): void {
     this.citaSeleccionada = null;
   }
 
+  crearNotaCita(cita:Cita){
+    console.log("Llamada a crear nota cita en cita urgente a la cita: " + cita);
+    if(cita.clavePsicologo){
+      const citaData = {
+        idCita: cita.idCita,
+        claveUnica: cita.claveUnica.toString(),
+        fecha: cita.fecha.toString(),
+        hora: cita.hora.toString(),
+        clavePsicologo: cita.clavePsicologo,
+        clavePsicologoExterno: cita.clavePsicologoExterno
+      }
+      console.log(citaData);
+      this._router.navigate(['/reporte-citas', citaData.idCita]);
+    }
+  }
+
   cancelarCita(cita: Cita) {
     console.log("la cita es:");
     console.log(cita);

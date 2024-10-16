@@ -437,4 +437,64 @@ class DateController extends Controller
             return json_encode($respuesta);
         }
     }
+
+    // public function actualizarEstadoCita(Request $request, $idCita)
+    // {
+    //     // Validar que el estado es válido (4 para atendida, 5 para no atendida)
+    //     $validatedData = $request->validate([
+    //         'estadoCita' => 'required|in:4,5',
+    //     ]);
+
+    //     try {
+    //         // Buscar la cita por ID
+    //         // $cita = Cita::findOrFail($idCita);
+    //         $cita = Cita::where('idCita', $idCita)->firstOrFail();
+
+
+    //         // Actualizar el estatus de la cita
+    //         $cita->estadoCita = $validatedData['estadoCita'];
+    //         $cita->save();
+
+    //         return response()->json([
+    //             'message' => 'Estatus de la cita actualizado correctamente',
+    //             'cita' => $cita
+    //         ], 200);
+
+    //     } catch (\Exception $e) {
+    //             return response()->json([
+    //             'error' => 'Error al actualizar el estatus de la cita',
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+    public function actualizarEstadoCita(Request $request, $idCita)
+    {
+        // Validar que el estado es válido (4 para atendida, 5 para no atendida)
+        $validatedData = $request->validate([
+            'estadoCita' => 'required|in:4,5',
+        ]);
+
+        try {
+            // Buscar la cita por idCita
+            // $cita = Cita::findOrFail($idCita);
+            $cita = Cita::where('idCita', $idCita)->firstOrFail();
+
+
+            // Actualizar el estatus de la cita
+            $cita->estadoCita = $validatedData['estadoCita'];
+            $cita->save();
+
+            return response()->json([
+                'message' => 'Estatus de la cita actualizado correctamente',
+                'cita' => $cita
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al actualizar el estatus de la cita',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

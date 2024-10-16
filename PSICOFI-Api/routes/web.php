@@ -81,6 +81,8 @@ Route::get('/getNotaCita/{idCita}', [NotaCitaController::class, 'getNotaCita'])-
 
 Route::put('/api/nota-cita/{id}', [NotaCitaController::class, 'updateCita'])->name('updateCita');
 
+Route::put('/actualizar-estado-cita/{id}', [DateController::class, 'actualizarEstadoCita'])->name('actualizaEstadoCita');
+
 Route::post('/reporte/getReporte', [ReporteController::class, 'getReporte'])->name('getReporte');
 
 Route::post('/reporte/getAreasCarreras', [ReporteController::class, 'getAreasCarreras'])->name('getAreasCarreras');
