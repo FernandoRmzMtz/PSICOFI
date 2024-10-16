@@ -16,9 +16,9 @@ class NotaCita extends Model
     protected $primaryKey = 'idNotaCita'; 
     protected $fillable = [ 
         'tipoIntervencion',
-        'notas',
+        // 'notas',
         'departamento',
-        'detalleCanalizacion',
+        // 'detalleCanalizacion',
         'idCita',
         'foraneo'
     ];

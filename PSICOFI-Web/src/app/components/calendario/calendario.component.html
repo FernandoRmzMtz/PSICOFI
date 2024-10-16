@@ -64,7 +64,7 @@
         <div *ngIf="tipoUsuario === 'Psicologo' || tipoUsuario ==='Psicologo externo'">
           <!-- Horarios sin cita agendada (Disponibles para cancelar) -->
           <div>
-            <h4>Horario sin cita agendada</h4>
+            <h4>Horarios sin cita agendada</h4>
             <div *ngIf="citasDisponibles.length > 0; else noDisponibles">
               <div class="horas-contenedor">
                 <button class="btn btn-outline-danger hora-btn" *ngFor="let cita of citasDisponibles"
@@ -81,7 +81,7 @@
 
           <!-- Horarios con citas ya agendadas -->
           <div>
-            <h4>Horarios con citas ya agendadas</h4>
+            <h4>Horarios con cita agendada</h4>
             <div *ngIf="citasAgendadas.length > 0; else noAgendadas">
               <div class="horas-contenedor">
                 <ng-container *ngFor="let cita of citasAgendadas; let i = index">
@@ -238,6 +238,7 @@
           <!-- <button class="btn btn-secondary">Ver Datos del Alumno</button> -->
           <button class="btn btn-danger" *ngIf="citaSeleccionada" (click)="cancelarCita(citaSeleccionada)">Cancelar
             cita</button>
+          <button type="button" class="btn btn-primary" *ngIf="citaSeleccionada" (click)="crearNotaCita(citaSeleccionada)">Crear notas</button>
         </div>
       </div>
     </div>
