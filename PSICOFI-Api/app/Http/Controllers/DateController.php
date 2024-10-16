@@ -496,5 +496,28 @@ class DateController extends Controller
             ], 500);
         }
     }
+    
+    public function obtenerEstatusCita($idCita)
+    {
+        try {
+            // Buscar la cita por idCita
+            // $cita = Cita::findOrFail($idCita);
+            $cita = Cita::where('idCita', $idCita)->firstOrFail();
+
+
+            // Retornar el estatus de la cita
+            return response()->json([
+                'estadoCita' => $cita->estadoCita,
+                'message' => 'Estatus de la cita obtenido correctamente'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener el estatus de la cita',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 }

@@ -7,6 +7,7 @@ import { Cita } from 'src/app/components/servicios/citas.service';
 import { NotaCita } from 'src/app/model/nota-cita.model';
 import { LoginService } from 'src/app/modules/login/services/login.services';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class FormularioReporteCitaComponent implements OnInit {
 
 
   ngOnInit(): void {
+        
     this.isLoading = true;
     this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
       response => {
@@ -77,14 +79,23 @@ export class FormularioReporteCitaComponent implements OnInit {
       console.log("id de cita:"+this.idCita);
       if (this.idCita) {
         this.getNotaCita(this.idCita);
-        //Validar que solo pueda ver/editar el psicologo que dio la cita
-        // const clavePsico = this.loginService.getClave();
-        // if(clavePsico!= this.cita?.clavePsicologo.toString()) {
-        //   this._router.navigate(['/historial-alumnos']);
-        // }
       }
       this.isLoading = false;
     });  
+
+    this.isLoading = true;
+    this.reporteCitaService.obtenerEstatusCita(this.idCita).subscribe(
+      (response) => {
+        this.atendida = response.estadoCita === 4 ? true : false;
+        console.log('Estatus de la cita:', this.atendida);
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error al obtener el estatus de la cita:', error);
+        this.isLoading = false;
+      }
+    );
+
   }
 
   toggleCanalizacion(): void {
@@ -119,12 +130,13 @@ export class FormularioReporteCitaComponent implements OnInit {
         console.log(this.notaCita);
         this.tipoIntervencion = this.notaCita.tipoIntervencion;
         this.foraneo = this.notaCita.foraneo;
-        this.notas = this.notaCita.notas;
-        if(this.notaCita.detalleCanalizacion){
-          this.necesitaCanalizacion = true;
-          this.detalleCanalizacion = this.notaCita.detalleCanalizacion;
-        }
+        // this.notas = this.notaCita.notas;
+        // if(this.notaCita.detalleCanalizacion){
+          // this.necesitaCanalizacion = this.notaCita.departamento? true: false;
+          // this.detalleCanalizacion = this.notaCita.detalleCanalizacion;
+        // }
         if(this.notaCita.departamento){
+          this.necesitaCanalizacion = true;
           this.departamento = this.notaCita.departamento;
           console.log("el departamento es: "+this.departamento+" y el tipo intervencion es:"+this.tipoIntervencion);
         }
@@ -245,6 +257,20 @@ export class FormularioReporteCitaComponent implements OnInit {
       },
       error => {
         console.error('Error al actualizar el estatus de la cita:', error);
+      }
+    );
+  }
+
+  obtenerEstatusCita() {
+    this.reporteCitaService.obtenerEstatusCita(this.idCita).subscribe(
+      (response) => {
+        this.atendida = response.estadoCita === 4 ? true : false;
+        console.log('Estatus de la cita:', this.atendida);
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error al obtener el estatus de la cita:', error);
+        this.isLoading = false;
       }
     );
   }
