@@ -47,7 +47,7 @@
                     <div class="col-md-6 d-flex flex-column justify-content-center">
                         <label for="selectDepartamentoRepCita" class="form-label mb-3">Departamento:</label>  
                         <select class="form-select form-select-lg" name="departamento" id="selectDepartamentoRepCita" [(ngModel)]="departamento" >                      
-                            <option *ngFor="let depa of departamentos" [value]="depa.idDepartamento">{{ depa.departamento }}</option>
+                            <option *ngFor="let depa of departamentos" [value]="depa.idDepartamento">{{ depa.idDepartamento }}</option>
                         </select>
                     </div>
                 </div>

@@ -162,13 +162,13 @@ export class FormularioReporteCitaComponent implements OnInit {
           this.errorDepaCan = false;
         }, 5000);
         }else{
-          if(this.necesitaCanalizacion && this.departamento) {
-            //muestra error
-            this.errorDetalleCan = true;
-          setTimeout(() => {
-            this.errorDetalleCan = false;
-          }, 5000);
-            }else{
+          // if(this.necesitaCanalizacion && this.departamento) {
+          //   //muestra error
+          //   this.errorDetalleCan = true;
+          // setTimeout(() => {
+          //   this.errorDetalleCan = false;
+          // }, 5000);
+          //   }else{
             const formData = {
               tipoIntervencion: this.tipoIntervencion,
               // notas: this.notas,
@@ -199,7 +199,7 @@ export class FormularioReporteCitaComponent implements OnInit {
                   this.visible = false;
                 }, 3000);
                 console.log('Datos enviados correctamente:', response);
-                // window.location.reload();
+                window.location.reload();
               },
               error => {
                 this.error = true;
@@ -210,7 +210,7 @@ export class FormularioReporteCitaComponent implements OnInit {
               }
             );
           } 
-        } 
+        // } 
       // }
     }
   }
