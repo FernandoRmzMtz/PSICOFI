@@ -50,13 +50,56 @@ export class LoginExternoComponent {
   }
 
 
-  //Se reestablece el invalid-input cuando se cambia
-  public onInputChange(): void {
+  public onInputChange(){
     if (this.validarContrasena != "") {
-      this.validarContrasena = "";
-      this.validarClave = "";
+          this.validarContrasena = "";
+          this.validarClave = "";
+        }
+        this.errorMessage = ""; 
+  }
+
+  //Se reestablece el invalid-input cuando se cambia
+  public validaCURP(event: any): void {
+  
+    let value = event.target.value.toUpperCase();    
+    // Expresión regular que define el formato correcto de la CURP
+    const curpPattern = [
+      /^[A-Z]$/,         // Primera letra del primer apellido
+      /^[AEIOU]$/,       // Primera vocal interna del primer apellido
+      /^[A-Z]$/,         // Primera letra del segundo apellido
+      /^[A-Z]$/,         // Primera letra del primer nombre
+      /^[0-9]$/,      // Año de nacimiento
+      /^[0-9]$/,      // Año de nacimiento
+      /^[0-9]$/,      // Mes de nacimiento
+      /^[0-9]$/,      // Mes de nacimiento
+      /^[0-9]$/,      // Día de nacimiento
+      /^[0-9]$/,      // Día de nacimiento
+      /^[HM]$/,          // Sexo
+      /^[A-Z]$/,      // Estado
+      /^[A-Z]$/,      // Estado
+      /^[B-DF-HJ-NP-TV-Z]$/, // Primera consonante interna del primer apellido
+      /^[B-DF-HJ-NP-TV-Z]$/, // Primera consonante interna del segundo apellido
+      /^[B-DF-HJ-NP-TV-Z]$/, // Primera consonante interna del primer nombre
+      /^[0-9A-Z]$/,      // Año de nacimiento: número o letra
+      /^[0-9]$/          // Dígito verificador
+    ];
+
+    let newValue = '';
+    let isValid = true;
+
+    // Validar cada posición de la entrada
+    for (let i = 0; i < value.length && i < 18; i++) {
+      const currentChar = value[i];
+      if (curpPattern[i].test(currentChar)) {
+        newValue += currentChar;
+      } else {
+        isValid = false;
+        break;
+      }
     }
-    this.errorMessage = ""; 
+
+    this.cvunica = newValue;
+    event.target.value = newValue;
   }
 
   public validaUsuarioInterno(): void {

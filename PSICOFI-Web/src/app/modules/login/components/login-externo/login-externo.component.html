@@ -15,15 +15,16 @@
     <div class="container">
         <form (ngSubmit)="onSubmit()">
             <div class="mb-3">
-                <label for="" class="form-label">CURP</label>
+                <label for="curp" class="form-label">CURP</label>
                 <input
                     type="text"
-                    class="form-control {{validarClave}}"
+                    class="form-control"
                     name="curp"
                     id="curp"
                     placeholder="CURP a 18 caracteres"
                     [(ngModel)] = "cvunica"
-                    (ngModelChange)="onInputChange()"
+                    (input)="validaCURP($event)"
+                    maxlength="18"
                 />
             </div>
             <div class="mb-3">
