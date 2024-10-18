@@ -48,8 +48,11 @@ class DateController extends Controller
         $id = $request->input('id',null);
         //Validación de que $id tenga un valor
         if($id != null){
+            $diaActual = Carbon::now($tz='America/Mexico_City');
+            $diaProximo = $diaActual->addDays(7);
+            $fecha = $diaProximo->toDateString();
 
-            $citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ?', [$id,"libre"]);
+            $citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ? AND fecha >= ?', [$id,"libre",$fecha]);
 
             if(!empty($citas)){
                 $citasPsicologo = collect($citas);
@@ -61,7 +64,7 @@ class DateController extends Controller
                 }
             }else{
                 // return response([]);
-                return response()->json(['error' => 'No se encontraron citas disponibles'], 404);
+                return response()->json(['error' => 'No se encontraron citas disponibles'], 204);
             }
         }
         else{
@@ -240,6 +243,10 @@ class DateController extends Controller
         $fecha = $request->input('fecha',null);
         $horas = $request->input('horas', []);
 
+        $diaActual = Carbon::now($tz='America/Mexico_City');
+        $fechaActual = $diaActual->toDateString();
+        $horaActual = $diaActual->toTimeString();
+
         try{
             if(strlen($id) == 18){
                 if($fecha != null && $horas != null){
@@ -252,15 +259,31 @@ class DateController extends Controller
                             ->exists();
                             
                             if(!$citaExistente){
-                                $cita = new Cita;
+                                if($fecha == $fechaActual)
+                                {
+                                    if($hora > $horaActual){
+                                        $cita = new Cita;
 
-                                $cita->fecha = date('Y-m-d', strtotime($fecha));
-                                $cita->hora = $hora;
-                                $cita->estadoCita = 7;
-                                $cita->clavePsicologo = null;
-                                $cita->clavePsicologoExterno = $id;
+                                        $cita->fecha = date('Y-m-d', strtotime($fecha));
+                                        $cita->hora = $hora;
+                                        $cita->estadoCita = 7;
+                                        $cita->clavePsicologo = null;
+                                        $cita->clavePsicologoExterno = $id;
 
-                                $cita->save();
+                                        $cita->save();
+                                    }
+                                }else if($fecha > $fechaActual){
+                                    $cita = new Cita;
+
+                                    $cita->fecha = date('Y-m-d', strtotime($fecha));
+                                    $cita->hora = $hora;
+                                    $cita->estadoCita = 7;
+                                    $cita->clavePsicologo = null;
+                                    $cita->clavePsicologoExterno = $id;
+
+                                    $cita->save();
+                                }
+                                
                             }
                         }
 
@@ -282,15 +305,30 @@ class DateController extends Controller
                             ->exists();
                             
                             if(!$citaExistente){
-                                $cita = new Cita;
+                                if($fecha == $fechaActual)
+                                {
+                                    if($hora > $horaActual){
+                                        $cita = new Cita;
 
-                                $cita->fecha = date('Y-m-d', strtotime($fecha));
-                                $cita->hora = $hora;
-                                $cita->estadoCita = 7;
-                                $cita->clavePsicologo = $id;
-                                $cita->clavePsicologoExterno = null;
+                                        $cita->fecha = date('Y-m-d', strtotime($fecha));
+                                        $cita->hora = $hora;
+                                        $cita->estadoCita = 7;
+                                        $cita->clavePsicologo = $id;
+                                        $cita->clavePsicologoExterno = null;
 
-                                $cita->save();
+                                        $cita->save();
+                                    }
+                                }else if($fecha > $fechaActual){
+                                    $cita = new Cita;
+
+                                    $cita->fecha = date('Y-m-d', strtotime($fecha));
+                                    $cita->hora = $hora;
+                                    $cita->estadoCita = 7;
+                                    $cita->clavePsicologo = $id;
+                                    $cita->clavePsicologoExterno = null;
+
+                                    $cita->save();
+                                }
                             }
                         }
                         $respuesta = ['Citas creadas correctamente'];
