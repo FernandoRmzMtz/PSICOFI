@@ -181,6 +181,12 @@ export class FormularioReporteCitaComponent implements OnInit {
           //   this.errorDetalleCan = false;
           // }, 5000);
           //   }else{
+          if(!this.atendida){
+            this.departamento = null;
+            this.foraneo = false;
+            this.necesitaCanalizacion = false;
+            this.tipoIntervencion = 1;
+          }
             const formData = {
               tipoIntervencion: this.tipoIntervencion,
               // notas: this.notas,
