@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
 export class LoginExternoComponent {
   public cvunica: string = "";
   public contrasena: string = "";
-  public errorMessage: string = "";
+  public errorMessage: string = ""
+  public checkboxAceptado: boolean = false;
 
   public isLoading = false;
 
