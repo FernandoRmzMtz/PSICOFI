@@ -11,7 +11,7 @@ export class LoginInternoComponent {
   public cvunica: string = "";
   public contrasena: string = "";
   public errorMessage: string = "";
-
+  public checkboxAceptado: boolean = false;
   public isLoading = false;
 
   public validarContrasena: boolean = false;

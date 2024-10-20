@@ -117,7 +117,17 @@ body {
     margin-right: 10px !important;
 }
 
-
+h2 {
+    font-weight: bold;
+    color: #004A98 !important;
+    font-size: 22px !important;
+}
+h3 {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #2080CB !important;
+    font-size: 22px !important;
+}
 
 .nav-link.disabled, .dropdown-item.disabled, a.disabled {
     color: #6c757d7a !important;
