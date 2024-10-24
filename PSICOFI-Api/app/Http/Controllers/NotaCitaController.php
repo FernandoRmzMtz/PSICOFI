@@ -53,7 +53,7 @@ class NotaCitaController extends Controller
         $cita->save();
 
         // Devuelve la cita creada
-        return response()->json(['idCita' => $cita->id], 201);
+        return response()->json(['idCita' => $cita->idCita], 201);
     }
 
     public function store(Request $request)

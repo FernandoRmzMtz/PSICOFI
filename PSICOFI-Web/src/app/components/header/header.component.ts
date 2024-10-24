@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.tipoUsuario = tipoUsuario;
     });
 
-    if (this.loginService.isAuthenticated()) {
+    if (this.loginService.isLoggedIn()) {
       this.tipoUsuario = this.loginService.getTipoUsuario() || '';
     }
 
