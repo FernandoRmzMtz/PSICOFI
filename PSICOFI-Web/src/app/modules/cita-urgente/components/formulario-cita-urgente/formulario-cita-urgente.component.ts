@@ -98,16 +98,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
           
         }
         else{
-          // if(!this.notas) {
-          //   //muestra error
-          // //   this.isLoading = false;
-          // //   this.errorNotas = true;
-          // //   setTimeout(() => {
-          // //   this.errorNotas = false;
-          // // }, 3000);
-          // }
-          // else{
-            // if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
             if(this.necesitaCanalizacion && !this.departamento) {
               //muestra error
               this.isLoading = false;
@@ -116,22 +106,13 @@ export class FormularioCitaUrgenteComponent implements OnInit {
               this.errorDepaCan = false;
             }, 5000);
             }else{
-              if(this.necesitaCanalizacion && this.departamento) {
-                //muestra error
-                this.isLoading = false;
-                this.errorDetalleCan = true;
-                setTimeout(() => {
-                this.errorDetalleCan = false;
-              }, 5000);
-                }else{
+                  console.log("cita--: ",response);
                   const idCita = response.idCita;
                   this.isLoading = false;
                   // Crear el objeto con los datos del formulario
                   const formData = {
                     tipoIntervencion: this.tipoIntervencion,
-                    // notas: this.notas,
                     departamento: this.necesitaCanalizacion ? this.departamento ? this.departamento: null : null,
-                    // detalleCanalizacion: this.necesitaCanalizacion ? this.detalleCanalizacion ? this.detalleCanalizacion : "": "", // Si necesita canalización, incluir los detalles
                     idCita: idCita,
                     foraneo: this.foraneo
                   };
@@ -144,7 +125,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                   {
                     headers: {
                       'Content-Type': 'application/json',
-                      // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
                       'X-CSRF-TOKEN': csrfToken || ''
                     },
                     withCredentials:true
@@ -171,8 +151,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                   }
                 );
               }
-            }
-          // }
         }
       },
       (error: any) => {

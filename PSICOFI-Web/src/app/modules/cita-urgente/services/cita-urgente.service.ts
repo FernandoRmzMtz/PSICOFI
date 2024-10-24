@@ -71,11 +71,10 @@ export class CitaUrgenteService {
 
     console.log("estos son los datos de la cita:"+citaData);
     console.log(citaData);
-    return this.http.post<any>(environment.api+'/api/crear-cita', citaData,
+    return this.http.post<any>(environment.api+'/crear-cita', citaData,
     {
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
         'X-CSRF-TOKEN': csrfToken || ''
       },
       withCredentials:true
