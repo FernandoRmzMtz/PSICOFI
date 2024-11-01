@@ -24,7 +24,7 @@ export class CalendarioComponent implements OnInit {
   private tipoUsuarioSubscription!: Subscription;
   visible: boolean = false;
   horasDisponibles: string[] = this.generarHoras();
-  success_msg:string= '';
+  success_msg: string = '';
 
   constructor(
     private el: ElementRef,
@@ -80,7 +80,7 @@ export class CalendarioComponent implements OnInit {
     });
 
     this.tipoUsuarioSubscription = this.LoginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
-      this.tipoUsuario = tipoUsuario;      
+      this.tipoUsuario = tipoUsuario;
       if (this.LoginService.isAuthenticated()) {
         const claveUnica = this.LoginService.getClave();
         this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
@@ -91,7 +91,7 @@ export class CalendarioComponent implements OnInit {
       const claveUnica = this.LoginService.getClave();
       this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
-      console.log("El tipo usuario es: "+this.tipoUsuario);
+      console.log("El tipo usuario es: " + this.tipoUsuario);
 
       //Reacomodo de codigo para primero verificar que esté autenticado el usuario
       this.generarDiasDelMes(this.fechaActual);
@@ -99,10 +99,15 @@ export class CalendarioComponent implements OnInit {
       this.verificarCitaAgendada();
     }
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['psicologoId'] && !changes['psicologoId'].firstChange) {
       this.cargarCitas();
+      this.diaSeleccionado = new Date();
+      this.seleccionarDia(this.diaSeleccionado);
+      if (this.diaSeleccionado) {
+        this.actualizarHorariosDelDiaSeleccionado();
+      }
     }
   }
 
@@ -112,6 +117,7 @@ export class CalendarioComponent implements OnInit {
       this.tipoUsuarioSubscription.unsubscribe();
     }
   }
+
   generarHoras(): string[] {
     return Array.from({ length: 10 }, (_, i) => `${8 + i}:00`);
   }
@@ -138,72 +144,79 @@ export class CalendarioComponent implements OnInit {
       this.horariosDelDiaSeleccionado = [];
     }
   }
-  
+
   cargarCitas(): void {
-  if (this.tipoUsuario === 'Alumno') {
-    this.psicologo = this.psicologoId;
-    this.cargarCitasAlumno();
-  } else if ((this.tipoUsuario === 'Psicologo' || this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) {
-    if(this.tipoUsuario === 'Psicologo externo') {
-      this.psicologo = this.LoginService.getClave();
-      this.cargarCitasPsicologo();
-    }else{
-      this.psicologo = this.usuarioActualId.toString();
-      this.cargarCitasPsicologo();
+    if (this.tipoUsuario === 'Alumno') {
+      this.psicologo = this.psicologoId;
+      this.cargarCitasAlumno();
+    } else if ((this.tipoUsuario === 'Psicologo' || this.tipoUsuario === 'Psicologo externo') && this.usuarioActualId !== null) {
+      if (this.tipoUsuario === 'Psicologo externo') {
+        this.psicologo = this.LoginService.getClave();
+        this.cargarCitasPsicologo();
+      } else {
+        this.psicologo = this.usuarioActualId.toString();
+        this.cargarCitasPsicologo();
+      }
     }
   }
-}
 
-private cargarCitasAlumno(): void {
-  this.citasService.obtenerCitas(this.psicologo).subscribe({
-    next: (citas) => {
-      if(!citas){
-        console.log("No se encontraron citas");
-      }
-      this.citas = citas.filter(cita => cita.estado === "Libre");
-      this.actualizarDisponibilidadPorDia();
-      console.log("Se cargaron las citas del alumno");
-    },
-    error: (error) => {
-      // console.error('Error al cargar citas:', error);
-      console.log('El psicologo seleccionado no tiene citas disponibles');
-    },
-  });
-}
+  private cargarCitasAlumno(): void {
+    this.citasService.obtenerCitas(this.psicologoId).subscribe({
+      next: (citas) => {
+        if (!citas || citas.length === 0) {
+          console.log("No se encontraron citas para el psicólogo seleccionado");
+          this.citas = [];
+          this.disponibilidadPorDia = {};
+          this.generarDiasDelMes(this.fechaActual);
 
-private cargarCitasPsicologo(): void {
-  console.log("cargarCitasPsicologo con psicologo:"+this.psicologo);
-  console.log(this.psicologo);
-  this.citasService.obtenerTodasLasCitas(this.psicologo).subscribe({
-    next: (citas) => {
-      this.citas = citas;
-      this.actualizarDisponibilidadPorDia();
-    },
-    error: (error) => {
-      console.error('Error al cargar citas del psicólogo:', error);
-    },
-  });
-}
-
-private actualizarDisponibilidadPorDia(): void {
-  this.disponibilidadPorDia = {};
-  //Validacion de que this.citas tiene citas
-  if(this.citas){
-    this.citas.forEach(cita => {
-      const fecha = cita.fecha;
-      if (!this.disponibilidadPorDia[fecha]) {
-        this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
-      }
-      this.disponibilidadPorDia[fecha].total++;
-      if (cita.estado === "Libre") {
-        this.disponibilidadPorDia[fecha].disponibles++;
-      }
+        } else {
+          this.citas = citas.filter(cita => cita.estado === "Libre");
+          this.actualizarDisponibilidadPorDia();
+          console.log("Se cargaron las citas del alumno");
+        }
+      },
+      error: (error) => {
+        console.log('Error al cargar citas:', error);
+        this.citas = [];
+        this.disponibilidadPorDia = {};
+        this.generarDiasDelMes(this.fechaActual);
+      },
     });
-    this.generarDiasDelMes(this.fechaActual);
-  }else{
-    console.log("El Psicologo no tiene horarios/citas habilitados.");
   }
-}
+
+  private cargarCitasPsicologo(): void {
+    console.log("cargarCitasPsicologo con psicologo:" + this.psicologo);
+    console.log(this.psicologo);
+    this.citasService.obtenerTodasLasCitas(this.psicologo).subscribe({
+      next: (citas) => {
+        this.citas = citas;
+        this.actualizarDisponibilidadPorDia();
+      },
+      error: (error) => {
+        console.error('Error al cargar citas del psicólogo:', error);
+      },
+    });
+  }
+
+  private actualizarDisponibilidadPorDia(): void {
+    this.disponibilidadPorDia = {};
+    //Validacion de que this.citas tiene citas
+    if (this.citas) {
+      this.citas.forEach(cita => {
+        const fecha = cita.fecha;
+        if (!this.disponibilidadPorDia[fecha]) {
+          this.disponibilidadPorDia[fecha] = { total: 0, disponibles: 0 };
+        }
+        this.disponibilidadPorDia[fecha].total++;
+        if (cita.estado === "Libre") {
+          this.disponibilidadPorDia[fecha].disponibles++;
+        }
+      });
+      this.generarDiasDelMes(this.fechaActual);
+    } else {
+      console.log("El Psicologo no tiene horarios/citas habilitados.");
+    }
+  }
 
 
   getDisponibilidadClase(dia: Date): string {
@@ -268,41 +281,41 @@ private actualizarDisponibilidadPorDia(): void {
   }
 
   seleccionarDia(dia: Date, evento?: Event): void {
-  if (this.citaAgendada && this.tipoUsuario === 'Alumno') return;
-  
-  this.diaSeleccionado = dia;
-  this.horaSeleccionada = "";
-  const fechaSeleccionada = dia.toISOString().split('T')[0];
+    if (this.citaAgendada && this.tipoUsuario === 'Alumno') return;
 
-  //Validación de que this.citas contiene citas
-  if(this.citas){
-    this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
-      cita.fecha === fechaSeleccionada &&
-      cita.estado === "Libre"
-    ).map(cita => cita.hora);
+    this.diaSeleccionado = dia;
+    this.horaSeleccionada = "";
+    const fechaSeleccionada = dia.toISOString().split('T')[0];
 
-    this.citasAgendadas = this.citas.filter(cita =>
-      cita.fecha === fechaSeleccionada &&
-    (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
-    ).map(cita => cita);
+    //Validación de que this.citas contiene citas
+    if (this.citas) {
+      this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
+        cita.fecha === fechaSeleccionada &&
+        cita.estado === "Libre"
+      ).map(cita => cita.hora);
 
-    this.citasDisponibles =this.citas.filter(cita =>
-      cita.fecha === fechaSeleccionada &&
-      cita.estado === "Libre"
-    ).map(cita => cita);
-  }else{
-    console.log("No se tienen registradas citas en el día seleccionado.");
+      this.citasAgendadas = this.citas.filter(cita =>
+        cita.fecha === fechaSeleccionada &&
+        (cita.estado === "Asistencia confirmada" || cita.estado === "Asistencia sin confirmar")
+      ).map(cita => cita);
+
+      this.citasDisponibles = this.citas.filter(cita =>
+        cita.fecha === fechaSeleccionada &&
+        cita.estado === "Libre"
+      ).map(cita => cita);
+    } else {
+      console.log("No se tienen registradas citas en el día seleccionado.");
+    }
+
+    if (this.diaSeleccionadoElemento) {
+      this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
+    }
+    if (evento) {
+      this.diaSeleccionadoElemento = (evento.target as HTMLElement);
+      this.diaSeleccionadoElemento.classList.add('dia-seleccionado');
+    }
+
   }
-
-  if (this.diaSeleccionadoElemento) {
-    this.diaSeleccionadoElemento.classList.remove('dia-seleccionado');
-  }
-  if (evento) {
-    this.diaSeleccionadoElemento = (evento.target as HTMLElement);
-    this.diaSeleccionadoElemento.classList.add('dia-seleccionado');
-  }
-
-}
 
 
   abrirModalConfirmacion() {
@@ -317,7 +330,7 @@ private actualizarDisponibilidadPorDia(): void {
     if (this.usuarioActualId !== null) {
       const cita = {
         id: this.psicologoId,
-        claveUnica: this.usuarioActualId, 
+        claveUnica: this.usuarioActualId,
         fecha: this.diaSeleccionado.toISOString().split('T')[0],
         hora: this.horaSeleccionada
       };
@@ -365,7 +378,7 @@ private actualizarDisponibilidadPorDia(): void {
     }
     const idCita = this.citaSeleccionada.idCita;
 
-    console.log("el idCita seleccionado es: "+idCita);
+    console.log("el idCita seleccionado es: " + idCita);
 
     // Realizar la llamada para eliminar la cita de la base de datos
     this.http.delete(environment.api + `/cita/deleteDate/${idCita}`, {
@@ -374,7 +387,7 @@ private actualizarDisponibilidadPorDia(): void {
         // 'X-CSRF-TOKEN': this.LoginService.getToken() ?? "token"
         'X-CSRF-TOKEN': csrfToken || ''
       },
-      withCredentials:true
+      withCredentials: true
     }).subscribe(
       () => {
         console.log('El horario de la cita ha sido cancelada correctamente.');
@@ -418,22 +431,22 @@ private actualizarDisponibilidadPorDia(): void {
 
   //   this.cerrarModalAgregarHora();
   // }
-  
+
   agregarHoras() {
 
     const csrfToken = this.csrfService.getCsrf();
 
     const diasSeleccionados = Object.keys(this.form.get('diasSeleccionados')?.value)
       .filter(dia => this.form.get('diasSeleccionados')?.value[dia]);
-  
+
     const horasSeleccionadas = Object.keys(this.form.get('horasSeleccionadas')?.value)
       .filter(hora => this.form.get('horasSeleccionadas')?.value[hora]);
 
-      
-  
+
+
     // Generar una lista de fechas para los días seleccionados dentro de la semana de la fecha seleccionada
     const startOfWeek = this.getStartOfWeek(this.fechaSeleccionada);
-    
+
     // Error corregido de agenda en sabados
     // const fechasSeleccionadas = diasSeleccionados.map(dia => {
     //   console.log("\nfechaSeleccionada:");
@@ -448,25 +461,25 @@ private actualizarDisponibilidadPorDia(): void {
       console.log("\nfechaSeleccionada:");
       const dayIndex = this.dias.indexOf(dia);
       console.log(dayIndex);
-      
+
       const fecha = new Date(startOfWeek);
       console.log(fecha);
-      
+
       fecha.setDate(startOfWeek.getDate() + dayIndex);
       console.log(fecha);
-    
+
       // Aquí formateamos la fecha manualmente para evitar el cambio de zona horaria
       const year = fecha.getFullYear();
       const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Mes en formato 2 dígitos
       const day = fecha.getDate().toString().padStart(2, '0'); // Día en formato 2 dígitos
-    
+
       const fechaFormateada = `${year}-${month}-${day}`;
       console.log(fechaFormateada);
-    
+
       return fechaFormateada;
     });
     //
-  
+
     const id = this.LoginService.getClave();
     const token = this.LoginService.getToken() ?? "token";
     const numFechas = fechasSeleccionadas.length;
@@ -478,14 +491,14 @@ private actualizarDisponibilidadPorDia(): void {
         fecha,
         horas: horasSeleccionadas
       };
-  
+
       this.http.post(environment.api + '/cita/createDates', data, {
         headers: {
           'Content-Type': 'application/json',
           // 'X-CSRF-TOKEN': token
           'X-CSRF-TOKEN': csrfToken || ''
         },
-        withCredentials:true
+        withCredentials: true
       }).subscribe(response => {
         console.log(`Respuesta del servidor para la fecha ${fecha}:`, response);
         cont++;
@@ -503,7 +516,7 @@ private actualizarDisponibilidadPorDia(): void {
       });
     });
   }
-  
+
 
   onSubmit() {
 
@@ -519,9 +532,9 @@ private actualizarDisponibilidadPorDia(): void {
     this.citaSeleccionada = null;
   }
 
-  crearNotaCita(cita:Cita){
+  crearNotaCita(cita: Cita) {
     console.log("Llamada a crear nota cita en cita urgente a la cita: " + cita);
-    if(cita.clavePsicologo){
+    if (cita.clavePsicologo) {
       const citaData = {
         idCita: cita.idCita,
         claveUnica: cita.claveUnica.toString(),
@@ -538,24 +551,24 @@ private actualizarDisponibilidadPorDia(): void {
   cancelarCita(cita: Cita) {
     console.log("la cita es:");
     console.log(cita);
-    if(cita.clavePsicologo){
-        const citaData = {
+    if (cita.clavePsicologo) {
+      const citaData = {
         idCita: cita.idCita,
         id: cita.clavePsicologo.toString()
       }
       this.citasService.cancelarCita(citaData).subscribe(
-        (response)=>{
+        (response) => {
           console.log(response);
           cita.estado = "Cancelada";
-      },
-      (error)=>{
-        console.log(error);
-      }
-    );
-    }else{
-      if(cita.clavePsicologoExterno){
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } else {
+      if (cita.clavePsicologoExterno) {
         console.log("mandando psic externo a cancelar");
-          const citaData = {
+        const citaData = {
           idCita: cita.idCita,
           id: cita.clavePsicologoExterno.toString()
         }
@@ -568,7 +581,7 @@ private actualizarDisponibilidadPorDia(): void {
 
   verificarCitaAgendada(): void {
     if (this.tipoUsuario === 'Alumno') {
-      if (this.usuarioActualId !== null) { 
+      if (this.usuarioActualId !== null) {
         const idAlumno = this.usuarioActualId;
         this.agendarCitaService.obtenerCitasProceso(idAlumno).subscribe((data: any) => {
           if (Array.isArray(data) && data[0] === 'Sin cita agendada') {
@@ -615,11 +628,11 @@ private actualizarDisponibilidadPorDia(): void {
     // console.log("hoy:"+hoy);
     const actualWeek = this.getStartOfWeek(hoy);
     const selectedWeek = this.getStartOfWeek(this.fechaSeleccionada);
-    if((actualWeek.getDate() == selectedWeek.getDate()) &&
-       (actualWeek.getMonth() == selectedWeek.getMonth()) && 
-       (actualWeek.getFullYear() == selectedWeek.getFullYear())){
-        console.log("No puedes regresar a una semana anterior a la actual.");
-    }else{
+    if ((actualWeek.getDate() == selectedWeek.getDate()) &&
+      (actualWeek.getMonth() == selectedWeek.getMonth()) &&
+      (actualWeek.getFullYear() == selectedWeek.getFullYear())) {
+      console.log("No puedes regresar a una semana anterior a la actual.");
+    } else {
       this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
     }
     // console.log("Fecha del inicio de semana actual");
