@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, HostListener  } from '@angular/core';
 import { ReportesService } from '../../servicios/reportes.service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const CHART_TYPES = ['bar', 'pie', 'doughnut'] as const;
+const CHART_TYPES = ['bar', 'pie'] as const;
 type ChartType = typeof CHART_TYPES[number];
 
 @Component({
@@ -11,18 +11,27 @@ type ChartType = typeof CHART_TYPES[number];
   templateUrl: './graficas.component.html',
   styleUrls: ['./graficas.component.css']
 })
-export class GraficasComponent {
+export class GraficasComponent implements OnInit {
+
+  ngOnInit() {
+    this.checkScreenSize();
+  }
 
   @Input() tipo: string = '';
   @Input() fechaInicial: string = '';
   @Input() fechaFinal: string = '';
   @Input() nombre: string = '';
+  @HostListener('window:resize', ['$event'])onResize(event: Event) {
+    this.checkScreenSize();
+  }
+  
 
+  
   datosReporte: any;
   showCharts: boolean = false;
+  sizeScreen: boolean = true;
   showArea: boolean = false;
-  showCarrera: boolean = false;
-
+  showCarrera: boolean = false; 
   dataPersonasPorCarrera: any[] = [];
   dataPersonasPorArea: any[] = [];
   dataHorarioAtencion: any[] = [];
@@ -123,7 +132,9 @@ export class GraficasComponent {
     }
   }
   
-  
+  showScreenSize(){
+
+  }
 
   prepararDatos() {
     if (this.datosReporte) {
@@ -251,5 +262,9 @@ export class GraficasComponent {
 
   cambiarTipoGrafico(tipo: ChartType) {
     this.selectedChartType = tipo;
+  }
+
+  checkScreenSize() {
+    this.sizeScreen = window.innerWidth >= 1024; 
   }
 }
