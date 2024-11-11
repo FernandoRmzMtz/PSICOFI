@@ -36,6 +36,14 @@ export class GestionPsicoComponent implements OnInit {
       (data) => {
         this.psicologos = data;
         this.psicologosBackup = [...data];
+  
+        this.psicologos.sort((a: any, b: any) => {
+          if (a.activo === b.activo) {
+            return a.nombres.toLowerCase().localeCompare(b.nombres.toLowerCase());
+          }
+          return b.activo - a.activo;
+        });
+  
         this.isLoading = false;
       },
       (error) => {
@@ -44,7 +52,6 @@ export class GestionPsicoComponent implements OnInit {
       }
     );
   }
-
   public verPsico(clave: string): void {
     this.isLoading = true;
     this.psico.getPsicologoById(clave).subscribe(
@@ -99,14 +106,27 @@ export class GestionPsicoComponent implements OnInit {
   }
 
   public buscarChange(): void {
-    this.psicologos = this.psicologosBackup.filter((res: any) => {
-      if (typeof res.nombres === 'string') {
-        return res.nombres.toLocaleLowerCase().includes(this.inputBuscar.toLocaleLowerCase());
-      } else {
-        return true;
+    const searchQuery = this.inputBuscar.toLowerCase();
+  
+    this.psicologos = this.psicologosBackup.filter((psicologo: any) => {
+      const nameMatches = psicologo.nombres && psicologo.nombres.toLowerCase().includes(searchQuery);
+      const claveMatches = psicologo.identificador && String(psicologo.identificador).toLowerCase().includes(searchQuery);
+  
+      return nameMatches || claveMatches;
+    });
+  
+    this.ordenarPsicologos();
+  }
+  
+  private ordenarPsicologos(): void {
+    this.psicologos.sort((a, b) => {
+      if (a.activo === b.activo) {
+        return a.nombres.localeCompare(b.nombres);
       }
+      return b.activo - a.activo;
     });
   }
+  
 
   private closeModal(): void {
     const modalElement = document.getElementById('editarpsico');
