@@ -1,3 +1,13 @@
+.navbar-toggler {
+    border: none;
+    background-color: transparent;
+}
+
+.navbar-toggler-icon {
+    background-image: url('https://imgs.search.brave.com/7AMrFHG9yK8G3QxByWDe-N3fqjT0c8zFldk_jfjswA0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuaGlwZGYuY29t/L2ltYWdlczIwMjQv/aG9tZXBhZ2UvaWNv/bi1sb2FkaW5nLnBu/Zw');
+}
+
+
 /*Contenido general*/
 body {
     padding: 0px;
@@ -99,6 +109,8 @@ body {
 .menu .nav-item {
     margin-right: 10px !important;
 }
+
+
 
 
 
