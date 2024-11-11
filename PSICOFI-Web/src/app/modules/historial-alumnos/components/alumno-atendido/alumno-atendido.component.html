@@ -2,8 +2,8 @@
 <h2 class="my-3">
     HISTORIAL DE ALUMNO ATENDIDO
 </h2>
-<div class="container my-5" style="min-height: 45vh;">
-    <div class="table-responsive">
+<div class="container mt-2" style="min-height: 45vh;">
+    <div class="table-responsive ">
         <table class="table table-striped" *ngIf="!isLoading">
             <tbody>
                 <tr>
@@ -51,6 +51,8 @@
         </table>
     </div>
 </div>
+
+<button class="btn btn-primary mb-2" (click)="back()">Regresar</button>
 
 <app-tabla-historial-citas *ngIf="!isLoading"></app-tabla-historial-citas>
 
