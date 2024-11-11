@@ -4,7 +4,7 @@
     <table class="table table-striped">
         <thead>
             <tr> 
-                <th scope="col" class="text-center">Fecha</th>
+                <th scope="col" class="text-center" style="cursor: pointer;"  (click)="toggleOrden()">Fecha <i style="font-size: 20px;" class="mx-2 bi text-white " [ngClass]="ordenAscendente ? 'bi-sort-numeric-down' : 'bi-sort-numeric-up'"></i></th>
                 <th scope="col" class="text-center">Hora</th>
                 <th scope="col">Psicólogo</th>
                 <th scope="col" class="text-center">Reporte de cita</th>
