@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ];
 
   constructor(private loginService: LoginService, private router: Router, private gestionpsico: gestionPsico, private histoAlAte: HistorialAlumnosService) {}
-
+  menuAbierto = false;
   ngOnInit(): void {
     this.tipoUsuarioSubscription = this.loginService.getTipoUsuarioObservable().subscribe(tipoUsuario => {
       this.tipoUsuario = tipoUsuario;
