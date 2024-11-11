@@ -49,4 +49,8 @@ export class AlumnoAtendidoComponent {
   public get alumnoInfo(): AlumnoAtendido {
     return this.histo.infoAlumno;
   }
+
+  public back(): void {
+    this.histo.historialTablaVisible = 1;
+  }
 }
