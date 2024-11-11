@@ -1,7 +1,6 @@
 <div class="header container-fluid">
     <div class="container">
         <div class="row header">
-            <!-- Logo UASLP y logo de entidad -->
             <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-start align-items-center">
                 <a href="https://www.uaslp.mx">
                     <img src="assets/logo-uaslp.png" class="img-fluid logoUASLP" />
@@ -22,12 +21,10 @@
                   aria-controls="navbarMenu" [attr.aria-expanded]="menuAbierto ? 'true' : 'false'"
                   aria-label="Toggle navigation" (click)="menuAbierto = !menuAbierto">
                   
-                  <!-- Ícono de hamburguesa cuando el menú está cerrado -->
                   <i class="text-white bi" [ngClass]="menuAbierto ? 'bi-chevron-up' : 'bi-list'"></i>
                 </button>
               </div>              
 
-            <!-- Primer bloque: Visible en pantallas medianas y grandes -->
             <div class="col-12 my-3 d-none d-md-block">
                 <div
                     class="h-75 d-flex flex-column flex-sm-row bd-highlight justify-content-end align-items-sm-end pt-sm-0 py-5 my-0 align-items-center">
@@ -41,7 +38,6 @@
                 </div>
             </div>
 
-            <!-- Segundo bloque: Visible solo en pantallas pequeñas -->
             <div class="col-12 d-md-none">
                 <div class="navbar-collapse" id="navbarMenu">
                     <div
@@ -57,8 +53,6 @@
                     </div>
                 </div>
             </div>
-
-
 
         </div>
     </div>
