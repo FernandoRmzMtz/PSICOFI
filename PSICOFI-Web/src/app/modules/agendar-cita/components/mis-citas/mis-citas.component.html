@@ -37,9 +37,9 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-6 d-flex justify-content-center">
-                <button type="button" class="btn btn-danger mx-2" (click)="cancelarCita()" [disabled]="citaConfirmada">Cancelar cita</button>
-                <button type="button" class="btn btn-primary mx-2" (click)="confirmarCita()" [disabled]="citaConfirmada">Confirmar asistencia</button>
-            </div>            
+                <button *ngIf="!citaConfirmada" type="button" class="btn btn-danger mx-2" (click)="cancelarCita()">Cancelar cita</button>
+                <button *ngIf="confirmarBtnCita && !citaConfirmada"  type="button" class="btn btn-primary mx-2" (click)="confirmarCita()" [disabled]="citaConfirmada">Confirmar asistencia</button>
+            </div>
         </div>
     </div>
     <ng-template #noCitaBlock>

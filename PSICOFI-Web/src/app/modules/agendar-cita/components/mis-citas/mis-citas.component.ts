@@ -18,6 +18,7 @@ export class MisCitasComponent implements OnInit {
   citaConfirmada: boolean = false;
   visible: boolean = false;
   success_msg: string = '';
+  confirmarBtnCita = false;
 
   constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) {
     this.citasProceso = [];
@@ -79,6 +80,17 @@ export class MisCitasComponent implements OnInit {
           });
           this.tieneCita = true;
           this.citaConfirmada = data.estado === 'Asistencia confirmada';
+          const hoy = new Date();
+          const citaFecha = new Date(this.citasProceso[0].fecha);
+          // Establecer horas en 0 para solo comparar fechas
+          hoy.setHours(0, 0, 0, 0);
+          citaFecha.setHours(0, 0, 0, 0);
+
+          // Verificar si la diferencia en milisegundos es de 1 día
+          const unDiaEnMilisegundos = 24 * 60 * 60 * 1000;
+          if ((citaFecha.getTime() - hoy.getTime()) < unDiaEnMilisegundos) {
+            this.confirmarBtnCita = true;
+          }
         }
       },
       (error) => {
