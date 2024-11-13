@@ -25,6 +25,7 @@ export class CalendarioComponent implements OnInit {
   visible: boolean = false;
   horasDisponibles: string[] = this.generarHoras();
   success_msg: string = '';
+  ableToAddNotes = false;
 
   constructor(
     private el: ElementRef,
@@ -523,6 +524,19 @@ export class CalendarioComponent implements OnInit {
   }
 
   abrirModalDetalles(cita: Cita) {
+    const hoy = new Date();
+    const citaFecha = new Date(cita.fecha);
+    const hoyStr = hoy.toISOString().split('T')[0];
+    const citaFechaStr = citaFecha.toISOString().split('T')[0];
+
+    // Verificar si ambas fechas son iguales
+    if (citaFechaStr === hoyStr) {
+      this.ableToAddNotes = true;
+    }else{
+      this.ableToAddNotes = false;
+    }
+    console.log(citaFechaStr);
+    console.log(hoyStr);
     this.citaSeleccionada = cita;
     this.mostrarModalDetalles = true;
   }

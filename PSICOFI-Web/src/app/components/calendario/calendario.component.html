@@ -238,7 +238,7 @@
           <!-- <button class="btn btn-secondary">Ver Datos del Alumno</button> -->
           <button class="btn btn-danger" *ngIf="citaSeleccionada" (click)="cancelarCita(citaSeleccionada)">Cancelar
             cita</button>
-          <button type="button" class="btn btn-primary" *ngIf="citaSeleccionada" (click)="crearNotaCita(citaSeleccionada)">Crear notas</button>
+          <button type="button" class="btn btn-primary" *ngIf="citaSeleccionada && ableToAddNotes" (click)="crearNotaCita(citaSeleccionada)">Crear notas</button>
         </div>
       </div>
     </div>
