@@ -38,7 +38,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6 d-flex justify-content-center">
                 <button type="button" class="btn btn-danger mx-2" (click)="cancelarCita()" [disabled]="citaConfirmada">Cancelar cita</button>
-                <button type="button" class="btn btn-primary mx-2" (click)="confirmarCita()" [disabled]="citaConfirmada">Confirmar asistencia</button>
+                <button *ngIf="confirmarBtnCita" type="button" class="btn btn-primary mx-2" (click)="confirmarCita()" [disabled]="citaConfirmada">Confirmar asistencia</button>
             </div>            
         </div>
     </div>
