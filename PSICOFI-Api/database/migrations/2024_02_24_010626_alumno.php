@@ -27,7 +27,7 @@ return new class extends Migration
             $table->float('promedioGral');
             $table->string('asesor',100);
             $table->string('contrasena',20)->nullable()->default(null);
-            $table->boolean('habilitado');
+            $table->date('fechaCancelacion')->nullable()->default(null);
         });
     }
 

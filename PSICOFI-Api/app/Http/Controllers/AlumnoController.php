@@ -105,7 +105,6 @@ class AlumnoController extends Controller
 
         try{
             if(strlen($id) == 6){
-
                 $alumno = DB::select('call get_info_alumno(?)',[$id]);
 
                 if($alumno){
@@ -129,11 +128,11 @@ class AlumnoController extends Controller
                 }
             }else{
                 $respuesta = ['Error' => 'ID invalida'];
-                return json_encode($respuesta);
+                return response($respuesta,200);
             }
         }catch(\Exception $e){
             $respuesta = ['Error' => 'Consulta incorrecta'];
-            return json_encode($respuesta);
+            return response($respuesta,400);
         }
     }
 

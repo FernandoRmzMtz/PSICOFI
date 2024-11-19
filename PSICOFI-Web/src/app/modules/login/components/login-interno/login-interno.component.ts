@@ -30,7 +30,7 @@ export class LoginInternoComponent {
   }
 
   private iniciarSesion(): void {
-    if (this.cvunica.length == 6) {
+    if (this.cvunica.length == 6 || this.cvunica.length == 18) {
       this.validaUsuarioInterno();
     }
     else {

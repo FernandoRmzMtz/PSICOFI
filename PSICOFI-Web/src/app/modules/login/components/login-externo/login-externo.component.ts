@@ -31,7 +31,7 @@ export class LoginExternoComponent {
   }
 
   private iniciarSesion(): void {
-    if (this.cvunica.length == 18) {
+    if (this.cvunica.length == 6) {
       this.validaUsuarioInterno();
     }
     else {
@@ -103,9 +103,25 @@ export class LoginExternoComponent {
     event.target.value = newValue;
   }
 
+  public enforceMaxLength(event: any): void {
+    const inputValue = event.target.value;
+
+    // Filtrar cualquier caracter que no sea un número del 0 al 9
+    if (!/^\d*$/.test(inputValue)) {
+      event.target.value = inputValue.replace(/\D/g, '');  // Remover cualquier caracter no numérico
+    }
+    
+    // Restringir la longitud del valor a 6 dígitos
+    if (inputValue.length > 6) {
+      // Solo mantener los primeros 6 caracteres
+      event.target.value = inputValue.slice(0, 6);
+      this.cvunica = event.target.value;  // Actualizar el modelo si es necesario
+    }
+  }
+
   public validaUsuarioInterno(): void {
     this.isLoading = true;
-    this.loginService.loginInterno(this.cvunica, this.contrasena).subscribe((data) => {
+    this.loginService.loginAdmin(this.cvunica, this.contrasena).subscribe((data) => {
       if (data) {
         if(data.validacion == "USUARIO-VALIDO") {
           this.loginService.setToken(data.token);

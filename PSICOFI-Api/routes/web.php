@@ -27,6 +27,8 @@ Route::get('/', HomeController::class);
 
 Route::post('login',[AuthController::class,'login'])->name('login');
 
+Route::post('loginAdmin',[AuthController::class,'loginAdmin'])->name('loginAdmin');
+
 Route::post('alumno/getAlumno',[AlumnoController::class,'getAlumno'])->name('getAlumno');
 
 Route::post('alumno/getDate',[AlumnoController::class,'getDate'])->name('getDate');

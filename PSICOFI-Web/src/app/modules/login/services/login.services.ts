@@ -72,7 +72,39 @@ export class LoginService {
         return this.http.post(environment.api + '/login', 
           {
             id: clave,
-            password: contrasena,
+            password: contrasena
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+            },
+            withCredentials: true,
+          }
+        );
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 500) {
+          return ("Ha ocurrido un error, por favor intenta más tarde.");
+        }
+        return throwError(error);
+      })
+    );
+  }
+
+  loginAdmin(clave: string, contrasena: string): Observable<any> {
+    return this.csrfService.getCsrfCookie().pipe(
+      switchMap(() => {
+        const csrfToken = this.csrfService.getCsrf();
+        this.setToken(csrfToken ?? "token");
+        if (!csrfToken) {
+          return throwError('No se pudo obtener el token CSRF.');
+        }
+        
+        return this.http.post(environment.api + '/loginAdmin', 
+          {
+            id: clave,
+            password: contrasena
           },
           {
             headers: {

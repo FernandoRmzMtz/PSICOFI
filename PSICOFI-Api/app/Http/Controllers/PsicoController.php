@@ -9,6 +9,8 @@ use App\Models\PsicologoExterno;
 use App\Models\Cita;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isEmpty;
+
 class PsicoController extends Controller
 {
     public function updatePassword(Request $request){
@@ -285,47 +287,66 @@ class PsicoController extends Controller
 
     public function getPatients(Request $request){
         $id = $request->input('id',null);
-        
-        try{
-            if(strlen($id) == 18){
-                $alumnos = Cita::select('claveUnica')
-                    ->where('clavePsicologoExterno', $id)
-                    ->where('estadoCita', 4)
-                    ->distinct()
-                    ->get();
-                
-                if($alumnos){
-                    foreach($alumnos as $alumno){
-                        $claves[] = $alumno->claveUnica;
-                    }
-                    return json_encode($claves);
-                }else{
-                    $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
-                    return json_encode($respuesta);
-                }
-            }else if(strlen($id) == 6){
-                $alumnos = Cita::select('claveUnica')
-                    ->where('clavePsicologo', $id)
-                    ->where('estadoCita', 4)
-                    ->distinct()
-                    ->get();
-                
-                if($alumnos){
-                    foreach($alumnos as $alumno){
-                        $claves[] = $alumno->claveUnica;
-                    }
-                    return json_encode($claves);
-                }else{
-                    $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
-                    return json_encode($respuesta);
-                }
-            }else{
-                $respuesta = ['Error' => 'ID incorrecto'];
-                return json_encode($respuesta);
+
+        $alumnos = DB::table('view_citas')
+            ->select('claveUnica')
+            ->where('idPsicologo',$id)
+            ->where('estado','atendida')
+            ->distinct()
+            ->get();
+
+        if($alumnos->isEmpty()){
+            $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
+            return response($respuesta,204);
+            //return json_encode($respuesta);
+        }else{
+            foreach($alumnos as $alumno){
+                $claves[] = $alumno->claveUnica;
             }
-        }catch(\Exception $e){
-            $respuesta = ['Error' => 'Algo salio mal'];
-            return json_encode($respuesta);
+            return response($claves,200);
+            //return json_encode($claves);
         }
+        
+        // try{
+        //     if(strlen($id) == 18){
+        //         $alumnos = Cita::select('claveUnica')
+        //             ->where('clavePsicologoExterno', $id)
+        //             ->where('estadoCita', 4)
+        //             ->distinct()
+        //             ->get();
+                
+        //         if($alumnos){
+        //             foreach($alumnos as $alumno){
+        //                 $claves[] = $alumno->claveUnica;
+        //             }
+        //             return json_encode($claves);
+        //         }else{
+        //             $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
+        //             return json_encode($respuesta);
+        //         }
+        //     }else if(strlen($id) == 6){
+        //         $alumnos = Cita::select('claveUnica')
+        //             ->where('clavePsicologo', $id)
+        //             ->where('estadoCita', 4)
+        //             ->distinct()
+        //             ->get();
+                
+        //         if($alumnos){
+        //             foreach($alumnos as $alumno){
+        //                 $claves[] = $alumno->claveUnica;
+        //             }
+        //             return json_encode($claves);
+        //         }else{
+        //             $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
+        //             return json_encode($respuesta);
+        //         }
+        //     }else{
+        //         $respuesta = ['Error' => 'ID incorrecto'];
+        //         return json_encode($respuesta);
+        //     }
+        // }catch(\Exception $e){
+        //     $respuesta = ['Error' => 'Algo salio mal'];
+        //     return json_encode($respuesta);
+        // }
     }
 }

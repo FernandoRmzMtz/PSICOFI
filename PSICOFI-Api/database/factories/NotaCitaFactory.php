@@ -25,10 +25,10 @@ class NotaCitaFactory extends Factory
 
         return [
             'tipoIntervencion' => $this->faker->randomElement([1,2,3]),
-            'notas' => $this->faker->paragraph(),
+            //'notas' => $this->faker->paragraph(),
             'departamento' => null,
-            'detalleCanalizacion' => null,
-            'idCita' => $cita->id,
+            //'detalleCanalizacion' => null,
+            'idCita' => $cita->idCita,
             'foraneo' => $this->faker->randomElement([0,1])
         ];
     }
