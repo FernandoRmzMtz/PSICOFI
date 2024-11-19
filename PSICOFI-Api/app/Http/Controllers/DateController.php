@@ -52,7 +52,15 @@ class DateController extends Controller
             $diaProximo = $diaActual->addDays(7);
             $fecha = $diaProximo->toDateString();
 
-            $citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ? AND fecha >= ?', [$id,"libre",$fecha]);
+            $citas = DB::table('view_citas')
+                ->where('idPsicologo',$id)
+                ->where('estado','libre')
+                ->where('fecha','>=',$fecha)
+                ->get();
+
+            return $citas;
+
+            //$citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ? AND fecha >= ?', [$id,"libre",$fecha]);
 
             if(!empty($citas)){
                 $citasPsicologo = collect($citas);
@@ -164,13 +172,14 @@ class DateController extends Controller
 
         if($res == true){
             $alumno = Alumno::where('claveUnica', $claveUnica)
-                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto,
+                            fechaCancelacion")
                 ->first();
             
             $details['name'] = $alumno->nombreCompleto;
 
             try {
-                if($claveUnica == null || $id == null || $hora == null || $fecha == null){
+                if($claveUnica == null || $id == null || $hora == null || $fecha == null || $alumno->fechaCancelacion != null){
                     $respuesta = ['Error' => 'Consulta invalida'];
                     return json_encode($respuesta);
                 }else if(strlen($id) == 6){
@@ -241,7 +250,7 @@ class DateController extends Controller
     public function createDates(Request $request){
         $id = $request->input('id',null);
         $fecha = $request->input('fecha',null);
-        $horas = $request->input('horas', []);
+        $horas = $request->input('horas');
 
         $diaActual = Carbon::now($tz='America/Mexico_City');
         $fechaActual = $diaActual->toDateString();
@@ -395,34 +404,39 @@ class DateController extends Controller
                     'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
                 ];
 
-                $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);
+                $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);                
 
                 if($cancel[0]->resultado == 1){
                     if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
                         // Envío de correo en segundo plano
                         // SendEmail::dispatch($details['email'],new cancelMail($details));
+                        $diaActual = Carbon::now($tz='America/Mexico_City');
+                        $diaProximo = $diaActual->addDays(7);
+                        $fecha = $diaProximo->toDateString();
+
+                        $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
                         $respuesta = ['Cita cancelada correctamente'];
-                        return json_encode($respuesta);
-                    }else if($cita[0]->isPsicologo = $id) {
+                        return response($respuesta,200);
+                    }else if($cita[0]->idPsicologo = $id) {
                         // Envío de correo en segundo plano
                         // SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
                         $respuesta = ['Cita cancelada correctamente'];
-                        return json_encode($respuesta);
+                        return response($respuesta,200);
                     }else{
                         $respuesta = ['Error' => 'ID incorrecto'];
-                        return json_encode($respuesta);
+                        return response($respuesta,400);
                     }
                 }else{
                     $respuesta = ['Error' => 'Cita NO cancelada'];
-                    return json_encode($respuesta);
+                    return response($respuesta,200);
                 }
             }else{
                 $respuesta = ['Sin cita agendada'];
-                return json_encode($respuesta);
+                return response($respuesta,404);
             }
         }else{
             $respuesta = ['Error' => 'Cita NO cancelada'];
-            return json_encode($respuesta);
+            return response($respuesta,400);
         }
     }
 
@@ -457,22 +471,22 @@ class DateController extends Controller
                         // Envío de correo en segundo plano
                         // SendEmail::dispatch($details['email'],new confirmDateMail($details));
                         $respuesta = ['Cita confirmada correctamente'];
-                        return json_encode($respuesta);
+                        return response($respuesta,200);
                     }else{
                         $respuesta = ['Error' => 'ID incorrecto'];
-                        return json_encode($respuesta);
+                        return response($respuesta,400);
                     }
                 }else{
                     $respuesta = ['Error' => 'Cita NO confirmada'];
-                    return json_encode($respuesta);
+                    return response($respuesta,200);
                 }
             }else{
                 $respuesta = ['Sin cita agendada'];
-                return json_encode($respuesta);
+                return response($respuesta,404);
             }
         }else{
             $respuesta = ['Error' => 'Cita NO confirmada'];
-            return json_encode($respuesta);
+            return response($respuesta,400);
         }
     }
 

@@ -30,7 +30,8 @@ return new class extends Migration
                         WHERE cita.idCita = idCita
                         AND estadoCita != 1 
                         AND estadoCita != 6
-                        AND estadocita = 2;
+                        AND estadocita = 2
+                        AND cita.fecha > DATE_SUB(CURDATE(), INTERVAL 2 DAY);
 
                         IF ROW_COUNT() > 0 THEN
                             SET resultado = 1;

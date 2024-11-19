@@ -57,7 +57,6 @@ class AlumnoFactory extends Factory
             'promedioGral' => $this->faker->randomFloat(2,4,10),
             'asesor' => $this->faker->name(),
             'contrasena' => 12345,
-            'habilitado' => $this->faker->boolean()
         ];
     }
 }

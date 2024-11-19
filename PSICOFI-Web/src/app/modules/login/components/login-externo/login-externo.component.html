@@ -15,17 +15,19 @@
     <div class="container">
         <form (ngSubmit)="onSubmit()">
             <div class="mb-3">
-                <label for="curp" class="form-label">CURP</label>
-                <input
+                <label for="curp" class="form-label">RPE</label>
+                <!-- <input
                     type="text"
                     class="form-control"
                     name="curp"
                     id="curp"
-                    placeholder="CURP a 18 caracteres"
+                    placeholder="RPE"
                     [(ngModel)] = "cvunica"
                     (input)="validaCURP($event)"
-                    maxlength="18"
-                />
+                    maxlength="6"
+                /> -->
+                <input type="text" class="form-control" name="curp" id="curp" placeholder="RPE"  
+                [(ngModel)]="cvunica" (input)="enforceMaxLength($event)" required min="1" max="999999" />
             </div>
             <div class="mb-3">
                 <label for="" class="form-label">Contrase&ntilde;a</label>
@@ -69,7 +71,8 @@
         <div *ngIf="errorMessage" class="alert alert-danger">
             {{ errorMessage }}
           </div>
-        <p>¿Eres psic&oacute;logo interno? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia sesi&oacute;n aqu&iacute;</b></span></p>
+        <!-- <p>¿Eres psic&oacute;logo interno? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia sesi&oacute;n aqu&iacute;</b></span></p> -->
+        <p>¿Eres alumno o psicologo? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia sesi&oacute;n aqu&iacute;</b></span></p>
     </div>
 </div>
 
