@@ -172,8 +172,7 @@ class DateController extends Controller
 
         if($res == true){
             $alumno = Alumno::where('claveUnica', $claveUnica)
-                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto,
-                            fechaCancelacion")
+                ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
                 ->first();
             
             $details['name'] = $alumno->nombreCompleto;
@@ -200,7 +199,7 @@ class DateController extends Controller
                         $details['psicologo'] = $psicologo->nombreCompleto;
 
                         
-                        // SendEmail::dispatch($details['email'],new scheduleDateMail($details));
+                        SendEmail::dispatch($details['email'],new scheduleDateMail($details));
 
                         $respuesta = ['Cita agendada correctamente'];
                         return json_encode($respuesta);
@@ -225,7 +224,7 @@ class DateController extends Controller
 
                         $details['psicologo'] = $psicologo->nombreCompleto;
 
-                        // SendEmail::dispatch($details['email'],new scheduleDateMail($details));
+                        SendEmail::dispatch($details['email'],new scheduleDateMail($details));
 
                         $respuesta = ['Cita agendada correctamente'];
                         return json_encode($respuesta);
@@ -409,7 +408,7 @@ class DateController extends Controller
                 if($cancel[0]->resultado == 1){
                     if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
                         // Envío de correo en segundo plano
-                        // SendEmail::dispatch($details['email'],new cancelMail($details));
+                        SendEmail::dispatch($details['email'],new cancelMail($details));
                         $diaActual = Carbon::now($tz='America/Mexico_City');
                         $diaProximo = $diaActual->addDays(7);
                         $fecha = $diaProximo->toDateString();
@@ -419,7 +418,7 @@ class DateController extends Controller
                         return response($respuesta,200);
                     }else if($cita[0]->idPsicologo = $id) {
                         // Envío de correo en segundo plano
-                        // SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
+                        SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
                         $respuesta = ['Cita cancelada correctamente'];
                         return response($respuesta,200);
                     }else{
@@ -469,7 +468,7 @@ class DateController extends Controller
                 if($confirm[0]->resultado == 1){
                     if($alumno->isNotEmpty() && $alumno[0]->claveUnica == $id){
                         // Envío de correo en segundo plano
-                        // SendEmail::dispatch($details['email'],new confirmDateMail($details));
+                        SendEmail::dispatch($details['email'],new confirmDateMail($details));
                         $respuesta = ['Cita confirmada correctamente'];
                         return response($respuesta,200);
                     }else{

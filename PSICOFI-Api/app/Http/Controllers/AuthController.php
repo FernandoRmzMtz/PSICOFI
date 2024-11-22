@@ -206,7 +206,7 @@ class AuthController extends Controller
                     'id' => $psicologoexterno->curp,
                     'nombre' => $psicologoexterno->nombres . ' ' . $psicologoexterno->apellidoPaterno . ' ' . $psicologoexterno->apellidoMaterno,
                     'validacion' => "USUARIO-VALIDO",
-                    'rol' => "Psicologo"
+                    'rol' => "Psicologo externo"
                 ];
 
                 return $jsonArray;
