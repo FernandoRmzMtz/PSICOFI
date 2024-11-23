@@ -21,7 +21,7 @@ return new class extends Migration
                 FROM
                     view_citas
                 WHERE claveUnica = id
-                AND (estado = 'Asistencia confirmada'OR estado = 'Asistencia sin confirmar')
+                AND (estado = 'Asistencia confirmada' OR estado = 'Asistencia sin confirmar')
                 LIMIT 1;
             END
         ");
