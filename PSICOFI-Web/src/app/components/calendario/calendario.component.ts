@@ -572,11 +572,22 @@ export class CalendarioComponent implements OnInit {
       }
       this.citasService.cancelarCita(citaData).subscribe(
         (response) => {
-          console.log(response);
-          cita.estado = "Cancelada";
+          if (response && response[0] === "Cita cancelada correctamente") {
+            this.visible = true;
+            this.success_msg = 'Cita cancelada con éxito.'
+            setTimeout(() => {
+              this.visible = false;
+            }, 3000);
+            cita.estado = "Cancelada";
+            this.agendarCitaService.emitirCitaCancelada();
+          } else {
+            console.log("Resultado:");
+            console.log(response);
+            console.log(response[0]);
+          }
         },
-        (error) => {
-          console.log(error);
+        error => {
+          console.error('Error al cancelar la cita:', error);
         }
       );
     } else {
@@ -587,13 +598,25 @@ export class CalendarioComponent implements OnInit {
           id: cita.clavePsicologoExterno.toString()
         }
         console.log(cita.clavePsicologoExterno);
+
         this.citasService.cancelarCita(citaData).subscribe(
           (response) => {
-            console.log(response);
-            cita.estado = "Cancelada";
+            if (response && response[0] === "Cita cancelada correctamente") {
+              this.visible = true;
+              this.success_msg = 'Cita cancelada con éxito.'
+              setTimeout(() => {
+                this.visible = false;
+              }, 3000);
+              cita.estado = "Cancelada";
+              this.agendarCitaService.emitirCitaCancelada();
+            } else {
+              console.log("Resultado:");
+              console.log(response);
+              console.log(response[0]);
+            }
           },
-          (error) => {
-            console.log(error);
+          error => {
+            console.error('Error al cancelar la cita:', error);
           }
         );
       }
