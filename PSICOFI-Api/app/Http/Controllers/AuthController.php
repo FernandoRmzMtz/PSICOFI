@@ -8,9 +8,11 @@ use Illuminate\Http\Response;
 use App\Models\Alumno;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
+use Hamcrest\Type\IsNumeric;
 
 class AuthController extends Controller
 {
+    // Función para validar administradores por medio del web service
     private function authWebAdmin($rpe,$password){
         $location = env('WEB_SERVICE');
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
@@ -49,6 +51,7 @@ class AuthController extends Controller
         return $response;
     }
 
+    // Función para validar alumnos por medio del web service
     private function authWebStudent($clave,$password){
         $location = env('WEB_SERVICE');
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
@@ -87,10 +90,11 @@ class AuthController extends Controller
         return $response;
     }
 
+    // Función para validar alumnos
     private function auth_student($id,$password){
         $lenID = strlen($id);
 
-        if($lenID != 6){
+        if($lenID != 6 || !is_numeric($id)){
             return null;
         }
 
@@ -108,10 +112,8 @@ class AuthController extends Controller
                 $arrayDatos = $this->authWebStudent($id,$password);
 
                 if($arrayDatos['validacion'] == 'USUARIO-INVALIDO'){
-                    //$respuesta = ['validacion' => $arrayDatos['validacion']];
                     return null;
                 }else if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
-                    //$arrayDatos = json_decode($jsonResult, true);
 
                     $arrayDatos['id'] = $arrayDatos['clave_unica'];
                     unset($arrayDatos['clave_unica']);
@@ -141,6 +143,7 @@ class AuthController extends Controller
         return null;
     }
 
+    // Función para validar psicologos
     private function auth_psico($id,$password){
         $lenID = strlen($id);
 
@@ -148,7 +151,7 @@ class AuthController extends Controller
             return null;
         }
 
-        if($lenID == 6){
+        if($lenID == 6 && is_numeric($id)){
             $psicologo = Psicologo::where('claveUnica', $id)
             ->where('contrasena', $password)
             ->where('activo', '=', 1)
@@ -211,9 +214,12 @@ class AuthController extends Controller
 
                 return $jsonArray;
             }
+        }else{
+            return null;
         }
     }
 
+    // Función para validar administradores
     private function auth_admin($id,$password){
         $administrador = Administrador::where('idUsuario', $id)
             ->where('contrasena', $password)
@@ -249,6 +255,7 @@ class AuthController extends Controller
         }
     }
 
+    // Función para login de administradores
     public function loginAdmin(Request $request){
         $id = $request->input('id',null);
         $password = $request->input('password',null);
@@ -268,6 +275,7 @@ class AuthController extends Controller
         }
     }
 
+    // Función para login de psicologos y alumnos
     public function login(Request $request){
         $id = $request->input('id',null);
         $password = $request->input('password',null);

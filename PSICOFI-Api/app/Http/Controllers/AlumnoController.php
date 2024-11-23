@@ -17,6 +17,7 @@ class AlumnoController extends Controller
         return response()->json($alumno);
     }
 
+    // Función para obtener la información de un alumno por medio del web service
     private function obtainAlumno($id){
         $clave_unica = (int) $id; 
         $location = env('WEB_SERVICE');
@@ -114,16 +115,16 @@ class AlumnoController extends Controller
                     $arrayDatos = json_decode($jsonResult, true);
 
                     if($arrayDatos){
-                        $response = [
+                        $respuesta = [
                             'claveUnica' => $arrayDatos['clave_unica'],
                             'nombres' => $arrayDatos['nombres_alumno'],
                             'apellidoMaterno' => $arrayDatos['segundo_apellido_alumno'],
                             'apellidoPaterno' => $arrayDatos['primer_apellido_alumno'],
                         ];
-                        return json_encode($response);
+                        return response($respuesta,200);
                     }else{
                         $respuesta = ['Error' => 'Alumno NO encontrado'];  
-                        return json_encode($respuesta);
+                        return response($respuesta,200);
                     }
                 }
             }else{
