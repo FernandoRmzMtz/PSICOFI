@@ -587,7 +587,15 @@ export class CalendarioComponent implements OnInit {
           id: cita.clavePsicologoExterno.toString()
         }
         console.log(cita.clavePsicologoExterno);
-        this.citasService.cancelarCita(citaData);
+        this.citasService.cancelarCita(citaData).subscribe(
+          (response) => {
+            console.log(response);
+            cita.estado = "Cancelada";
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
       }
     }
     this.cerrarModalDetalles();
