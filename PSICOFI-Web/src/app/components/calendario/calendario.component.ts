@@ -580,6 +580,7 @@ export class CalendarioComponent implements OnInit {
             }, 3000);
             cita.estado = "Cancelada";
             this.agendarCitaService.emitirCitaCancelada();
+            window.location.reload();
           } else {
             console.log("Resultado:");
             console.log(response);
@@ -609,6 +610,7 @@ export class CalendarioComponent implements OnInit {
               }, 3000);
               cita.estado = "Cancelada";
               this.agendarCitaService.emitirCitaCancelada();
+              window.location.reload();
             } else {
               console.log("Resultado:");
               console.log(response);
