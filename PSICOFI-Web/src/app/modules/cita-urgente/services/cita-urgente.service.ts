@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from 'environments/enviroment';
-import { LoginService } from 'src/app/modules/login/services/login.services';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 
@@ -16,15 +15,15 @@ export class CitaUrgenteService {
   private estadoCita: number = 4;
   private clavePsicologo: null| number = -1;
   private clavePsicologoExterno: null| string = "-1";
-  private csrfToken: string | null = null;
 
-
-  constructor(private http: HttpClient, private loginService:LoginService, private csrfService: CsrfServiceService) {
+  constructor(
+    private http: HttpClient, 
+    private csrfService: CsrfServiceService
+  ) {
   }
 
   obtenerAlumno(claveUnica: number): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
-
     return this.http.post<any>(environment.api+'/alumno/getAlumno',
       {
         "id":claveUnica
@@ -32,7 +31,6 @@ export class CitaUrgenteService {
       {
         headers: {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials:true
@@ -68,8 +66,6 @@ export class CitaUrgenteService {
 
   crearCita(citaData: any): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
-    console.log("estos son los datos de la cita:"+citaData);
-    console.log(citaData);
     return this.http.post<any>(environment.api+'/crear-cita', citaData,
     {
       headers: {
@@ -80,9 +76,6 @@ export class CitaUrgenteService {
     }
     );
   }
-  // setNotaCita(data:any, headers:any) {
-  //   return this.http.post(environment.api+'/nota-cita', data, { headers, withCredentials:true });
-  // }
 
   getTiposIntervencion():Observable<any>{
     return this.http.get<any[]>(environment.api+'/tipos-intervencion');
