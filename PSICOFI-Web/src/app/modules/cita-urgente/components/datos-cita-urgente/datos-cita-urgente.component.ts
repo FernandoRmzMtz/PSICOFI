@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
 import { LoginService } from 'src/app/modules/login/services/login.services';
-import { Cita } from 'src/app/components/servicios/citas.service';
 
 @Component({
   selector: 'app-datos-cita-urgente',
@@ -55,7 +54,6 @@ public isLoading = false;
             console.error('No se encontró el alumno con la clave unica introducida.');
             this.isLoading = false;
           }
-          console.log('Alumno encontrado: ',this.alumno);
           this.isLoading = false;
         },
         error => {

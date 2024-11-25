@@ -68,7 +68,6 @@ export class CitaUrgenteService {
 
   crearCita(citaData: any): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
-
     console.log("estos son los datos de la cita:"+citaData);
     console.log(citaData);
     return this.http.post<any>(environment.api+'/crear-cita', citaData,
@@ -81,8 +80,29 @@ export class CitaUrgenteService {
     }
     );
   }
+  // setNotaCita(data:any, headers:any) {
+  //   return this.http.post(environment.api+'/nota-cita', data, { headers, withCredentials:true });
+  // }
 
-  setNotaCita(data:any, headers:any) {
-    return this.http.post(environment.api+'/nota-cita', data, { headers, withCredentials:true });
+  getTiposIntervencion():Observable<any>{
+    return this.http.get<any[]>(environment.api+'/tipos-intervencion');
+  }
+
+  getDepartamentos(): Observable<any>{
+    return this.http.get<any[]>(environment.api+'/departamentos');
+  }
+
+  setNotaCita(formData: any): Observable<any>{
+    const csrfToken = this.csrfService.getCsrf();
+    return this.http.post<any>(environment.api+'/api/nota-cita', 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
+      },
+    );
   }
 }
