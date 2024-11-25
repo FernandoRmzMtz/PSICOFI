@@ -65,6 +65,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   get rutasFiltradas(): HeaderRoute[] {
+    if (this.loginService.isLoggedIn()) {
+      this.tipoUsuario = this.loginService.getTipoUsuario() || '';
+      if(this.tipoUsuario != ''){
+        this.clave = this.loginService.getClave();
+      }
+    }
+    
     if (this.router.url.includes('/login')) {
       return [];
     }
