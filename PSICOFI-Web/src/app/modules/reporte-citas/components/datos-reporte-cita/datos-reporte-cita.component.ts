@@ -15,10 +15,8 @@ export class DatosReporteCitaComponent implements OnInit {
   public isLoading = false;
   constructor(
     private route: ActivatedRoute,
-    private http:HttpClient, 
     private _router:Router, 
     private reporteCitaService:ReporteCitasService,
-    private csrfService: CsrfServiceService
   ){
 
   }
@@ -30,7 +28,6 @@ export class DatosReporteCitaComponent implements OnInit {
     this.isLoading = true;
     this.route.paramMap.subscribe(params => {
       this.idCita = +params.get('idCita')!;
-      console.log("id de cita:"+this.idCita);
       if (this.idCita) {
         this.getCita(this.idCita);
       }
@@ -43,7 +40,6 @@ export class DatosReporteCitaComponent implements OnInit {
     this.reporteCitaService.getCita(idCita).subscribe(
       response => {
         this.cita = response;
-        console.log('Cita obtenida:', this.cita);
         this.getAlumno(this.cita.claveUnica);
         this.isLoading = false;
       },
@@ -60,7 +56,6 @@ export class DatosReporteCitaComponent implements OnInit {
     this.reporteCitaService.getAlumno(claveUnica).subscribe(
       response => {
         this.alumno = response;
-        console.log('Alumno obtenido:', this.alumno);
         this.isLoading = false;
       },
       error => {

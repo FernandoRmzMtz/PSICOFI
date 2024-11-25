@@ -5,9 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReporteCitasService } from '../../services/reporte-citas.service';
 import { Cita } from 'src/app/components/servicios/citas.service';
 import { NotaCita } from 'src/app/model/nota-cita.model';
-import { LoginService } from 'src/app/modules/login/services/login.services';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
-import { Observable } from 'rxjs';
 
 
 @Component({
@@ -33,7 +31,6 @@ export class FormularioReporteCitaComponent implements OnInit {
     private http: HttpClient,
     private _router:Router, 
     private reporteCitaService:ReporteCitasService,
-    private loginService:LoginService,
     private csrfService: CsrfServiceService
   ) { }
 
@@ -49,9 +46,8 @@ export class FormularioReporteCitaComponent implements OnInit {
 
 
   ngOnInit(): void {
-        
     this.isLoading = true;
-    this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
+    this.reporteCitaService.getTiposIntervencion().subscribe(
       response => {
         this.tiposIntervencion = response;
         this.isLoading = false;
@@ -62,7 +58,7 @@ export class FormularioReporteCitaComponent implements OnInit {
       }
     );
     this.isLoading = true;
-    this.http.get<any[]>(environment.api+'/departamentos').subscribe(
+    this.reporteCitaService.getDepartamentos().subscribe(
       response => {
         this.departamentos = response;
         this.isLoading = false;
@@ -130,11 +126,6 @@ export class FormularioReporteCitaComponent implements OnInit {
         console.log(this.notaCita);
         this.tipoIntervencion = this.notaCita.tipoIntervencion;
         this.foraneo = this.notaCita.foraneo;
-        // this.notas = this.notaCita.notas;
-        // if(this.notaCita.detalleCanalizacion){
-          // this.necesitaCanalizacion = this.notaCita.departamento? true: false;
-          // this.detalleCanalizacion = this.notaCita.detalleCanalizacion;
-        // }
         if(this.notaCita.departamento){
           this.necesitaCanalizacion = true;
           this.departamento = this.notaCita.departamento;
@@ -152,35 +143,18 @@ export class FormularioReporteCitaComponent implements OnInit {
 
   submitForm(): void {
     if(!this.tipoIntervencion) {
-      //muestra error
       this.errorIntervencion = true;
       setTimeout(() => {
         this.errorIntervencion = false;
       }, 3000);
     }
     else{
-      // if(!this.notas) {
-      //   //muestra error
-      //   this.errorNotas = true;
-      // setTimeout(() => {
-      //   this.errorNotas = false;
-      // }, 3000);
-      // }else{
-        // if(this.necesitaCanalizacion && !this.departamento && this.detalleCanalizacion) {
         if(this.necesitaCanalizacion && !this.departamento) {
-          //muestra error
           this.errorDepaCan = true;
         setTimeout(() => {
           this.errorDepaCan = false;
         }, 5000);
         }else{
-          // if(this.necesitaCanalizacion && this.departamento) {
-          //   //muestra error
-          //   this.errorDetalleCan = true;
-          // setTimeout(() => {
-          //   this.errorDetalleCan = false;
-          // }, 5000);
-          //   }else{
           if(!this.atendida){
             this.departamento = null;
             this.foraneo = false;
@@ -189,28 +163,14 @@ export class FormularioReporteCitaComponent implements OnInit {
           }
             const formData = {
               tipoIntervencion: this.tipoIntervencion,
-              // notas: this.notas,
               departamento: this.necesitaCanalizacion? this.departamento ? this.departamento: null : null,
-              // detalleCanalizacion: this.necesitaCanalizacion? this.detalleCanalizacion ? this.detalleCanalizacion : "" :"",
               idCita: this.idCita,
               foraneo: this.foraneo
             };
             // Cambiar estatus de cita
             this.updateStatusCita();
             // Enviar los datos al servidor
-            const csrfToken = this.csrfService.getCsrf();
-
-            this.http.put<any>(environment.api+'/api/nota-cita/'+this.idCita, 
-            formData,
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-                'X-CSRF-TOKEN': csrfToken || ''
-              },
-              withCredentials:true
-            },
-            ).subscribe(
+            this.reporteCitaService.setNotaCita(this.idCita, formData).subscribe(
               response => {
                 this.visible = true;
                 setTimeout(() => {
@@ -228,38 +188,22 @@ export class FormularioReporteCitaComponent implements OnInit {
               }
             );
           } 
-        // } 
-      // }
     }
   }
 
   updateStatusCita(): void {
     const status = this.atendida ? 4 : 5; //4: atendida, 5: no atendida
-    
+
     // Prepara los datos para actualizar el estatus de la cita
     const statusData = {
       idCita: this.idCita,
       estadoCita: status
     };
-  
-    // Obtiene el token CSRF
-    const csrfToken = this.csrfService.getCsrf();
-  
+
     // Enviar los datos al servidor para actualizar el estatus de la cita
-    this.http.put<any>(`${environment.api}/actualizar-estado-cita/${this.idCita}`, 
-      statusData,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken || ''
-        },
-        withCredentials: true
-      }
-    ).subscribe(
+    this.reporteCitaService.updateEstadoCita(this.idCita,statusData).subscribe(
       response => {
         console.log('Estatus de cita actualizado correctamente:', response);
-        // Puedes recargar la página o manejar alguna acción adicional
-        // window.location.reload();
       },
       error => {
         console.error('Error al actualizar el estatus de la cita:', error);
@@ -271,7 +215,6 @@ export class FormularioReporteCitaComponent implements OnInit {
     this.reporteCitaService.obtenerEstatusCita(this.idCita).subscribe(
       (response) => {
         this.atendida = response.estadoCita === 4 ? true : false;
-        console.log('Estatus de la cita:', this.atendida);
         this.isLoading = false;
       },
       (error) => {
