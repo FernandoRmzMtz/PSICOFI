@@ -50,9 +50,13 @@ class AlumnoController extends Controller
 
         $xml = new \SimpleXMLElement($response);
         $datos = $xml->xpath('//TablaMensaje');
-        $jsonResult = json_encode($datos[0]);
 
-        return $jsonResult;
+        try{
+            $jsonResult = json_encode($datos[0]);
+            return $jsonResult;
+        }catch (\Exception $e){
+            return null;
+        }
     }
 
     private function calcularEdad($fechaNacimiento) {
@@ -66,6 +70,10 @@ class AlumnoController extends Controller
 
     public function addAlumno($id){
         $alumno = $this->obtainAlumno($id);
+
+        if($alumno == null){
+            return null;
+        }
 
         if($alumno){
             $alumno = json_decode($alumno, true);
@@ -88,11 +96,10 @@ class AlumnoController extends Controller
             $newAlumno -> promedioGral = floatval($alumno['promedio_general']);
             $newAlumno -> asesor = $alumno['tutor_academico'];
             $newAlumno -> contrasena = null;
-            $newAlumno -> psicologoAsociado = null;
-            $newAlumno -> habilitado = 1;
+            $newAlumno -> fechaCancelacion = null;
             
             if($newAlumno->save()){
-                return true;
+                return $newAlumno;
             }else{
                 return false;
             }
