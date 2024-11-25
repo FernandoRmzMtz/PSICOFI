@@ -10,10 +10,11 @@ import { Router } from '@angular/router';
 export class TablaHistorialCitasComponent {
   
   public isLoading = false;
-  public ordenAscendente: boolean = false;
+  public ordenAscendente: boolean = true;
 
   constructor(private histo: HistorialAlumnosService, private router: Router) {
     this.getHistorialCitas();
+    console.log("orden ASC: ",this.ordenAscendente,"=============");
   }
 
   public getHistorialCitas(): void {
@@ -56,7 +57,9 @@ export class TablaHistorialCitasComponent {
   }
 
   public toggleOrden(): void {
+    // console.log("antes orden ASC: ",this.ordenAscendente,"=============");
     this.ordenAscendente = !this.ordenAscendente;
     this.ordenarCitas();
+    console.log("orden ASC: ",this.ordenAscendente,"=============");
   }
 }
