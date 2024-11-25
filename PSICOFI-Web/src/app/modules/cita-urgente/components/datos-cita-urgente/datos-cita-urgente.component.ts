@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
 import { LoginService } from 'src/app/modules/login/services/login.services';
 
