@@ -457,7 +457,12 @@ class DateController extends Controller
                 if($cancel[0]->resultado == 1){
                     if($alumno->isNotEmpty()){
                         $this->sendCancelMail($cita,$alumno,$id);
-                        //$alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
+                        // $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
+                        $diaActual = Carbon::now($tz='America/Mexico_City');
+                        $diaProximo = $diaActual->addDays(7);
+                        $fecha = $diaProximo->toDateString();
+
+                        $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
                         $respuesta = ['Cita cancelada correctamente'];
                         return response($respuesta,200);
                     //     // Envío de correo en segundo plano

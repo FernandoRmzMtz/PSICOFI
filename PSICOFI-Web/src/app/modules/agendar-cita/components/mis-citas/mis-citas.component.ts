@@ -19,6 +19,7 @@ export class MisCitasComponent implements OnInit {
   visible: boolean = false;
   success_msg: string = '';
   confirmarBtnCita = false;
+  mostrarModalCancelarCita: boolean = false;
 
   constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) {
     this.citasProceso = [];
@@ -100,6 +101,7 @@ export class MisCitasComponent implements OnInit {
   }
 
   cancelarCita(): void {
+    this.cerrarModalCancelarCita();
     if (this.idCitaActual !== null) {
       this.agendarCitaService.cancelarCita(this.idCitaActual, this.claveUnica).subscribe(
         (response) => {
@@ -136,6 +138,14 @@ export class MisCitasComponent implements OnInit {
         }
       );
     }
+  }
+
+  abrirModalCancelarCita(){
+    this.mostrarModalCancelarCita = true;
+  }
+
+  cerrarModalCancelarCita() {
+    this.mostrarModalCancelarCita = false;
   }
 
 }

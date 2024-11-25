@@ -23,6 +23,7 @@ export class CalendarioComponent implements OnInit {
   tipoUsuario: string = '';
   private tipoUsuarioSubscription!: Subscription;
   visible: boolean = false;
+  errorVisible: boolean = false;
   horasDisponibles: string[] = this.generarHoras();
   success_msg: string = '';
   ableToAddNotes = false;
@@ -346,9 +347,13 @@ export class CalendarioComponent implements OnInit {
             this.citaAgendada = true;
             this.agendarCitaService.emitirCitaAgendada();
           } else {
+            //error
+            this.errorVisible = true;
+            setTimeout(() => {
+              this.errorVisible = false;
+            }, 3000);
             console.log("Resultado:");
             console.log(resultado);
-            console.log(resultado[0]);
           }
         },
         error => {
