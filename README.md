@@ -1,5 +1,5 @@
 # PSICOFI
 
 ### UASLP | FI
-#### Proyectos Computacionales II
+#### Proyectos Computacionales III
 v1
