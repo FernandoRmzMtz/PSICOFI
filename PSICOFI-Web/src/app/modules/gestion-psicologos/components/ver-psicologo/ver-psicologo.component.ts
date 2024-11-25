@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { gestionPsico } from '../../services/gestion-psico.services';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-ver-psicologo',
