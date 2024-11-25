@@ -76,7 +76,6 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials:true
@@ -95,7 +94,6 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials:true
@@ -114,7 +112,6 @@ export class HistorialAlumnosService {
         headers:
         {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials:true
