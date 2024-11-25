@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReporteCitasService } from './services/reporte-citas.service';
@@ -12,7 +11,7 @@ export class ReporteCitasPage implements OnInit {
   idCita: number | null = null;
   notaCita: any;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient,
+  constructor(private route: ActivatedRoute,
     private reporteCitaService: ReporteCitasService,
     private _router: Router,
   ) { }

@@ -4,7 +4,6 @@ import { ReporteCitasService } from '../../services/reporte-citas.service';
 import { Cita } from 'src/app/components/servicios/citas.service';
 import { NotaCita } from 'src/app/model/nota-cita.model';
 
-
 @Component({
   selector: 'app-formulario-reporte-cita',
   templateUrl: './formulario-reporte-cita.component.html',
@@ -72,7 +71,6 @@ export class FormularioReporteCitaComponent implements OnInit {
       }
       this.isLoading = false;
     });  
-
     this.isLoading = true;
     this.reporteCitaService.getEstatusCita(this.idCita).subscribe(
       (response) => {
@@ -84,7 +82,6 @@ export class FormularioReporteCitaComponent implements OnInit {
         this.isLoading = false;
       }
     );
-
   }
 
   toggleCanalizacion(): void {
@@ -107,7 +104,6 @@ export class FormularioReporteCitaComponent implements OnInit {
         return '';
     }
   }
-
   getNotaCita(idCita: number): void {
     this.isLoading = true;
     this.reporteCitaService.getNotaCita(idCita).subscribe(
@@ -128,7 +124,6 @@ export class FormularioReporteCitaComponent implements OnInit {
       }
     );
   }
-
   submitForm(): void {
     if(!this.tipoIntervencion) {
       this.errorIntervencion = true;
@@ -178,7 +173,6 @@ export class FormularioReporteCitaComponent implements OnInit {
           } 
     }
   }
-
   updateStatusCita(): void {
     const status = this.atendida ? 4 : 5; //4: atendida, 5: no atendida
     // Prepara los datos para actualizar el estatus de la cita
@@ -186,7 +180,6 @@ export class FormularioReporteCitaComponent implements OnInit {
       idCita: this.idCita,
       estadoCita: status
     };
-
     // Enviar los datos al servidor para actualizar el estatus de la cita
     this.reporteCitaService.updateEstadoCita(this.idCita,statusData).subscribe(
       response => {
