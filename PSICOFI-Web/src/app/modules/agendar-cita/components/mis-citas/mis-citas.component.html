@@ -69,10 +69,10 @@
 
     <div class="alert alert-success fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="visible" style="z-index: 1000;">
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-          <use xlink:href="#check-circle-fill"/>
+            <use xlink:href="#check-circle-fill"/>
         </svg>
         <div>
-          {{success_msg}}  
+            {{success_msg}}  
         </div>
     </div>
 </div>
@@ -95,7 +95,6 @@
                     <br>
                     <p>No podr&aacute;s agendar cita en los próximos 7 d&iacute;as</p>
                 </div>
-
                 <div class="modal-footer">
                     <!-- <button class="btn btn-secondary">Ver Datos del Alumno</button> -->
                     <button class="btn btn-danger"  (click)="cancelarCita()">
