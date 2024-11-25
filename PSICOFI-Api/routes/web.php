@@ -23,8 +23,6 @@ use App\Http\Controllers\ReporteController;
 |
 */
 
-Route::get('/', HomeController::class);
-
 Route::post('login',[AuthController::class,'login'])->name('login');
 
 Route::post('loginAdmin',[AuthController::class,'loginAdmin'])->name('loginAdmin');
