@@ -12,12 +12,8 @@ use App\Mail\cancelMail;
 use App\Mail\cancelMailPsicologo;
 use App\Mail\scheduleDateMail;
 use Illuminate\Support\Collection;
-use App\Models\Alumno;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SendEmail;
-
-use function PHPUnit\Framework\isEmpty;
 
 class DateController extends Controller
 {
@@ -69,8 +65,6 @@ class DateController extends Controller
                 ->get();
 
             return $citas;
-
-            //$citas = DB::select('SELECT * FROM view_citas WHERE idPsicologo = ? AND estado = ? AND fecha >= ?', [$id,"libre",$fecha]);
 
             if(!empty($citas)){
                 $citasPsicologo = collect($citas);
@@ -387,10 +381,6 @@ class DateController extends Controller
     }
 
     public function deleteDate($idCita){
-    // public function deleteDate(Request $request){
-        // $idCita = $request->input('idCita', null);
-        // dd($request);
-    
         $citaInfo = Cita::where('idCita', $idCita)
             ->select('fecha','hora','clavePsicologoExterno','clavePsicologo','claveUnica')
             ->first();
@@ -443,21 +433,12 @@ class DateController extends Controller
 
                 $alumno = collect($alumno);
 
-                // Datos del correo electronico
-                // $details = [
-                //     'email' => $_ENV['DESTINATARIO_CORREO'],
-                //     'hora' => $cita[0]->hora,
-                //     'fecha' => $cita[0]->fecha,
-                //     'name' => $alumno[0]->nombres . ' ' . $alumno[0]->apellidoPaterno . ' ' . $alumno[0]->apellidoMaterno,
-                //     'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
-                // ];
-
                 $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);                
 
                 if($cancel[0]->resultado == 1){
                     if($alumno->isNotEmpty()){
                         $this->sendCancelMail($cita,$alumno,$id);
-                        // $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
+                        
                         $diaActual = Carbon::now($tz='America/Mexico_City');
                         $diaProximo = $diaActual->addDays(7);
                         $fecha = $diaProximo->toDateString();
@@ -465,20 +446,6 @@ class DateController extends Controller
                         $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
                         $respuesta = ['Cita cancelada correctamente'];
                         return response($respuesta,200);
-                    //     // Envío de correo en segundo plano
-                    //     SendEmail::dispatch($details['email'],new cancelMail($details));
-                    //     $diaActual = Carbon::now($tz='America/Mexico_City');
-                    //     $diaProximo = $diaActual->addDays(7);
-                    //     $fecha = $diaProximo->toDateString();
-
-                    //     $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
-                    //     $respuesta = ['Cita cancelada correctamente'];
-                    //     return response($respuesta,200);
-                    // }else if($cita[0]->idPsicologo = $id) {
-                    //     // Envío de correo en segundo plano
-                    //     SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
-                    //     $respuesta = ['Cita cancelada correctamente'];
-                    //     return response($respuesta,200);
                     }else{
                         $respuesta = ['Error' => 'ID incorrecto'];
                         return response($respuesta,400);
@@ -530,15 +497,6 @@ class DateController extends Controller
 
                 $alumno = collect($alumno);
 
-                // Datos del correo electronico
-                // $details = [
-                //     'email' => $_ENV['DESTINATARIO_CORREO'],
-                //     'hora' => $cita[0]->hora,
-                //     'fecha' => $cita[0]->fecha,
-                //     'name' => $alumno[0]->nombres . ' ' . $alumno[0]->apellidoPaterno . ' ' . $alumno[0]->apellidoMaterno,
-                //     'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
-                // ];
-
                 $confirm = DB::select('SELECT confirmar_cita(?) AS resultado',[$idCita]);
 
                 if($confirm[0]->resultado == 1){
@@ -565,35 +523,6 @@ class DateController extends Controller
         }
     }
 
-    // public function actualizarEstadoCita(Request $request, $idCita)
-    // {
-    //     // Validar que el estado es válido (4 para atendida, 5 para no atendida)
-    //     $validatedData = $request->validate([
-    //         'estadoCita' => 'required|in:4,5',
-    //     ]);
-
-    //     try {
-    //         // Buscar la cita por ID
-    //         // $cita = Cita::findOrFail($idCita);
-    //         $cita = Cita::where('idCita', $idCita)->firstOrFail();
-
-
-    //         // Actualizar el estatus de la cita
-    //         $cita->estadoCita = $validatedData['estadoCita'];
-    //         $cita->save();
-
-    //         return response()->json([
-    //             'message' => 'Estatus de la cita actualizado correctamente',
-    //             'cita' => $cita
-    //         ], 200);
-
-    //     } catch (\Exception $e) {
-    //             return response()->json([
-    //             'error' => 'Error al actualizar el estatus de la cita',
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
     public function actualizarEstadoCita(Request $request, $idCita)
     {
         // Validar que el estado es válido (4 para atendida, 5 para no atendida)
@@ -603,7 +532,6 @@ class DateController extends Controller
 
         try {
             // Buscar la cita por idCita
-            // $cita = Cita::findOrFail($idCita);
             $cita = Cita::where('idCita', $idCita)->firstOrFail();
 
 
@@ -628,7 +556,6 @@ class DateController extends Controller
     {
         try {
             // Buscar la cita por idCita
-            // $cita = Cita::findOrFail($idCita);
             $cita = Cita::where('idCita', $idCita)->firstOrFail();
 
 

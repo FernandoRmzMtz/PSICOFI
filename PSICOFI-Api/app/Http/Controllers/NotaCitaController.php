@@ -27,7 +27,6 @@ class NotaCitaController extends Controller
             } else {
                 $notaCita = new NotaCita();
                 $notaCita->tipoIntervencion = 1;
-                // $notaCita->notas = "Observaciones:";
                 $notaCita->idCita = $idCita;
                 $notaCita->save();
                 return response()->json(['notaCita' => $notaCita]);
@@ -61,14 +60,10 @@ class NotaCitaController extends Controller
         // Crear una nueva instancia del modelo NotaCita y asignar los valores
         $notaCita = new NotaCita();
         $notaCita->tipoIntervencion = $request->tipoIntervencion;
-        // $notaCita->notas = $request->notas;
         if($request->departamento){
-        // if($request->departamento && $request->detalleCanalizacion){
             $notaCita->departamento = $request->departamento;
-            // $notaCita->detalleCanalizacion = $request->detalleCanalizacion;
         }else{
             $notaCita->departamento = null;
-            // $notaCita->detalleCanalizacion = "";
         }        
         $notaCita->idCita = $request->idCita;
         $notaCita->foraneo = $request->foraneo;
@@ -85,9 +80,7 @@ class NotaCitaController extends Controller
         // Validar los datos entrantes
         $validatedData = $request->validate([
             'tipoIntervencion' => 'required|integer',
-            // 'notas' => 'required|string',
             'departamento' => 'nullable|integer',
-            // 'detalleCanalizacion' => 'nullable|string',
             'foraneo' => 'nullable|boolean',
         ]);
 

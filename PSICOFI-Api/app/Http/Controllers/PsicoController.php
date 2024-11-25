@@ -298,55 +298,11 @@ class PsicoController extends Controller
         if($alumnos->isEmpty()){
             $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
             return response($respuesta,204);
-            //return json_encode($respuesta);
         }else{
             foreach($alumnos as $alumno){
                 $claves[] = $alumno->claveUnica;
             }
             return response($claves,200);
-            //return json_encode($claves);
         }
-        
-        // try{
-        //     if(strlen($id) == 18){
-        //         $alumnos = Cita::select('claveUnica')
-        //             ->where('clavePsicologoExterno', $id)
-        //             ->where('estadoCita', 4)
-        //             ->distinct()
-        //             ->get();
-                
-        //         if($alumnos){
-        //             foreach($alumnos as $alumno){
-        //                 $claves[] = $alumno->claveUnica;
-        //             }
-        //             return json_encode($claves);
-        //         }else{
-        //             $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
-        //             return json_encode($respuesta);
-        //         }
-        //     }else if(strlen($id) == 6){
-        //         $alumnos = Cita::select('claveUnica')
-        //             ->where('clavePsicologo', $id)
-        //             ->where('estadoCita', 4)
-        //             ->distinct()
-        //             ->get();
-                
-        //         if($alumnos){
-        //             foreach($alumnos as $alumno){
-        //                 $claves[] = $alumno->claveUnica;
-        //             }
-        //             return json_encode($claves);
-        //         }else{
-        //             $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
-        //             return json_encode($respuesta);
-        //         }
-        //     }else{
-        //         $respuesta = ['Error' => 'ID incorrecto'];
-        //         return json_encode($respuesta);
-        //     }
-        // }catch(\Exception $e){
-        //     $respuesta = ['Error' => 'Algo salio mal'];
-        //     return json_encode($respuesta);
-        // }
     }
 }
