@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'environments/enviroment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReporteCitasService } from '../../services/reporte-citas.service';
 import { Cita } from 'src/app/components/servicios/citas.service';
 import { NotaCita } from 'src/app/model/nota-cita.model';
-import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 
 @Component({
@@ -28,10 +25,8 @@ export class FormularioReporteCitaComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
     private _router:Router, 
     private reporteCitaService:ReporteCitasService,
-    private csrfService: CsrfServiceService
   ) { }
 
     idCita = 0;
@@ -72,7 +67,6 @@ export class FormularioReporteCitaComponent implements OnInit {
     this.isLoading = true;
     this.route.paramMap.subscribe(params => {
       this.idCita = +params.get('idCita')!;
-      console.log("id de cita:"+this.idCita);
       if (this.idCita) {
         this.getNotaCita(this.idCita);
       }
@@ -83,7 +77,6 @@ export class FormularioReporteCitaComponent implements OnInit {
     this.reporteCitaService.obtenerEstatusCita(this.idCita).subscribe(
       (response) => {
         this.atendida = response.estadoCita === 4 ? true : false;
-        console.log('Estatus de la cita:', this.atendida);
         this.isLoading = false;
       },
       (error) => {
@@ -95,9 +88,7 @@ export class FormularioReporteCitaComponent implements OnInit {
   }
 
   toggleCanalizacion(): void {
-    console.log("antes togle:neesita canalización:"+this.necesitaCanalizacion);
     this.necesitaCanalizacion = !this.necesitaCanalizacion;
-    console.log("despues togle:neesita canalización:"+this.necesitaCanalizacion);
   }
 
   getTipoDepartamentoName(idDepartamento: number | null | undefined): string {
@@ -122,14 +113,11 @@ export class FormularioReporteCitaComponent implements OnInit {
     this.reporteCitaService.getNotaCita(idCita).subscribe(
       response => {
         this.notaCita = response;
-        console.log("esta es la notaCitao¿Obtenida: ");
-        console.log(this.notaCita);
         this.tipoIntervencion = this.notaCita.tipoIntervencion;
         this.foraneo = this.notaCita.foraneo;
         if(this.notaCita.departamento){
           this.necesitaCanalizacion = true;
           this.departamento = this.notaCita.departamento;
-          console.log("el departamento es: "+this.departamento+" y el tipo intervencion es:"+this.tipoIntervencion);
         }
         this.isLoading = false;
       },
@@ -193,7 +181,6 @@ export class FormularioReporteCitaComponent implements OnInit {
 
   updateStatusCita(): void {
     const status = this.atendida ? 4 : 5; //4: atendida, 5: no atendida
-
     // Prepara los datos para actualizar el estatus de la cita
     const statusData = {
       idCita: this.idCita,
