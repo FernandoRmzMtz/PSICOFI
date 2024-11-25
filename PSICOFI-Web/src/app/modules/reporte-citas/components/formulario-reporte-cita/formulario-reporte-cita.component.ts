@@ -74,7 +74,7 @@ export class FormularioReporteCitaComponent implements OnInit {
     });  
 
     this.isLoading = true;
-    this.reporteCitaService.obtenerEstatusCita(this.idCita).subscribe(
+    this.reporteCitaService.getEstatusCita(this.idCita).subscribe(
       (response) => {
         this.atendida = response.estadoCita === 4 ? true : false;
         this.isLoading = false;
@@ -199,7 +199,7 @@ export class FormularioReporteCitaComponent implements OnInit {
   }
 
   obtenerEstatusCita() {
-    this.reporteCitaService.obtenerEstatusCita(this.idCita).subscribe(
+    this.reporteCitaService.getEstatusCita(this.idCita).subscribe(
       (response) => {
         this.atendida = response.estadoCita === 4 ? true : false;
         this.isLoading = false;

@@ -25,10 +25,10 @@ export class ReporteCitasService {
   getAlumno(claveUnica: number): Observable<Alumno> {
     return this.http.get<Alumno>(environment.api+`/alumno/${claveUnica}`);  
   }
-  obtenerEstatusCita(idCita: number): Observable<any> {
+  getEstatusCita(idCita: number): Observable<any> {
     return this.http.get<any>(`${environment.api}/api/estatus-cita/${idCita}`);
   }
-  obtenerReporteCita(idCita: number): Observable<any> {
+  getReporteCita(idCita: number): Observable<any> {
     return this.http.get<any>(`${environment.api}/reporte-citas/${idCita}`);
   }
   getTiposIntervencion(): Observable<any>{

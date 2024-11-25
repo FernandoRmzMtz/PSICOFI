@@ -27,7 +27,7 @@ export class ReporteCitasPage implements OnInit {
   }
 
   obtenerReporteCita(idCita: number): void {
-    this.reporteCitaService.obtenerReporteCita(idCita).subscribe(
+    this.reporteCitaService.getReporteCita(idCita).subscribe(
       response => {
         this.notaCita = response.notaCita;
       },
