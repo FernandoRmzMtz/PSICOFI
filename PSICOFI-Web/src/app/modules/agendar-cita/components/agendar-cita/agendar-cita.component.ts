@@ -13,7 +13,10 @@ export class AgendarCitaComponent implements OnInit {
   psicologos: { id: any; nombre: string; }[] = [];
   psicologoSeleccionadoId: string = '';
   psicologoCargado: boolean = false;
-  constructor(private agendarCitaService: AgendarCita, private loginService: LoginService) { }
+  constructor(
+    private agendarCitaService: AgendarCita, 
+    private loginService: LoginService
+  ) { }
 
   ngOnInit(): void {
     this.obtenerDatosAlumno();
@@ -23,9 +26,7 @@ export class AgendarCitaComponent implements OnInit {
   obtenerDatosAlumno(): void {
     const clave = this.loginService.getClave();
     const id = parseInt(clave, 10);
-
-    console.log("alumno: "+id);
-
+    
     this.agendarCitaService.obtenerAlumno(id).subscribe(
       (data) => {
         this.claveUnica = data.claveUnica.toString();
