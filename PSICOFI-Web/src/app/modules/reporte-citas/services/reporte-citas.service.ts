@@ -28,4 +28,7 @@ export class ReporteCitasService {
   obtenerEstatusCita(idCita: number): Observable<any> {
     return this.http.get<any>(`${environment.api}/api/estatus-cita/${idCita}`);
   }
+  obtenerReporteCita(idCita: number): Observable<any> {
+    return this.http.get<any>(`${environment.api}/reporte-citas/${idCita}`);
+  }
 }
