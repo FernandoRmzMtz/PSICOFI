@@ -13,7 +13,6 @@ export class LoginInternoComponent {
   public errorMessage: string = "";
   public checkboxAceptado: boolean = false;
   public isLoading = false;
-
   public validarContrasena: boolean = false;
   public validarClave: boolean = false;
 
@@ -40,12 +39,10 @@ export class LoginInternoComponent {
 
   public enforceMaxLength(event: any): void {
     const inputValue = event.target.value;
-
     // Filtrar cualquier caracter que no sea un número del 0 al 9
     if (!/^\d*$/.test(inputValue)) {
       event.target.value = inputValue.replace(/\D/g, '');  // Remover cualquier caracter no numérico
     }
-    
     // Restringir la longitud del valor a 6 dígitos
     if (inputValue.length > 6) {
       // Solo mantener los primeros 6 caracteres

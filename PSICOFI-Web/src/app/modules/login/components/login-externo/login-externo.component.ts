@@ -98,19 +98,16 @@ export class LoginExternoComponent {
         break;
       }
     }
-
     this.cvunica = newValue;
     event.target.value = newValue;
   }
 
   public enforceMaxLength(event: any): void {
     const inputValue = event.target.value;
-
     // Filtrar cualquier caracter que no sea un número del 0 al 9
     if (!/^\d*$/.test(inputValue)) {
       event.target.value = inputValue.replace(/\D/g, '');  // Remover cualquier caracter no numérico
     }
-    
     // Restringir la longitud del valor a 6 dígitos
     if (inputValue.length > 6) {
       // Solo mantener los primeros 6 caracteres

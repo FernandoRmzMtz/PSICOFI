@@ -15,11 +15,7 @@
   <div class="container">
     <form (ngSubmit)="onSubmit()" #loginFormulario="ngForm" novalidate>
       <div class="mb-3">
-        <!-- <label for="cvunica" class="form-label">Clave &uacute;nica</label> -->
         <label for="cvunica" class="form-label">Clave</label>
-        <!-- <input type="text" class="form-control" name="cvunica" id="cvunica" placeholder="Clave unica a 6 d&iacute;gitos" -->
-        <!-- <input type="text" class="form-control" name="cvunica" id="cvunica" placeholder="Clave unica a 6 d&iacute;gitos"
-          [(ngModel)]="cvunica" (input)="enforceMaxLength($event)" required min="1" max="999999" /> -->
         <input type="text" class="form-control" name="cvunica" id="cvunica" placeholder="Clave"  
         [(ngModel)]="cvunica" maxlength="18" />
       </div>
@@ -52,8 +48,6 @@
     <div *ngIf="errorMessage" class="alert alert-danger">
       {{ errorMessage }}
     </div>
-    <!-- <p>¿Eres psic&oacute;logo externo? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia
-          sesi&oacute;n aqu&iacute;</b></span></p> -->
     <p>¿Eres administrador? <span class="text-info" id="switchLogin" (click)="switchLogin()"><b>Inicia
       sesi&oacute;n aqu&iacute;</b></span></p>
   </div>

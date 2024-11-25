@@ -45,21 +45,6 @@ export class LoginService {
    * @param contrasena contraseña del usuario
    * @returns Validacion de login
    */
-  // loginInterno(clave: string, contrasena: string): Observable<any> {
-  //   return this.http.post('http://psicofi-api.test/login', {
-  //     id: clave,
-  //     password: contrasena
-  //   }).pipe(
-  //     catchError((error: HttpErrorResponse) => {
-  //       // console.error('Error en la petición:', error);
-  //       if (error.status === 500) {
-  //         return "Ha ocurrido un error, por favor intenta más tarde.";
-  //       }
-  //       return throwError(error);
-  //     })
-  //   );
-  // }
-
   loginInterno(clave: string, contrasena: string): Observable<any> {
     return this.csrfService.getCsrfCookie().pipe(
       switchMap(() => {
@@ -100,7 +85,6 @@ export class LoginService {
         if (!csrfToken) {
           return throwError('No se pudo obtener el token CSRF.');
         }
-        
         return this.http.post(environment.api + '/loginAdmin', 
           {
             id: clave,
