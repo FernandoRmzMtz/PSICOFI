@@ -9,10 +9,15 @@ import { ReporteCitasModule } from './modules/reporte-citas/reporte-citas.module
 import { CitaUrgenteModule } from './modules/cita-urgente/cita-urgente.module';
 import { FormsModule } from '@angular/forms'; 
 import { ReactiveFormsModule } from '@angular/forms';
+import { ReportesModule } from './modules/reportes/reportes.module';
+import { LoaderComponent } from './components/loader/loader.component';
+import { GestionPsicoComponent } from './modules/gestion-psicologos/components/gestion-psico/gestion-psico.component';
+
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 
 registerLocaleData(localeEs);
+
 
 @NgModule({
   declarations: [
