@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
-import { environment } from 'environments/enviroment';
+import { CitaUrgenteService } from './services/cita-urgente.service';
 
 @Component({
   selector: 'app-cita-urgente',
@@ -10,9 +9,10 @@ import { environment } from 'environments/enviroment';
 })
 export class CitaUrgentePage {
   csrfToken: string = "";
-
-  
-  constructor(private csrfTokenService: CsrfServiceService, private http: HttpClient) {
+  constructor(
+    private csrfTokenService: CsrfServiceService, 
+    private citaUrgenteService: CitaUrgenteService,
+  ) {
     this.getCsrfToken();
   }
 
@@ -24,7 +24,7 @@ export class CitaUrgentePage {
 
   onSubmit(data: any) {
     const headers = { 'X-CSRF-TOKEN': this.csrfToken };
-    this.http.post(environment.api+'/nota-cita', data, { headers, withCredentials:true }).subscribe(response => {
+    this.citaUrgenteService.setNotaCita(data,headers).subscribe(response => {
       console.log('Respuesta del servidor:', response);
     }, error => {
       console.error('Error en la solicitud:', error);

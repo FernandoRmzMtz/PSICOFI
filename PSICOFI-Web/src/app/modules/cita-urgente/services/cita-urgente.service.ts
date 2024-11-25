@@ -82,4 +82,7 @@ export class CitaUrgenteService {
     );
   }
 
+  setNotaCita(data:any, headers:any) {
+    return this.http.post(environment.api+'/nota-cita', data, { headers, withCredentials:true });
+  }
 }
