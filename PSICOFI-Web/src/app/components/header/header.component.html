@@ -22,12 +22,11 @@
                 </div>
             <div class="col-12 d-flex justify-content-end align-items-center py-2 d-md-none" *ngIf="tipoUsuario">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-                  aria-controls="navbarMenu" [attr.aria-expanded]="menuAbierto ? 'true' : 'false'"
-                  aria-label="Toggle navigation" (click)="menuAbierto = !menuAbierto">
-                  
-                  <i class="text-white bi" [ngClass]="menuAbierto ? 'bi-chevron-up' : 'bi-list'" style="font-size:20px"></i>
+                    aria-controls="navbarMenu" [attr.aria-expanded]="menuAbierto ? 'true' : 'false'"
+                    aria-label="Toggle navigation" (click)="menuAbierto = !menuAbierto">
+                        <i class="text-white bi" [ngClass]="menuAbierto ? 'bi-chevron-up' : 'bi-list'" style="font-size:20px"></i>
                 </button>
-              </div>              
+            </div>              
 
             <div class="col-12 my-3 d-none d-md-block">
                 <div
