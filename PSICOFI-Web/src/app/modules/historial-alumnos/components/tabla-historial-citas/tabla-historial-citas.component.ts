@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class TablaHistorialCitasComponent {
   
   public isLoading = false;
-  public ordenAscendente: boolean = false;
+  public ordenAscendente: boolean = true;
 
   constructor(private histo: HistorialAlumnosService, private router: Router) {
     this.getHistorialCitas();

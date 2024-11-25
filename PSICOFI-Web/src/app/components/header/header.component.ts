@@ -20,6 +20,7 @@ interface HeaderRoute {
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   tipoUsuario: string = '';
+  clave: string = '';
   private tipoUsuarioSubscription!: Subscription;
   private routerSubscription!: Subscription;
 
@@ -44,6 +45,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     if (this.loginService.isLoggedIn()) {
       this.tipoUsuario = this.loginService.getTipoUsuario() || '';
+      if(this.tipoUsuario != ''){
+        this.clave = this.loginService.getClave();
+      }
     }
 
     this.routerSubscription = this.router.events.pipe(

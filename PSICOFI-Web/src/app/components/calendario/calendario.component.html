@@ -219,6 +219,13 @@
   </div>
 </div>
 
+<div class="alert alert-danger fade-in d-flex align-items-center position-fixed top-50 start-50 translate-middle" role="alert" *ngIf="errorVisible" style="z-index: 1000;">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#x-circle-fill"/></svg>
+  <div>
+      No puedes agendar cita por el momento.
+  </div>
+</div>
+
 <!-- Modal para Detalles de la Cita Agendada -->
 <div class="modal-backdrop" *ngIf="mostrarModalDetalles">
   <div class="modal" tabindex="-1" role="dialog">

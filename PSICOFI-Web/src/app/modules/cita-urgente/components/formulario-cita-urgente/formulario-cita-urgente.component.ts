@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CitaUrgenteService } from '../../services/cita-urgente.service';
-import { LoginService } from 'src/app/modules/login/services/login.services';
-import { environment } from 'environments/enviroment';
-import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.service';
 
 @Component({
   selector: 'app-formulario-cita-urgente',
@@ -24,7 +20,9 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   errorDetalleCan = false;
   public isLoading = false;
 
-  constructor(private http: HttpClient, private citaUrgenteService: CitaUrgenteService,private loginService: LoginService, private csrfService: CsrfServiceService) { }
+  constructor(
+    private citaUrgenteService: CitaUrgenteService,
+  ) { }
 
   // Propiedades para los datos del formulario
   tipoIntervencion: number | null = null;
@@ -36,11 +34,9 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   foraneo: boolean | null = null;
 
   ngOnInit(): void {
-    console.log("neesita canalización:"+this.necesitaCanalizacion);
     this.necesitaCanalizacion = false;
-
     this.isLoading = true;
-    this.http.get<any[]>(environment.api+'/tipos-intervencion').subscribe(
+    this.citaUrgenteService.getTiposIntervencion().subscribe(
       response => {
         this.tiposIntervencion = response;
         this.isLoading = false;
@@ -53,7 +49,7 @@ export class FormularioCitaUrgenteComponent implements OnInit {
 
     this.isLoading = true;
 
-    this.http.get<any[]>(environment.api+'/departamentos').subscribe(
+    this.citaUrgenteService.getDepartamentos().subscribe(
       response => {
         this.departamentos = response;
         this.isLoading = false;
@@ -72,7 +68,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
     });
   }
   submitForm(): void {
-
     this.datosCita = this.citaUrgenteService.getDatosCita();
 
     // Crear la cita
@@ -106,7 +101,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
               this.errorDepaCan = false;
             }, 5000);
             }else{
-                  console.log("cita--: ",response);
                   const idCita = response.idCita;
                   this.isLoading = false;
                   // Crear el objeto con los datos del formulario
@@ -117,19 +111,8 @@ export class FormularioCitaUrgenteComponent implements OnInit {
                     foraneo: this.foraneo
                   };
                   // Enviar los datos al servidor
-                  const csrfToken = this.csrfService.getCsrf();
-
                   this.isLoading = false;
-                  this.http.post<any>(environment.api+'/api/nota-cita', 
-                  formData,
-                  {
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'X-CSRF-TOKEN': csrfToken || ''
-                    },
-                    withCredentials:true
-                  },
-                ).subscribe(
+                  this.citaUrgenteService.setNotaCita(formData).subscribe(
                   response => {
                     this.visible = true;
                     //esperamos unos segundos
@@ -164,8 +147,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
     );
   }
   toggleCanalizacion(): void {
-    console.log("antes togle:neesita canalización:"+this.necesitaCanalizacion);
     this.necesitaCanalizacion = !this.necesitaCanalizacion;
-    console.log("despues togle:neesita canalización:"+this.necesitaCanalizacion);
   }
 }

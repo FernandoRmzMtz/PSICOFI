@@ -25,7 +25,42 @@ export class ReporteCitasService {
   getAlumno(claveUnica: number): Observable<Alumno> {
     return this.http.get<Alumno>(environment.api+`/alumno/${claveUnica}`);  
   }
-  obtenerEstatusCita(idCita: number): Observable<any> {
+  getEstatusCita(idCita: number): Observable<any> {
     return this.http.get<any>(`${environment.api}/api/estatus-cita/${idCita}`);
+  }
+  getReporteCita(idCita: number): Observable<any> {
+    return this.http.get<any>(`${environment.api}/reporte-citas/${idCita}`);
+  }
+  getTiposIntervencion(): Observable<any>{
+    return this.http.get<any[]>(environment.api+'/tipos-intervencion');
+  }
+  getDepartamentos(): Observable<any>{
+    return this.http.get<any[]>(environment.api+'/departamentos')
+  }
+  setNotaCita(idCita: number, formData: any): Observable<any>{
+    const csrfToken = this.csrfService.getCsrf();
+    return this.http.put<any>(environment.api+'/api/nota-cita/'+idCita, 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
+      },
+      )
+  }
+  updateEstadoCita(idCita: number, statusData: any): Observable<any>{
+    const csrfToken = this.csrfService.getCsrf();
+    return this.http.put<any>(`${environment.api}/actualizar-estado-cita/${idCita}`, 
+      statusData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials: true
+      }
+    )
   }
 }

@@ -140,7 +140,6 @@ class AuthController extends Controller
 
                 return $jsonArray;
             }
-        return null;
     }
 
     // Función para validar psicologos

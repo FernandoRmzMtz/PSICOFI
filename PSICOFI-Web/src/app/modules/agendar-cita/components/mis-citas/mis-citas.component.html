@@ -37,7 +37,7 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-6 d-flex justify-content-center">
-                <button *ngIf="!citaConfirmada" type="button" class="btn btn-danger mx-2" (click)="cancelarCita()">Cancelar cita</button>
+                <button *ngIf="!citaConfirmada" type="button" class="btn btn-danger mx-2" (click)="abrirModalCancelarCita()">Cancelar cita</button>
                 <button *ngIf="confirmarBtnCita && !citaConfirmada"  type="button" class="btn btn-primary mx-2" (click)="confirmarCita()" [disabled]="citaConfirmada">Confirmar asistencia</button>
             </div>
         </div>
@@ -74,6 +74,36 @@
         <div>
           {{success_msg}}  
         </div>
-      </div>
+    </div>
+</div>
+
+<!-- Modal para Detalles de la Cita cancelada -->
+<div class="modal-backdrop" *ngIf="mostrarModalCancelarCita">
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancelacion de Cita</h5>
+                    <button type="button" class="close" aria-label="Cerrar" (click)="cerrarModalCancelarCita()">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        ¿Está seguro que desea cancelar la cita?
+                    </p>
+                    <br>
+                    <p>No podr&aacute;s agendar cita en los próximos 7 d&iacute;as</p>
+                </div>
+
+                <div class="modal-footer">
+                    <!-- <button class="btn btn-secondary">Ver Datos del Alumno</button> -->
+                    <button class="btn btn-danger"  (click)="cancelarCita()">
+                        S&iacute; (Cancelar cita)</button>
+                    <button type="button" class="btn btn-secondary" (click)="cerrarModalCancelarCita()"> No (Regresar)</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
