@@ -22,15 +22,12 @@ interface AlumnoAtendido {
   edad: number;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 
 export class HistorialAlumnosService {
-
   historialTablaVisible = 1;
-
   pacientes = [];
   alumnoViendo: string = '';
   records: any = [];
@@ -60,14 +57,12 @@ export class HistorialAlumnosService {
     this.alumnoViendo = clave.toString();
   }
 
-
   public getHistorialVisible() {
     return this.historialTablaVisible;
   }
 
   public getPacientes(): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
-
     return this.http.post(environment.api + '/psicologo/getPatients',
       {
         "id": this.loginService.getClave()
@@ -85,7 +80,6 @@ export class HistorialAlumnosService {
 
   public getAlumnoInfo(): Observable<AlumnoAtendido> {
     const csrfToken = this.csrfService.getCsrf();
-
     return this.http.post<AlumnoAtendido>(environment.api + '/alumno/getAlumno',
       {
         "id": this.alumnoViendo
@@ -103,7 +97,6 @@ export class HistorialAlumnosService {
 
   public getHistorialCitas(): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
-
     return this.http.post(environment.api + '/alumno/getRecord',
       {
         "id": this.alumnoViendo

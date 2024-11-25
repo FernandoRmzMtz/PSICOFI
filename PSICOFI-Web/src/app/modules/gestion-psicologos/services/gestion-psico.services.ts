@@ -1,12 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { Observable, of } from "rxjs";
-import { catchError } from 'rxjs/operators';
+import { HttpClient} from "@angular/common/http";
+import { Observable } from "rxjs";
 import { LoginService } from "../../login/services/login.services";
 import { environment } from "environments/enviroment";
 import { CsrfServiceService } from "src/app/servicios/csrfService/csrf-service.service";
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +55,6 @@ export class gestionPsico {
       {
           headers: {
             'Content-Type': 'application/json',
-            // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
             'X-CSRF-TOKEN': csrfToken || ''
           },
           withCredentials:true,
@@ -94,10 +90,7 @@ export class gestionPsico {
       "activo": 0,
       "carrera": "",
       "curp": ""
-    }
-
-    const body = { clave: clave };
-    
+    }    
 
     return this.http.post(environment.api + '/psicologo/searchPsicologo',
       {
@@ -106,7 +99,6 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials: true
@@ -132,7 +124,6 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials:true
@@ -157,7 +148,6 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials:true
@@ -186,20 +176,15 @@ export class gestionPsico {
     return this.http.put(environment.api + '/psicologo/updatePsicologo', body, {
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
         'X-CSRF-TOKEN': csrfToken || ''
       },
       withCredentials: true
     });
   }
   
-
-
-
   filtrarPsicologos() {
     this.fetchedPsico = this.fetchedPsico;
   }
-
 
   fetchAlumnosPorPsicologo(id: string): Observable<any> {
     return this.http.post(environment.api + '/psicologo/getPatients',

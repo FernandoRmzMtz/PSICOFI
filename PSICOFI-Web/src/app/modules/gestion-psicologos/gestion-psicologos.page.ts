@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { OnInit } from '@angular/core';
 import { gestionPsico } from './services/gestion-psico.services';
 import { GestionPsicoComponent } from './components/gestion-psico/gestion-psico.component';
 

@@ -93,9 +93,6 @@ export class CalendarioComponent implements OnInit {
       const claveUnica = this.LoginService.getClave();
       this.usuarioActualId = claveUnica ? parseInt(claveUnica, 10) : null;
       this.tipoUsuario = this.LoginService.getTipoUsuario() || '';
-      console.log("El tipo usuario es: " + this.tipoUsuario);
-
-      //Reacomodo de codigo para primero verificar que esté autenticado el usuario
       this.generarDiasDelMes(this.fechaActual);
       this.cargarCitas();
       this.verificarCitaAgendada();
@@ -112,7 +109,6 @@ export class CalendarioComponent implements OnInit {
       }
     }
   }
-
 
   ngOnDestroy(): void {
     if (this.tipoUsuarioSubscription) {
@@ -187,8 +183,6 @@ export class CalendarioComponent implements OnInit {
   }
 
   private cargarCitasPsicologo(): void {
-    console.log("cargarCitasPsicologo con psicologo:" + this.psicologo);
-    console.log(this.psicologo);
     this.citasService.obtenerTodasLasCitas(this.psicologo).subscribe({
       next: (citas) => {
         this.citas = citas;
@@ -202,7 +196,6 @@ export class CalendarioComponent implements OnInit {
 
   private actualizarDisponibilidadPorDia(): void {
     this.disponibilidadPorDia = {};
-    //Validacion de que this.citas tiene citas
     if (this.citas) {
       this.citas.forEach(cita => {
         const fecha = cita.fecha;
@@ -289,7 +282,6 @@ export class CalendarioComponent implements OnInit {
     this.horaSeleccionada = "";
     const fechaSeleccionada = dia.toISOString().split('T')[0];
 
-    //Validación de que this.citas contiene citas
     if (this.citas) {
       this.horariosDelDiaSeleccionado = this.citas.filter(cita =>
         cita.fecha === fechaSeleccionada &&
@@ -318,7 +310,6 @@ export class CalendarioComponent implements OnInit {
     }
 
   }
-
 
   abrirModalConfirmacion() {
     this.mostrarModalConfirmacion = true;
@@ -352,8 +343,6 @@ export class CalendarioComponent implements OnInit {
             setTimeout(() => {
               this.errorVisible = false;
             }, 3000);
-            console.log("Resultado:");
-            console.log(resultado);
           }
         },
         error => {
@@ -363,11 +352,8 @@ export class CalendarioComponent implements OnInit {
     } else {
       console.error('El ID del usuario es null. No se puede agendar la cita.');
     }
-
     this.cerrarModalConfirmacion();
   }
-
-
 
   agregarHoraDisponible(): void {
     const nuevaHora = `${this.horasDisponibles.length + 13}:00`;
@@ -384,13 +370,10 @@ export class CalendarioComponent implements OnInit {
     }
     const idCita = this.citaSeleccionada.idCita;
 
-    console.log("el idCita seleccionado es: " + idCita);
-
     // Realizar la llamada para eliminar la cita de la base de datos
     this.http.delete(environment.api + `/cita/deleteDate/${idCita}`, {
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRF-TOKEN': this.LoginService.getToken() ?? "token"
         'X-CSRF-TOKEN': csrfToken || ''
       },
       withCredentials: true
@@ -405,10 +388,6 @@ export class CalendarioComponent implements OnInit {
         console.error('Error al cancelar la cita:', error);
       }
     );
-
-    // console.log(`Cita cancelada: ${this.citaSeleccionada.idCita}`);
-    // this.cerrarModal();
-    // this.cargarCitas();
   }
 
   abrirModalAgregarHora(): void {
@@ -433,11 +412,6 @@ export class CalendarioComponent implements OnInit {
     this.cerrarModalAgregarHora();
   }
 
-  // agregarHoras() {
-
-  //   this.cerrarModalAgregarHora();
-  // }
-
   agregarHoras() {
 
     const csrfToken = this.csrfService.getCsrf();
@@ -453,41 +427,21 @@ export class CalendarioComponent implements OnInit {
     // Generar una lista de fechas para los días seleccionados dentro de la semana de la fecha seleccionada
     const startOfWeek = this.getStartOfWeek(this.fechaSeleccionada);
 
-    // Error corregido de agenda en sabados
-    // const fechasSeleccionadas = diasSeleccionados.map(dia => {
-    //   console.log("\nfechaSeleccionada:");
-    //   const dayIndex = this.dias.indexOf(dia); console.log(dayIndex);
-    //   const fecha = new Date(startOfWeek); console.log(fecha);
-    //   fecha.setDate(startOfWeek.getDate() + dayIndex); console.log(fecha);
-    //   console.log(fecha.toISOString().split('T')[0]);
-    //   return fecha.toISOString().split('T')[0];
-    // });
-
     const fechasSeleccionadas = diasSeleccionados.map(dia => {
-      console.log("\nfechaSeleccionada:");
       const dayIndex = this.dias.indexOf(dia);
-      console.log(dayIndex);
-
       const fecha = new Date(startOfWeek);
-      console.log(fecha);
-
       fecha.setDate(startOfWeek.getDate() + dayIndex);
-      console.log(fecha);
 
       // Aquí formateamos la fecha manualmente para evitar el cambio de zona horaria
       const year = fecha.getFullYear();
       const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Mes en formato 2 dígitos
       const day = fecha.getDate().toString().padStart(2, '0'); // Día en formato 2 dígitos
-
       const fechaFormateada = `${year}-${month}-${day}`;
-      console.log(fechaFormateada);
 
       return fechaFormateada;
     });
-    //
 
     const id = this.LoginService.getClave();
-    const token = this.LoginService.getToken() ?? "token";
     const numFechas = fechasSeleccionadas.length;
     let cont = 0;
 
@@ -501,12 +455,10 @@ export class CalendarioComponent implements OnInit {
       this.http.post(environment.api + '/cita/createDates', data, {
         headers: {
           'Content-Type': 'application/json',
-          // 'X-CSRF-TOKEN': token
           'X-CSRF-TOKEN': csrfToken || ''
         },
         withCredentials: true
       }).subscribe(response => {
-        console.log(`Respuesta del servidor para la fecha ${fecha}:`, response);
         cont++;
         if (cont === numFechas) {
           this.cerrarModalAgregarHora();
@@ -523,10 +475,7 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
-
-  onSubmit() {
-
-  }
+  onSubmit() {}
 
   abrirModalDetalles(cita: Cita) {
     const hoy = new Date();
@@ -540,8 +489,6 @@ export class CalendarioComponent implements OnInit {
     }else{
       this.ableToAddNotes = false;
     }
-    console.log(citaFechaStr);
-    console.log(hoyStr);
     this.citaSeleccionada = cita;
     this.mostrarModalDetalles = true;
   }
@@ -552,7 +499,6 @@ export class CalendarioComponent implements OnInit {
   }
 
   crearNotaCita(cita: Cita) {
-    console.log("Llamada a crear nota cita en cita urgente a la cita: " + cita);
     if (cita.clavePsicologo) {
       const citaData = {
         idCita: cita.idCita,
@@ -562,14 +508,11 @@ export class CalendarioComponent implements OnInit {
         clavePsicologo: cita.clavePsicologo,
         clavePsicologoExterno: cita.clavePsicologoExterno
       }
-      console.log(citaData);
       this._router.navigate(['/reporte-citas', citaData.idCita]);
     }
   }
 
   cancelarCita(cita: Cita) {
-    console.log("la cita es:");
-    console.log(cita);
     if (cita.clavePsicologo) {
       const citaData = {
         idCita: cita.idCita,
@@ -587,9 +530,7 @@ export class CalendarioComponent implements OnInit {
             this.agendarCitaService.emitirCitaCancelada();
             window.location.reload();
           } else {
-            console.log("Resultado:");
             console.log(response);
-            console.log(response[0]);
           }
         },
         error => {
@@ -598,13 +539,10 @@ export class CalendarioComponent implements OnInit {
       );
     } else {
       if (cita.clavePsicologoExterno) {
-        console.log("mandando psic externo a cancelar");
         const citaData = {
           idCita: cita.idCita,
           id: cita.clavePsicologoExterno.toString()
         }
-        console.log(cita.clavePsicologoExterno);
-
         this.citasService.cancelarCita(citaData).subscribe(
           (response) => {
             if (response && response[0] === "Cita cancelada correctamente") {
@@ -617,9 +555,7 @@ export class CalendarioComponent implements OnInit {
               this.agendarCitaService.emitirCitaCancelada();
               window.location.reload();
             } else {
-              console.log("Resultado:");
               console.log(response);
-              console.log(response[0]);
             }
           },
           error => {
@@ -675,9 +611,8 @@ export class CalendarioComponent implements OnInit {
   }
 
   semanaAnterior(): void {
-    //Validación para no regresar a una semana anterior a la actual
+    //Incluye validación para no regresar a una semana anterior a la actual
     const hoy = new Date();
-    // console.log("hoy:"+hoy);
     const actualWeek = this.getStartOfWeek(hoy);
     const selectedWeek = this.getStartOfWeek(this.fechaSeleccionada);
     if ((actualWeek.getDate() == selectedWeek.getDate()) &&
@@ -687,11 +622,6 @@ export class CalendarioComponent implements OnInit {
     } else {
       this.fechaSeleccionada.setDate(this.fechaSeleccionada.getDate() - 7);
     }
-    // console.log("Fecha del inicio de semana actual");
-    // console.log(actualWeek.getDate()+"/"+actualWeek.getMonth()+"/"+actualWeek.getFullYear());
-    // console.log("Fecha del inicio de semana seleccionada");
-    // console.log(selectedWeek.getDate()+"/"+selectedWeek.getMonth()+"/"+selectedWeek.getFullYear());
-
   }
 
   semanaSiguiente(): void {

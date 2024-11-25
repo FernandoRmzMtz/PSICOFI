@@ -1,8 +1,7 @@
 <div class="header container-fluid">
     <div class="container">
         <div class="row header">
-            <!-- <div class="column"> -->
-                <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-start align-items-center">
+¿                <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-start align-items-center">
                     <a href="https://www.uaslp.mx">
                         <img src="assets/logo-uaslp.png" class="img-fluid logoUASLP" />
                     </a>
@@ -21,15 +20,13 @@
                         [{{tipoUsuario}} - {{clave}}]
                     </p>
                 </div>
-            <!-- </div> -->
             <div class="col-12 d-flex justify-content-end align-items-center py-2 d-md-none" *ngIf="tipoUsuario">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-                  aria-controls="navbarMenu" [attr.aria-expanded]="menuAbierto ? 'true' : 'false'"
-                  aria-label="Toggle navigation" (click)="menuAbierto = !menuAbierto">
-                  
-                  <i class="text-white bi" [ngClass]="menuAbierto ? 'bi-chevron-up' : 'bi-list'" style="font-size:20px"></i>
+                    aria-controls="navbarMenu" [attr.aria-expanded]="menuAbierto ? 'true' : 'false'"
+                    aria-label="Toggle navigation" (click)="menuAbierto = !menuAbierto">
+                        <i class="text-white bi" [ngClass]="menuAbierto ? 'bi-chevron-up' : 'bi-list'" style="font-size:20px"></i>
                 </button>
-              </div>              
+            </div>              
 
             <div class="col-12 my-3 d-none d-md-block">
                 <div

@@ -25,8 +25,6 @@ export class GraficasComponent implements OnInit {
     this.checkScreenSize();
   }
   
-
-  
   datosReporte: any;
   showCharts: boolean = false;
   sizeScreen: boolean = true;

@@ -69,7 +69,6 @@ export class FormularioCitaUrgenteComponent implements OnInit {
   }
   submitForm(): void {
     this.datosCita = this.citaUrgenteService.getDatosCita();
-
     // Crear la cita
     const citaData = {
       fecha: this.datosCita[0],

@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginService } from '../../login/services/login.services';
 import { Observable } from 'rxjs';
 import { environment } from 'environments/enviroment';
 import { Cita } from 'src/app/components/servicios/citas.service';
@@ -13,7 +12,7 @@ import { CsrfServiceService } from 'src/app/servicios/csrfService/csrf-service.s
 })
 export class ReporteCitasService {
 
-  constructor(private http: HttpClient, private loginService:LoginService, private csrfService:CsrfServiceService) { 
+  constructor(private http: HttpClient, private csrfService:CsrfServiceService) { 
 
   } 
   getCita(idCita: number): Observable<Cita> {

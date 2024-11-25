@@ -86,7 +86,6 @@ export class MisCitasComponent implements OnInit {
           // Establecer horas en 0 para solo comparar fechas
           hoy.setHours(0, 0, 0, 0);
           citaFecha.setHours(0, 0, 0, 0);
-
           // Verificar si la diferencia en milisegundos es de 1 día
           const unDiaEnMilisegundos = 24 * 60 * 60 * 1000;
           if ((citaFecha.getTime() - hoy.getTime()) < unDiaEnMilisegundos) {

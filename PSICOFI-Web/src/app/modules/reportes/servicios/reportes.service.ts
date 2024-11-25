@@ -12,25 +12,19 @@ export class ReportesService {
 
   obtenerAreasCarreras(tipo: string): Observable<any> {
     const csrfToken = this.csrfService.getCsrf();
-
     if (tipo !== 'carrera' && tipo !== 'area') {
       return of({ error: 'Consulta incorrecta' });
     }
-
     const url = environment.api+'/reporte/getAreasCarreras';
     const data = { tipo: tipo }; 
-    const token = localStorage.getItem('auth_token'); 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      // 'X-CSRF-TOKEN': token || '' 
       'X-CSRF-TOKEN': csrfToken || '' 
     });
-
     return this.http.post<any>(url, data, { headers: headers, withCredentials:true }).pipe(
       catchError(error => of({ error: 'Sin datos' }))
     );
   }
-
 
   // Método para obtener el reporte
   obtenerReporte(tipo: string, nombre: string = '', fechaInicio: string = '', fechaFin: string = ''): Observable<any> {
@@ -42,7 +36,6 @@ export class ReportesService {
 
     const url = environment.api + '/reporte/getReporte';
     const body: any = { tipo: tipo, nombre: nombre, fecha_inicio: fechaInicio, fecha_final: fechaFin };
-    const token = localStorage.getItem('auth_token'); 
 
     if (tipo === 'facultad') {
       delete body.nombre;
@@ -50,7 +43,6 @@ export class ReportesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      // 'X-CSRF-TOKEN': token || '' 
       'X-CSRF-TOKEN': csrfToken || '' 
     });
 
