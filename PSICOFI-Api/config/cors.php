@@ -21,7 +21,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('ANGULAR_URL'),env('LARAVEL_URL')],
+    'allowed_origins' => ['*'],
 
     //'allowed_origins' => ['*'],
     

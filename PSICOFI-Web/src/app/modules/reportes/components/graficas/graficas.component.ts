@@ -148,6 +148,9 @@ export class GraficasComponent implements OnInit {
       if (this.tipo === 'area' || this.tipo === 'facultad') {
         this.showCarrera = true;
         this.dataPersonasPorCarrera = this.datosReporte['personasPorCarrera'] || [];
+        if(this.dataPersonasPorCarrera){
+          this.dataPersonasPorCarrera.sort();
+        }
         const percentagesCarrera = this.calcularPorcentaje(this.dataPersonasPorCarrera);
         this.chartLabelsPersonasPorCarrera = percentagesCarrera;
         this.chartDataPersonasPorCarrera = [{
@@ -161,6 +164,9 @@ export class GraficasComponent implements OnInit {
       if (this.tipo === 'facultad') {
         this.showArea = true;
         this.dataPersonasPorArea = this.datosReporte['personasPorArea'] || [];
+        if(this.dataPersonasPorArea){
+          this.dataPersonasPorArea.sort();
+        }
         const percentagesArea = this.calcularPorcentaje(this.dataPersonasPorArea);
         this.chartLabelsPersonasPorArea = percentagesArea;
         this.chartDataPersonasPorArea = [{
@@ -175,6 +181,19 @@ export class GraficasComponent implements OnInit {
       this.dataSemestres = this.datosReporte['semestre'] || [];
       this.dataAreaConsulta = this.datosReporte['areaConsulta'] || [];
       this.dataMotivoConsulta = this.datosReporte['motivoConsulta'] || [];
+
+      if(this.dataHorarioAtencion){
+        this.dataHorarioAtencion.sort();
+      }
+      if(this.dataSemestres){
+        this.dataSemestres.sort();
+      }
+      if(this.dataAreaConsulta){
+        this.dataAreaConsulta.sort();
+      }
+      if(this.dataMotivoConsulta){
+        this.dataMotivoConsulta.sort();
+      }
   
       const percentagesHorarioAtencion = this.calcularPorcentaje(this.dataHorarioAtencion);
       this.chartLabelsHorarioAtencion = percentagesHorarioAtencion;
