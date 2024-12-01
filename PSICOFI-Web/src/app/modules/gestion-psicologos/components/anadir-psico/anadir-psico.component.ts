@@ -118,7 +118,7 @@ export class AnadirPsicoComponent {
    * @param psicologo Objeto de psicologo
    */
   public registraPsicologoExterno(psicologo: any): void {
-    this.gestionPsicoService.agregarPsicologoInterno(psicologo).subscribe(
+    this.gestionPsicoService.agregarPsicologoExterno(psicologo).subscribe(
       (response) => {
         if (Array.isArray(response)) {
           this.mostrarMensaje(response[0], 'success');
