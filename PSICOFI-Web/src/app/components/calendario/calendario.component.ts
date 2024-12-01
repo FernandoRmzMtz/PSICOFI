@@ -499,7 +499,7 @@ export class CalendarioComponent implements OnInit {
   }
 
   crearNotaCita(cita: Cita) {
-    if (cita.clavePsicologo) {
+    if (cita.clavePsicologo || cita.clavePsicologoExterno) {
       const citaData = {
         idCita: cita.idCita,
         claveUnica: cita.claveUnica.toString(),
