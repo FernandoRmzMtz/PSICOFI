@@ -287,7 +287,7 @@ class PsicoController extends Controller
         $alumnos = DB::table('view_citas')
             ->select('claveUnica')
             ->where('idPsicologo',$id)
-            ->where('estado','atendida')
+            ->where('estado','Atendida')
             ->distinct()
             ->get();
 
