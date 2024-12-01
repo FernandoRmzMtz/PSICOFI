@@ -187,6 +187,8 @@ export class gestionPsico {
   }
 
   fetchAlumnosPorPsicologo(id: string): Observable<any> {
+    const csrfToken = this.csrfService.getCsrf();
+
     return this.http.post(environment.api + '/psicologo/getPatients',
       {
         "id": id
@@ -194,9 +196,10 @@ export class gestionPsico {
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': this.loginService.getToken() ?? "token"
-        }
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials: true,
       }
-    )
+    );
   }
 }
