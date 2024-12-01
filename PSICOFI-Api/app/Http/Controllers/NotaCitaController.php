@@ -8,6 +8,13 @@ use App\Models\NotaCita;
 
 class NotaCitaController extends Controller
 {
+    private $AlumnoController;
+
+    public function __construct(\App\Http\Controllers\AlumnoController $AlumnoController)
+    {
+        $this->AlumnoController = $AlumnoController;
+    }
+
     public function getCita($idCita){
         $cita = Cita::where('idCita', $idCita)->first();
         return $cita;
@@ -38,22 +45,48 @@ class NotaCitaController extends Controller
 
     public function crearCita(Request $request)
     {
-        // Crea una nueva cita
+        // Validar los datos necesarios
+        $claveUnica = $request->input('claveUnica');
+        if ($claveUnica == null) {
+            return response()->json(['Error' => 'Clave única requerida'], 400);
+        }
+
+        // Intentar obtener el alumno de la base de datos
+        $datosAlumno = $this->AlumnoController->obtenerAlumno($claveUnica);
+        $alumno = $datosAlumno->getData();
+
+        // Si no se encuentra, intentar obtenerlo desde el web service
+        if (empty((array)$alumno)) {
+            $alumno = $this->AlumnoController->obtainAlumno($claveUnica);
+            if ($alumno == null) {
+                return response()->json(['Error' => 'Alumno inválido o no encontrado'], 404);
+            }
+
+            // Guardar el alumno obtenido del web service en la base de datos
+            $this->AlumnoController->addAlumno($claveUnica);
+        }
+
+        // Crear la nueva cita
         $cita = new Cita();
         $cita->fecha = $request->fecha;
         $cita->hora = $request->hora;
         $cita->estadoCita = $request->estadoCita;
-        $cita->claveUnica = $request->claveUnica;
-        if($request->clavePsicologo != -1)
+        $cita->claveUnica = $claveUnica;
+
+        if ($request->clavePsicologo != -1) {
             $cita->clavePsicologo = $request->clavePsicologo;
-        if($request->clavePsicologoExterno != "-1")
+        }
+        if ($request->clavePsicologoExterno != "-1") {
             $cita->clavePsicologoExterno = $request->clavePsicologoExterno;
-        // Guarda la cita en la base de datos
+        }
+
+        // Guardar la cita en la base de datos
         $cita->save();
 
-        // Devuelve la cita creada
+        // Devolver la cita creada
         return response()->json(['idCita' => $cita->idCita], 201);
     }
+
 
     public function store(Request $request)
     {
