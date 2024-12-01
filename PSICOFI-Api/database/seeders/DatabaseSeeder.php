@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Alumno::factory(100)->create();
-        PsicologoExterno::factory(6)->create();
+        PsicologoExterno::factory(2)->create();
         CarrerasPsico::create(['carrera' => 'Licenciatura en psicopedagogia']);
         CarrerasPsico::create(['carrera' => 'Licenciatura en psicologia']);
         EstadoCita::create(['estado' => 'Asistencia confirmada']);
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         EstadoCita::create(['estado' => 'No atendida']);
         EstadoCita::create(['estado' => 'Cancelada']);
         EstadoCita::create(['estado' => 'Libre']);
-        Psicologo::factory(6)->create();
+        //Psicologo::factory(2)->create();
 
         $tiposIntervencion = [
             ['tipoIntervencion' => 'Emocional'],

@@ -22,7 +22,20 @@ export class ReporteCitasService {
     return this.http.get<NotaCita>(environment.api+`/getNotaCita/${idCita}`);  
   }
   getAlumno(claveUnica: number): Observable<Alumno> {
-    return this.http.get<Alumno>(environment.api+`/alumno/${claveUnica}`);  
+    const csrfToken = this.csrfService.getCsrf();
+    return this.http.post<any>(environment.api+'/alumno/getAlumno',
+      {
+        "id":claveUnica
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        withCredentials:true
+      }
+    );
+    // return this.http.get<Alumno>(environment.api+`/alumno/${claveUnica}`);  
   }
   getEstatusCita(idCita: number): Observable<any> {
     return this.http.get<any>(`${environment.api}/api/estatus-cita/${idCita}`);

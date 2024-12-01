@@ -21,11 +21,6 @@ class AlumnoFactory extends Factory
     {
         return [
             'claveUnica' => $this->faker->randomNumber(6,true),
-            'nombres' => $this->faker->name(), 
-            'apellidoPaterno' => $this->faker->lastName(), 
-            'apellidoMaterno' => $this->faker->lastName(),
-            'edad' => $this->faker->numberBetween(0,90), 
-            'sexo' => $this->faker->randomElement(['F','M']), 
             'area' => $area = $this->faker->randomElement(["Agroindustrial",
                                                 "Ciencias de la computación",
                                                 "Ciencias de la Tierra",
@@ -51,12 +46,6 @@ class AlumnoFactory extends Factory
                 }
             })()),
             'semestre' => $this->faker->numberBetween(1,9),
-            'condicionAcademica' => $this->faker->randomElement(["INSCRITO","BAJA"]),
-            'creditosAprobados' => $this->faker->numberBetween(0,405),
-            'creditosInscritos' => $this->faker->numberBetween(0,50),
-            'promedioGral' => $this->faker->randomFloat(2,4,10),
-            'asesor' => $this->faker->name(),
-            'contrasena' => 12345,
         ];
     }
 }
