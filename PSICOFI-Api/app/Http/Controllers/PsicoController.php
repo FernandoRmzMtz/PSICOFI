@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\psicologos;
 use Illuminate\Http\Request;
 use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
-use App\Models\Cita;
 use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\isEmpty;
 
 class PsicoController extends Controller
 {

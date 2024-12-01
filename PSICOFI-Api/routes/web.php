@@ -29,6 +29,8 @@ Route::post('loginAdmin',[AuthController::class,'loginAdmin'])->name('loginAdmin
 
 Route::post('alumno/getAlumno',[AlumnoController::class,'getAlumno'])->name('getAlumno');
 
+Route::post('alumno/getDataAlumno',[AlumnoController::class,'getDataAlumno'])->name('getAlumno');
+
 Route::post('alumno/getDate',[AlumnoController::class,'getDate'])->name('getDate');
 
 Route::post('alumno/getRecord',[AlumnoController::class,'getRecord'])->name('getRecord');
@@ -71,7 +73,7 @@ Route::post('/crear-cita', [NotaCitaController::class, 'crearCita'])->name('crea
 
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
-Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
+// Route::get('/alumno/{claveUnica}', [AlumnoController::class, 'obtenerAlumno']);
 
 Route::get('/reporte-citas/{idCita}', [NotaCitaController::class, 'getReporteCita'])->name('getReporteCita');
 
@@ -90,6 +92,8 @@ Route::post('/reporte/getReporte', [ReporteController::class, 'getReporte'])->na
 Route::post('/reporte/getAreasCarreras', [ReporteController::class, 'getAreasCarreras'])->name('getAreasCarreras');
 
 Route::get('/reporte/prueba', [NotaCitaController::class, 'prueba'])->name('prueba');
+
+Route::post('/alumno/service', [AuthController::class, 'AlumnoService'])->name('AlumnoService');
 
 Route::get('/csrf-token', function() {
     return response()->json(['csrf_token' => csrf_token()]);

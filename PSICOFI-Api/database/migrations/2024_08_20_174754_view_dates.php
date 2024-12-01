@@ -25,7 +25,8 @@ return new class extends Migration
                 IF(cita.clavePsicologoExterno IS NOT NULL, psicologoexterno.nombres, psicologo.nombres) AS 'Nombres psicologo',
                 IF(cita.clavePsicologoExterno IS NOT NULL, psicologoexterno.apellidoPaterno, psicologo.apellidoPaterno) AS 'Apellido Pat psicologo',
                 IF(cita.clavePsicologoExterno IS NOT NULL, psicologoexterno.apellidoMaterno, psicologo.apellidoMaterno) AS 'Apellido Mat psicologo',
-                IF(cita.clavePsicologoExterno IS NOT NULL, psicologoexterno.CURP, psicologo.claveUnica) AS 'idPsicologo'
+                IF(cita.clavePsicologoExterno IS NOT NULL, psicologoexterno.CURP, psicologo.claveUnica) AS 'idPsicologo',
+                IF(cita.clavePsicologoExterno IS NOT NULL, psicologoexterno.correo, psicologo.correo) AS 'correo'
             FROM 
                 cita
             LEFT JOIN 

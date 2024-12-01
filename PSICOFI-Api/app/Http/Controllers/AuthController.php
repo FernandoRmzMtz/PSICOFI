@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Administrador;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\Alumno;
-use App\Models\Psicologo;
 use App\Models\PsicologoExterno;
-use Hamcrest\Type\IsNumeric;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -18,7 +16,7 @@ class AuthController extends Controller
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
                         <s:Body>
                             <valida_usuario xmlns="http://tempuri.org/">
-                            <key_sw>461E-ABD0-252D79762A23</key_sw>
+                            <key_sw>'.env('SERVICE_KEY').'</key_sw>
                             <rpe_usuario>'. $rpe .'</rpe_usuario>
                             <contrasena>'. $password .'</contrasena>
                             </valida_usuario>
@@ -44,11 +42,21 @@ class AuthController extends Controller
 
         $xml = new \SimpleXMLElement($response);
         $datos = $xml->xpath('//TablaMensaje');
-        $jsonResult = json_encode($datos[0]);
 
-        $response = json_decode($jsonResult, true);
+        try{
+            $jsonResult = json_encode($datos[0]);
+            return $jsonResult;
+        }catch (\Exception $e){
+            return ['validacion' => 'USUARIO-INVALIDO'];
+        }
+    }
 
-        return $response;
+    public function AlumnoService(Request $request){
+        $id = $request->input('id',null);
+        $password = $request->input('password',null);
+
+        $respuesta = $this->auth_admin($id,$password);
+        return $respuesta;
     }
 
     // Función para validar alumnos por medio del web service
@@ -83,11 +91,13 @@ class AuthController extends Controller
 
         $xml = new \SimpleXMLElement($response);
         $datos = $xml->xpath('//TablaMensaje');
-        $jsonResult = json_encode($datos[0]);
 
-        $response = json_decode($jsonResult, true);
-
-        return $response;
+        try{
+            $jsonResult = json_encode($datos[0]);
+            return $jsonResult;
+        }catch (\Exception $e){
+            return ['validacion' => "USUARIO-INVALIDO"];
+        }
     }
 
     // Función para validar alumnos
@@ -95,51 +105,26 @@ class AuthController extends Controller
         $lenID = strlen($id);
 
         if($lenID != 6 || !is_numeric($id)){
-            return null;
+            return ['validacion' => 'USUARIO-INVALIDO'];
         }
 
-        $alumno = Alumno::where('claveUnica', $id)
-            ->where('contrasena', $password)
-            ->where('condicionAcademica', '=', 'INSCRITO')
-            ->select('alumno.claveUnica',
-                    'alumno.nombres',
-                    'alumno.apellidoPaterno',
-                    'alumno.apellidoMaterno'
-            )
-            ->first();
+        $arrayDatos = json_decode($this->authWebStudent($id, $password), true);
+
+        if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
+            $arrayDatos['id'] = $arrayDatos['clave_unica'];
+            unset($arrayDatos['clave_unica']);
+
+            $arrayDatos['nombre'] = $arrayDatos['nombre_alumno'];
+            unset($arrayDatos['nombre_alumno']);
+
+            unset($arrayDatos['situacion_alumno']);
+
+            $arrayDatos['rol'] = "Alumno";
+            
+            return $arrayDatos;
+        }
         
-            if(!$alumno){
-                $arrayDatos = $this->authWebStudent($id,$password);
-
-                if($arrayDatos['validacion'] == 'USUARIO-INVALIDO'){
-                    return null;
-                }else if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
-
-                    $arrayDatos['id'] = $arrayDatos['clave_unica'];
-                    unset($arrayDatos['clave_unica']);
-
-                    $arrayDatos['nombre'] = $arrayDatos['nombre_alumno'];
-                    unset($arrayDatos['nombre_alumno']);
-
-                    unset($arrayDatos['situacion_alumno']);
-
-                    $arrayDatos['rol'] = "Alumno";
-                    $jsonResult = json_encode($arrayDatos);
-                    
-                    return $jsonResult;
-                }
-
-                return $arrayDatos;
-            }else{
-                $jsonArray = [
-                    'id' => $alumno->claveUnica,
-                    'nombre' => $alumno->nombres . ' ' . $alumno->apellidoPaterno . ' ' . $alumno->apellidoMaterno,
-                    'validacion' => "USUARIO-VALIDO",
-                    'rol' => "Alumno"
-                ];
-
-                return $jsonArray;
-            }
+        return ['validacion' => 'USUARIO-INVALIDO'];
     }
 
     // Función para validar psicologos
@@ -147,49 +132,37 @@ class AuthController extends Controller
         $lenID = strlen($id);
 
         if($lenID != 6 && $lenID != 18){
-            return null;
+            return ['validacion' => "USUARIO-INVALIDO"];
+        }
+
+        $psicologo = DB::table('view_psicologos')
+                ->where('idPsicologo', $id)
+                ->where('activo', '=', 1)
+                ->exists();
+
+        if(!$psicologo){
+            return ['validacion' => "USUARIO-INVALIDO"];
         }
 
         if($lenID == 6 && is_numeric($id)){
-            $psicologo = Psicologo::where('claveUnica', $id)
-            ->where('contrasena', $password)
-            ->where('activo', '=', 1)
-            ->select('psicologo.claveUnica',
-                    'psicologo.nombres',
-                    'psicologo.apellidoPaterno',
-                    'psicologo.apellidoMaterno'
-            )
-            ->first();
-            
-            if(!$psicologo){
-                $arrayDatos = $this->authWebStudent($id,$password);
+            $arrayDatos = json_decode($this->authWebStudent($id, $password), true);
 
-                if($arrayDatos['validacion'] == 'USUARIO-INVALIDO'){
-                    return null;
-                }else if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
-                    $arrayDatos['id'] = $arrayDatos['clave_unica'];
-                    unset($arrayDatos['clave_unica']);
+            if($arrayDatos['validacion'] == 'USUARIO-NO-FACULTAD'){
+                $arrayDatos['validacion'] = 'USUARIO-VALIDO';
 
-                    $arrayDatos['nombre'] = $arrayDatos['nombre_alumno'];
-                    unset($arrayDatos['nombre_alumno']);
+                $arrayDatos['id'] = $arrayDatos['clave_unica'];
+                unset($arrayDatos['clave_unica']);
 
-                    unset($arrayDatos['situacion_alumno']);
+                $arrayDatos['nombre'] = $arrayDatos['nombre_alumno'];
+                unset($arrayDatos['nombre_alumno']);
 
-                    $arrayDatos['rol'] = "Psicologo";
-                    $jsonResult = json_encode($arrayDatos);
-                    
-                    return $jsonResult;
-                }
-            }else{
-                $jsonArray = [
-                    'id' => $psicologo->claveUnica,
-                    'nombre' => $psicologo->nombres . ' ' . $psicologo->apellidoPaterno . ' ' . $psicologo->apellidoMaterno,
-                    'validacion' => "USUARIO-VALIDO",
-                    'rol' => "Psicologo"
-                ];
+                unset($arrayDatos['situacion_alumno']);
 
-                return $jsonArray;
+                $arrayDatos['rol'] = "Psicologo";
+                
+                return $arrayDatos;
             }
+            return ['validacion' => "USUARIO-INVALIDO"];
         }else if($lenID == 18){
             $psicologoexterno = PsicologoExterno::where('CURP', $id)
             ->where('contrasena', $password)
@@ -202,56 +175,61 @@ class AuthController extends Controller
             ->first();
 
             if(!$psicologoexterno){
-                return null;
+                return ['validacion' => "USUARIO-INVALIDO"];
             }else{
-                $jsonArray = [
+                $arrayDatos = [
                     'id' => $psicologoexterno->curp,
                     'nombre' => $psicologoexterno->nombres . ' ' . $psicologoexterno->apellidoPaterno . ' ' . $psicologoexterno->apellidoMaterno,
                     'validacion' => "USUARIO-VALIDO",
                     'rol' => "Psicologo externo"
                 ];
 
-                return $jsonArray;
+                return $arrayDatos;
             }
         }else{
-            return null;
+            return ['validacion' => "USUARIO-INVALIDO"];
         }
     }
 
     // Función para validar administradores
     private function auth_admin($id,$password){
-        $administrador = Administrador::where('idUsuario', $id)
-            ->where('contrasena', $password)
-            ->select('administrador.idUsuario',
-                    'administrador.nombres',
-                    'administrador.apellidoPaterno',
-                    'administrador.apellidoMaterno',
-            )
-            ->first();
+        // $arrayDatos = json_decode($this->authWebAdmin($id, $password), true);
         
-        if(!$administrador){
-            $arrayDatos = $this->authWebAdmin($id,$password);
-            
-            if($arrayDatos['validacion'] == 'USUARIO-INVALIDO'){
-                return null;
-            }else if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
-                $arrayDatos['id'] = $arrayDatos['rpe_usuario'];
+        if(!is_numeric($id)){
+            return ['validacion' => "USUARIO-INVALIDO"];
+        }
+
+        $arrayDatos = json_decode($this->authWebStudent($id, $password), true);
+
+        if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
+            $administrador = Administrador::where('idUsuario', $id)
+            ->exists();
+
+            if($administrador == 1){
+                $arrayDatos['id'] = $arrayDatos['clave_unica'];
                 unset($arrayDatos['clave_unica']);
 
+                unset($arrayDatos['situacion_alumno']);
+                unset($arrayDatos['nombre_alumno']);
+
                 $arrayDatos['rol'] = "Administrador";
-                $jsonResult = json_encode($arrayDatos);
                 
-                return $jsonResult;
+                return $arrayDatos;
             }
-        }else{
-            $jsonArray = [
-                'id' => $administrador->idUsuario,
-                'nombre' => $administrador->nombres . ' ' . $administrador->apellidoPaterno . ' ' . $administrador->apellidoMaterno,
-                'validacion' => "USUARIO-VALIDO",
-                'rol' => "Administrador"
-            ];
-            return $jsonArray;
+            
+            // if($administrador == 1){
+            //     $arrayDatos['id'] = $arrayDatos['rpe_usuario'];
+            //     unset($arrayDatos['rpe_usuario']);
+
+            //     $arrayDatos['rol'] = "Administrador";
+            //     $jsonResult = json_encode($arrayDatos);
+                
+            //     return $jsonResult;
+            // }
+            return ['validacion' => "USUARIO-INVALIDO"];
         }
+
+        return ['validacion' => "USUARIO-INVALIDO"];
     }
 
     // Función para login de administradores
@@ -266,12 +244,12 @@ class AuthController extends Controller
         }
 
         $admin = $this->auth_admin($id,$password);
-            
-        if(!$admin || $admin['validacion'] == 'USUARIO-INVALIDO'){
-            return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
-        }else if($admin['validacion'] == 'USUARIO-VALIDO'){
+        
+        if($admin['validacion'] == 'USUARIO-VALIDO'){
             return response($admin,200);
         }
+
+        return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
     }
 
     // Función para login de psicologos y alumnos
@@ -287,13 +265,15 @@ class AuthController extends Controller
 
         $alumno = $this->auth_student($id,$password);
     
-        if(!$alumno || $alumno['validacion'] == 'USUARIO-INVALIDO'){
+        if($alumno['validacion'] == 'USUARIO-INVALIDO'){
             $psicologo = $this->auth_psico($id,$password);
 
-            if(!$psicologo){
-                return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
-            }else{
+            return $psicologo;
+
+            if($psicologo['validacion'] == 'USUARIO-VALIDO'){
                 return response($psicologo,200);
+            }else{
+                return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
             }
         }else if($alumno['validacion'] == 'USUARIO-VALIDO'){
             return response($alumno,200);

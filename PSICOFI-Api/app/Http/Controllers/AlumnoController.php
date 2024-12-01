@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
-use App\Models\Cita;
 use Illuminate\Http\Request;
-use DateTime;
-use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+
 
 class AlumnoController extends Controller
 {
@@ -18,7 +16,7 @@ class AlumnoController extends Controller
     }
 
     // Función para obtener la información de un alumno por medio del web service
-    private function obtainAlumno($id){
+    public function obtainAlumno($id){
         $clave_unica = (int) $id; 
         $location = env('WEB_SERVICE');
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
@@ -46,7 +44,6 @@ class AlumnoController extends Controller
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
         $response = curl_exec($ch);
-        $err_status = curl_error($ch);
 
         $xml = new \SimpleXMLElement($response);
         $datos = $xml->xpath('//TablaMensaje');
@@ -55,7 +52,7 @@ class AlumnoController extends Controller
             $jsonResult = json_encode($datos[0]);
             return $jsonResult;
         }catch (\Exception $e){
-            return null;
+            return ['validacion' => "RESULTADO-INVALIDO"];
         }
     }
 
@@ -77,25 +74,14 @@ class AlumnoController extends Controller
 
         if($alumno){
             $alumno = json_decode($alumno, true);
-            $edad = $this->calcularEdad($alumno['fecha_nace']);
+            //$edad = $this->calcularEdad($alumno['fecha_nace']);
 
             $newAlumno = new Alumno;
 
             $newAlumno -> claveUnica = intval($alumno['clave_unica']);
-            $newAlumno -> nombres = $alumno['nombres_alumno'];
-            $newAlumno -> apellidoPaterno = $alumno['primer_apellido_alumno'];
-            $newAlumno -> apellidoMaterno = $alumno['segundo_apellido_alumno'];
-            $newAlumno -> carrera = $alumno['nombre_carrera'];
-            $newAlumno -> edad = $edad;
-            $newAlumno->sexo = substr($alumno['genero'], 0, 1);
-            $newAlumno -> area = $alumno['nombre_area'];
-            $newAlumno -> condicionAcademica = "INSCRITO";
+            $newAlumno -> carrera = iconv('UTF-8', 'ASCII//TRANSLIT', $alumno['nombre_carrera']);
+            $newAlumno -> area = iconv('UTF-8', 'ASCII//TRANSLIT', $alumno['nombre_area']);
             $newAlumno -> semestre = intval($alumno['semestre']);
-            $newAlumno -> creditosAprobados = $alumno['semestre'] * 50;
-            $newAlumno -> creditosInscritos = intval($alumno['creditos_inscritos']);
-            $newAlumno -> promedioGral = floatval($alumno['promedio_general']);
-            $newAlumno -> asesor = $alumno['tutor_academico'];
-            $newAlumno -> contrasena = null;
             $newAlumno -> fechaCancelacion = null;
             
             if($newAlumno->save()){
@@ -111,37 +97,93 @@ class AlumnoController extends Controller
     public function getAlumno(Request $request){
         $id = $request->input('id',null);
 
-        try{
-            if(strlen($id) == 6){
-                $alumno = DB::select('call get_info_alumno(?)',[$id]);
-
-                if($alumno){
-                    return json_encode($alumno[0]);
-                }else{
-                    $jsonResult = $this->obtainAlumno($id);
-                    $arrayDatos = json_decode($jsonResult, true);
-
-                    if($arrayDatos){
-                        $respuesta = [
-                            'claveUnica' => $arrayDatos['clave_unica'],
-                            'nombres' => $arrayDatos['nombres_alumno'],
-                            'apellidoMaterno' => $arrayDatos['segundo_apellido_alumno'],
-                            'apellidoPaterno' => $arrayDatos['primer_apellido_alumno'],
-                        ];
-                        return response($respuesta,200);
-                    }else{
-                        $respuesta = ['Error' => 'Alumno NO encontrado'];  
-                        return response($respuesta,200);
-                    }
-                }
-            }else{
-                $respuesta = ['Error' => 'ID invalida'];
-                return response($respuesta,200);
-            }
-        }catch(\Exception $e){
+        if(!is_numeric($id) || !strlen($id) == 6){
             $respuesta = ['Error' => 'Consulta incorrecta'];
             return response($respuesta,400);
         }
+
+        $alumno = json_decode($this->obtainAlumno($id), true);
+
+        if($alumno['validacion'] == 'RESULTADO-VALIDO'){
+            $datos = [
+                'claveUnica' => $alumno['clave_unica'],
+                'nombres' => $alumno['nombres_alumno'],
+                'apellidoMaterno' => $alumno['segundo_apellido_alumno'],
+                'apellidoPaterno' => $alumno['primer_apellido_alumno'],
+            ];
+            return response($datos,200);
+        }
+
+        $respuesta = ['Error' => 'Alumno NO encontrado'];  
+        return response($respuesta,200);
+
+        // try{
+
+        //     if(strlen($id) == 6){
+        //         $alumno = DB::select('call get_info_alumno(?)',[$id]);
+
+        //         if($alumno){
+        //             return json_encode($alumno[0]);
+        //         }else{
+        //             $jsonResult = $this->obtainAlumno($id);
+        //             $arrayDatos = json_decode($jsonResult, true);
+
+        //             if($arrayDatos){
+        //                 $respuesta = [
+        //                     'claveUnica' => $arrayDatos['clave_unica'],
+        //                     'nombres' => $arrayDatos['nombres_alumno'],
+        //                     'apellidoMaterno' => $arrayDatos['segundo_apellido_alumno'],
+        //                     'apellidoPaterno' => $arrayDatos['primer_apellido_alumno'],
+        //                 ];
+        //                 return response($respuesta,200);
+        //             }else{
+        //                 $respuesta = ['Error' => 'Alumno NO encontrado'];  
+        //                 return response($respuesta,200);
+        //             }
+        //         }
+        //     }else{
+        //         $respuesta = ['Error' => 'ID invalida'];
+        //         return response($respuesta,200);
+        //     }
+        // }catch(\Exception $e){
+        //     $respuesta = ['Error' => 'Consulta incorrecta'];
+        //     return response($respuesta,400);
+        // }
+    }
+
+    public function getDataAlumno(Request $request){
+        $id = $request->input('id',null);
+
+        if(!is_numeric($id) || !strlen($id) == 6){
+            $respuesta = ['Error' => 'Consulta incorrecta'];
+            return response($respuesta,400);
+        }
+
+        $alumno = json_decode($this->obtainAlumno($id), true);
+
+        if($alumno['validacion'] == 'RESULTADO-VALIDO'){
+            $edad = $this->calcularEdad($alumno['fecha_nace']);
+            $datos = [
+                'claveUnica' => $alumno['clave_unica'],
+                'nombres' => $alumno['nombres_alumno'],
+                'apellidoMaterno' => $alumno['segundo_apellido_alumno'],
+                'apellidoPaterno' => $alumno['primer_apellido_alumno'],
+                'semestre' => $alumno['semestre'],
+                'area' => $alumno['nombre_area'],
+                'carrera' => $alumno['nombre_carrera'],
+                'asesor' => $alumno['tutor_academico'],
+                'condicionAcademica' => $alumno['condicion'],
+                'promedioGral' => $alumno['promedio_general'],
+                'edad' => $edad,
+                'sexo' => $alumno['genero'],
+                'creditosInscritos' => $alumno['creditos_inscritos'],
+                'creditosAprobados' => $alumno['semestre'] * 50
+            ];
+            return response($datos,200);
+        }
+
+        $respuesta = ['Error' => 'Alumno NO encontrado'];  
+        return response($respuesta,200);
     }
 
     public function getRecord(Request $request){

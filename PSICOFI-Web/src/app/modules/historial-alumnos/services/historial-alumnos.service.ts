@@ -80,7 +80,7 @@ export class HistorialAlumnosService {
 
   public getAlumnoInfo(): Observable<AlumnoAtendido> {
     const csrfToken = this.csrfService.getCsrf();
-    return this.http.post<AlumnoAtendido>(environment.api + '/alumno/getAlumno',
+    return this.http.post<AlumnoAtendido>(environment.api + '/alumno/getDataAlumno',
       {
         "id": this.alumnoViendo
       },

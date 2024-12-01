@@ -14,6 +14,9 @@ use App\Mail\scheduleDateMail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SendEmail;
+use Illuminate\Support\Facades\Log;
+
+use function PHPUnit\Framework\isEmpty;
 
 class DateController extends Controller
 {
@@ -164,7 +167,7 @@ class DateController extends Controller
         return false;
     }
 
-    private function sendScheduleMail(String $fecha,String $hora,String $alumno,String $id){
+    private function sendScheduleMail(String $fecha,String $hora,array $alumno,String $id){
         if(strlen($id) != 6 && strlen($id) != 18){
             return "ID incorrecto";
         }
@@ -177,13 +180,15 @@ class DateController extends Controller
         if($psicologo == null){
             return "Psicologo no encontrado";
         }
+
+        $correo = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
         
         $details = [
-            'email' => $_ENV['DESTINATARIO_CORREO'],
+            'email' => $correo,
             'fecha' => $fecha,
             'hora' => $hora,
             'psicologo' => $psicologo->nombreCompleto,
-            'name' => $alumno
+            'name' => $alumno['nombre_alumno']
         ];
 
         SendEmail::dispatch($details['email'],new scheduleDateMail($details));
@@ -211,7 +216,8 @@ class DateController extends Controller
             $respuesta = ['Error' => 'Alumno invalido'];
             return response($respuesta,200);
         }else{
-            $nombreAlumno = "$alumno->nombres $alumno->apellidoPaterno $alumno->apellidoMaterno";
+            $datosAlumno = $this->AlumnoController->obtainAlumno($claveUnica);
+            $alumnoWS = json_decode($datosAlumno, true);
         }
 
         $validDate = $this->checkDate($alumno->fechaCancelacion);
@@ -233,7 +239,7 @@ class DateController extends Controller
                 ]);
 
                 if($cita > 0) {
-                    $this->sendScheduleMail($fecha,$hora,$nombreAlumno,$id);
+                    $this->sendScheduleMail($fecha,$hora,$alumnoWS,$id);
 
                     $respuesta = ['Cita agendada correctamente'];
                     return response($respuesta,200);
@@ -252,7 +258,7 @@ class DateController extends Controller
                 ]);
     
                 if($cita > 0) {
-                    $this->sendScheduleMail($fecha,$hora,$nombreAlumno,$id);
+                    $this->sendScheduleMail($fecha,$hora,$alumnoWS,$id);
 
                     $respuesta = ['Cita agendada correctamente'];
                     return json_encode($respuesta);
@@ -398,26 +404,36 @@ class DateController extends Controller
         }
     }
     
-    private function sendCancelMail(Collection $cita, Collection $alumno,String $id){
-        if((strlen($id) != 6 && strlen($id) != 18) || !$cita->isNotEmpty() || !$alumno->isNotEmpty()){
-            return "Error";
+    private function sendCancelMail(Collection $cita, array $alumno,String $id){
+        try{
+            if((strlen($id) != 6 && strlen($id) != 18) || !$cita->isNotEmpty() || empty($alumno)){
+                return "Error";
+            }
+            
+            $details = [
+                'hora' => $cita[0]->hora,
+                'fecha' => $cita[0]->fecha,
+                'name' => $alumno['nombre_alumno'],
+                'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
+            ];
+    
+            if($alumno['clave_unica'] == $id){
+                $details['email'] = $cita[0]->correo;
+    
+                SendEmail::dispatch($details['email'],new cancelMail($details));
+            }else if($cita[0]->idPsicologo = $id){
+                $correo = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
+                $details['email'] = $correo;
+    
+                SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
+            }
+        }catch(\Exception $e){
+            Log::info($e);
+            Log::info($alumno);
         }
         
-        $details = [
-            'email' => $_ENV['DESTINATARIO_CORREO'],
-            'hora' => $cita[0]->hora,
-            'fecha' => $cita[0]->fecha,
-            'name' => $alumno[0]->nombres . ' ' . $alumno[0]->apellidoPaterno . ' ' . $alumno[0]->apellidoMaterno,
-            'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
-        ];
-
-        if($alumno[0]->claveUnica == $id){
-            SendEmail::dispatch($details['email'],new cancelMail($details));
-        }else if($cita[0]->idPsicologo = $id){
-            SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
-        }
     }
-
+    
     public function cancelDate(Request $request){
         $id = $request->input('id',null);
         $idCita = $request->input('idCita', null);
@@ -428,32 +444,50 @@ class DateController extends Controller
             $cita = collect($citaInfo);
 
             if($cita->isNotEmpty()){
+                $datosAlumno = $this->AlumnoController->obtainAlumno($cita[0]->claveUnica);
+                $alumno = json_decode($datosAlumno, true);
 
-                $alumno = DB::select('call get_info_alumno(?)',[$cita[0]->claveUnica]);
+                if($id == $cita[0]->claveUnica){
+                    $diaActual = Carbon::now('America/Mexico_City');
 
-                $alumno = collect($alumno);
+                    if($cita[0]->fecha >= $diaActual->copy()->addDays(2)->toDateString()
+                        && $cita[0]->estado == "Asistencia sin confirmar"){
+                        $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);
 
-                $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);                
-
-                if($cancel[0]->resultado == 1){
-                    if($alumno->isNotEmpty()){
-                        $this->sendCancelMail($cita,$alumno,$id);
+                        if($cancel[0]->resultado == 1){
+                            $diaProximo = $diaActual->copy()->addDays(7);
+                            $fecha = $diaProximo->toDateString();
+                            
+                            DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno['clave_unica']]);
                         
-                        $diaActual = Carbon::now($tz='America/Mexico_City');
-                        $diaProximo = $diaActual->addDays(7);
-                        $fecha = $diaProximo->toDateString();
+                            $this->sendCancelMail($cita,$alumno,$id);
 
-                        $alumno = DB::update('UPDATE alumno SET fechaCancelacion = ? WHERE claveUnica = ?',[$fecha,$alumno[0]->claveUnica]);
+                            $respuesta = ['Cita cancelada correctamente'];
+                            return response($respuesta,200);
+                        }else{
+                            $respuesta = ['Error' => 'Cita NO cancelada'];
+                            return response($respuesta,200);
+                        }
+                    }else{
+                        $respuesta = ['Error' => 'Cita NO cancelada'];
+                        return response($respuesta,200);
+                    }
+                }else if($id == $cita[0]->idPsicologo){
+                    $cancel = DB::select('SELECT cancelar_cita(?) AS resultado',[$idCita]);
+
+                    if($cancel[0]->resultado == 1){
+                        $this->sendCancelMail($cita,$alumno,$id);
+
                         $respuesta = ['Cita cancelada correctamente'];
                         return response($respuesta,200);
                     }else{
-                        $respuesta = ['Error' => 'ID incorrecto'];
-                        return response($respuesta,400);
+                        $respuesta = ['Error' => 'Cita NO cancelada'];
+                        return response($respuesta,200);
                     }
                 }else{
-                    $respuesta = ['Error' => 'Cita NO cancelada'];
-                    return response($respuesta,200);
-                }
+                    $respuesta = ['Error' => 'ID incorrecto'];
+                    return response($respuesta,400);
+                }               
             }else{
                 $respuesta = ['Sin cita agendada'];
                 return response($respuesta,404);
@@ -463,23 +497,28 @@ class DateController extends Controller
             return response($respuesta,400);
         }
     }
-
-    private function sendConfirmMail(Collection $cita, Collection $alumno,String $id){
-        if(strlen($id) != 6 || !$cita->isNotEmpty() || !$alumno->isNotEmpty()){
-            return "Error";
+    
+    private function sendConfirmMail(Collection $cita, array $alumno,String $id){
+        try{
+            if(strlen($id) != 6 || !$cita->isNotEmpty() || empty($alumno)){
+                return "Error";
+            }
+            
+            $details = [
+                'email' => $cita[0]->correo,
+                'hora' => $cita[0]->hora,
+                'fecha' => $cita[0]->fecha,
+                'name' => $alumno['nombre_alumno'],
+                'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
+            ];
+    
+            if($alumno['clave_unica'] == $id){
+                SendEmail::dispatch($details['email'],new confirmDateMail($details));
+            }
+        }catch(\Exception $e){
+            Log::info($e);
         }
         
-        $details = [
-            'email' => $_ENV['DESTINATARIO_CORREO'],
-            'hora' => $cita[0]->hora,
-            'fecha' => $cita[0]->fecha,
-            'name' => $alumno[0]->nombres . ' ' . $alumno[0]->apellidoPaterno . ' ' . $alumno[0]->apellidoMaterno,
-            'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
-        ];
-
-        if($alumno[0]->claveUnica == $id){
-            SendEmail::dispatch($details['email'],new confirmDateMail($details));
-        }
     }
 
     public function confirmDate(Request $request){
@@ -493,14 +532,13 @@ class DateController extends Controller
 
             if($cita->isNotEmpty()){
 
-                $alumno = DB::select('call get_info_alumno(?)',[$cita[0]->claveUnica]);
-
-                $alumno = collect($alumno);
+                $datosAlumno = $this->AlumnoController->obtainAlumno($cita[0]->claveUnica);
+                $alumno = json_decode($datosAlumno, true);
 
                 $confirm = DB::select('SELECT confirmar_cita(?) AS resultado',[$idCita]);
 
                 if($confirm[0]->resultado == 1){
-                    if($alumno->isNotEmpty()){
+                    if(!empty($alumno)){
                         $this->sendConfirmMail($cita,$alumno,$id);
 
                         $respuesta = ['Cita confirmada correctamente'];
