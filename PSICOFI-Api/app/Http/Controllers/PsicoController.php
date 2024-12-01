@@ -34,7 +34,7 @@ class PsicoController extends Controller
                     return 0;
                 }
             }else{
-                $respuesta = ['Error' => 'Psicologo no encontrdo'];
+                $respuesta = ['Error' => 'Psicólogo no encontrado'];
                 return json_encode($respuesta);
             }
         }
@@ -74,7 +74,7 @@ class PsicoController extends Controller
                 return json_encode($respuesta);
             }
         }else{
-            $respuesta = ['Error' => 'Psicologo no encontrado'];
+            $respuesta = ['Error' => 'Psicólogo no encontrado'];
             return json_encode($respuesta);
         }
     }
@@ -208,7 +208,7 @@ class PsicoController extends Controller
 
     public function registerPsicologo(Request $request){
         if(!$request->all()){
-            $respuesta = ['Error' => 'Datos invalidos'];
+            $respuesta = ['Error' => 'Datos inválidos'];
             return json_encode($respuesta);
         }
 
@@ -217,7 +217,7 @@ class PsicoController extends Controller
 
         if($clave == null && strlen($curp) == 18){
             if(PsicologoExterno::where('CURP',$curp)->exists()){
-                $respuesta = ['Error' => 'Psicologo duplicado'];
+                $respuesta = ['Error' => 'Psicólogo duplicado'];
                 return json_encode($respuesta);
             }
 
@@ -235,19 +235,19 @@ class PsicoController extends Controller
 
             try {
                 if ($psicologo->save()) {
-                    $respuesta = ['Psicologo registrado correctamente'];
+                    $respuesta = ['Psicólogo registrado correctamente'];
                     return json_encode($respuesta);
                 }else{
-                    $respuesta = ['Error' => 'Datos invalidos'];
+                    $respuesta = ['Error' => 'Datos inválidos'];
                     return json_encode($respuesta);
                 }
             } catch (\Exception $e) {
-                $respuesta = ['Error' => 'Datos invalidos'];
+                $respuesta = ['Error' => 'Datos inválidos'];
                 return json_encode($respuesta);
             }
         }else if($curp == null){
             if(Psicologo::where('claveUnica',$clave)->exists()){
-                $respuesta = ['Error' => 'Psicologo duplicado'];
+                $respuesta = ['Error' => 'Psicólogo duplicado'];
                 return json_encode($respuesta);
             }else{
                 $psicologo = new Psicologo;
@@ -264,19 +264,19 @@ class PsicoController extends Controller
 
                 try {
                     if ($psicologo->save()) {
-                        $respuesta = ['Psicologo registrado correctamente'];
+                        $respuesta = ['Psicólogo registrado correctamente'];
                         return json_encode($respuesta);
                     }else{
-                        $respuesta = ['Error' => 'Datos invalidos'];
+                        $respuesta = ['Error' => 'Datos inválidos'];
                         return json_encode($respuesta);
                     }
                 } catch (\Exception $e) {
-                    $respuesta = ['Error' => 'Datos invalidos'];
+                    $respuesta = ['Error' => 'Datos inválidos'];
                     return json_encode($respuesta);
                 }
             }
         }else if($clave !== null && $curp !== null || strlen($curp) != 18){
-            $respuesta = ['Error' => 'Datos invalidos'];
+            $respuesta = ['Error' => 'Datos inválidos'];
             return json_encode($respuesta);
         }
     }
@@ -292,7 +292,7 @@ class PsicoController extends Controller
             ->get();
 
         if($alumnos->isEmpty()){
-            $respuesta = ['Error' => 'Psicologo sin alumnos atendidos'];
+            $respuesta = ['Error' => 'Psicólogo sin alumnos atendidos'];
             return response($respuesta,204);
         }else{
             foreach($alumnos as $alumno){
