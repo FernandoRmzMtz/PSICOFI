@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('apellidoMaterno',60);
             $table->string('correo',80);
             $table->string('telefono',30);
-            $table->string('contrasena',20);
         });
     }
 

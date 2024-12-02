@@ -21,12 +21,11 @@ class AdministradorFactory extends Factory
     {
         return [
             'idUsuario' => $this->faker->randomNumber(6,true),
-            'nombres' => $this->faker->name(), 
-            'apellidoPaterno' => $this->faker->lastName(), 
-            'apellidoMaterno' => $this->faker->lastName(),
-            'correo' => $this->faker->email(),
-            'telefono' => $this->faker->phoneNumber(),
-            'contrasena' => "12345",
+            'nombres' => "Dora Emma", 
+            'apellidoPaterno' => "Reynaga", 
+            'apellidoMaterno' => "Navarro",
+            'correo' => "emma.reynaga@uaslp.mx",
+            'telefono' => "123456890"
         ];
     }
 }
