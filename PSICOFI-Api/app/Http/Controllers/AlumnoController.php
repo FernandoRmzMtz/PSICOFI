@@ -82,8 +82,6 @@ class AlumnoController extends Controller
             $alumno = json_decode($alumno, true);
             $carrera = $this->removerAcentos($alumno['nombre_carrera']);
             $area = $this->removerAcentos($alumno['nombre_area']);
-            Log::info($carrera);
-            //$edad = $this->calcularEdad($alumno['fecha_nace']);
 
             $newAlumno = new Alumno;
 
@@ -125,39 +123,6 @@ class AlumnoController extends Controller
 
         $respuesta = ['Error' => 'Alumno NO encontrado'];  
         return response($respuesta,200);
-
-        // try{
-
-        //     if(strlen($id) == 6){
-        //         $alumno = DB::select('call get_info_alumno(?)',[$id]);
-
-        //         if($alumno){
-        //             return json_encode($alumno[0]);
-        //         }else{
-        //             $jsonResult = $this->obtainAlumno($id);
-        //             $arrayDatos = json_decode($jsonResult, true);
-
-        //             if($arrayDatos){
-        //                 $respuesta = [
-        //                     'claveUnica' => $arrayDatos['clave_unica'],
-        //                     'nombres' => $arrayDatos['nombres_alumno'],
-        //                     'apellidoMaterno' => $arrayDatos['segundo_apellido_alumno'],
-        //                     'apellidoPaterno' => $arrayDatos['primer_apellido_alumno'],
-        //                 ];
-        //                 return response($respuesta,200);
-        //             }else{
-        //                 $respuesta = ['Error' => 'Alumno NO encontrado'];  
-        //                 return response($respuesta,200);
-        //             }
-        //         }
-        //     }else{
-        //         $respuesta = ['Error' => 'ID invalida'];
-        //         return response($respuesta,200);
-        //     }
-        // }catch(\Exception $e){
-        //     $respuesta = ['Error' => 'Consulta incorrecta'];
-        //     return response($respuesta,400);
-        // }
     }
 
     public function getDataAlumno(Request $request){
