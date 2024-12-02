@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         EstadoCita::create(['estado' => 'No atendida']);
         EstadoCita::create(['estado' => 'Cancelada']);
         EstadoCita::create(['estado' => 'Libre']);
-        //Psicologo::factory(2)->create();
+        Psicologo::factory(1)->create();
 
         $tiposIntervencion = [
             ['tipoIntervencion' => 'Emocional'],

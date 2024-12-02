@@ -15,29 +15,65 @@ return new class extends Migration
         DB::unprepared("
             DROP VIEW IF EXISTS view_psicologos;
             CREATE VIEW view_psicologos AS
-            SELECT 
-                psicologo.claveUnica AS idPsicologo, 
-                psicologo.nombres, 
-                psicologo.apellidoPaterno, 
-                psicologo.apellidoMaterno, 
-                carreraspsico.carrera, 
-                psicologo.semestre, 
-                psicologo.activo, 
-                psicologo.correo, 
-                psicologo.contrasena, 
+            SELECT
+                psicologo.claveUnica AS idPsicologo,
+                psicologo.nombres,
+                psicologo.apellidoPaterno,
+                psicologo.apellidoMaterno,
+                carreraspsico.carrera,
+                psicologo.semestre,
+                psicologo.activo,
+                psicologo.correo,
+                NULL AS contrasena,
                 psicologo.created_at,
                 psicologo.updated_at
-            FROM 
+            FROM
                 psicologo
-            LEFT JOIN 
-                carreraspsico 
+            LEFT JOIN
+                carreraspsico
             ON psicologo.idCarrera = carreraspsico.idCarrera
-            UNION 
-            SELECT 
-                * 
-            FROM 
-                psicologoexterno;
-        ");
+            UNION
+            SELECT
+                psicologoexterno.CURP AS idPsicologo,
+                psicologoexterno.nombres,
+                psicologoexterno.apellidoPaterno,
+                psicologoexterno.apellidoMaterno,
+                psicologoexterno.Carrera,
+                psicologoexterno.semestre,
+                psicologoexterno.activo,
+                psicologoexterno.correo,
+                psicologoexterno.contrasena,
+                psicologoexterno.created_at,
+                psicologoexterno.updated_at
+            FROM
+                psicologoexterno;"
+        );
+        // DB::unprepared("
+        //     DROP VIEW IF EXISTS view_psicologos;
+        //     CREATE VIEW view_psicologos AS
+        //     SELECT 
+        //         psicologo.claveUnica AS idPsicologo, 
+        //         psicologo.nombres, 
+        //         psicologo.apellidoPaterno, 
+        //         psicologo.apellidoMaterno, 
+        //         carreraspsico.carrera, 
+        //         psicologo.semestre, 
+        //         psicologo.activo, 
+        //         psicologo.correo, 
+        //         psicologo.contrasena, 
+        //         psicologo.created_at,
+        //         psicologo.updated_at
+        //     FROM 
+        //         psicologo
+        //     LEFT JOIN 
+        //         carreraspsico 
+        //     ON psicologo.idCarrera = carreraspsico.idCarrera
+        //     UNION 
+        //     SELECT 
+        //         * 
+        //     FROM 
+        //         psicologoexterno;
+        // ");
     }
 
     /**

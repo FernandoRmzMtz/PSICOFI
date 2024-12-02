@@ -19,8 +19,6 @@ use Illuminate\Support\Facades\DB;
 use App\Jobs\SendEmail;
 use Illuminate\Support\Facades\Log;
 
-use function PHPUnit\Framework\isEmpty;
-
 class DateController extends Controller
 {
     private $AlumnoController;

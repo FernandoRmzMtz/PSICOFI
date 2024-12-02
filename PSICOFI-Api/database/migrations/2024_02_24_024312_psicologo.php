@@ -17,9 +17,8 @@ return new class extends Migration
             $table->string('apellidoPaterno',60);
             $table->string('apellidoMaterno',60)->nullable()->default(null);;
             $table->unsignedBigInteger('idCarrera');
-            $table->bigInteger('semestre');
+            $table->bigInteger('semestre')->nullable();
             $table->string('correo');
-            $table->string('contrasena',20);
             $table->boolean('activo');
             $table->timestamps();
             // Foreign key
