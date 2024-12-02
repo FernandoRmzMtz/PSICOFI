@@ -206,7 +206,7 @@ class AuthController extends Controller
 
     // Función para validar administradores
     private function auth_admin($id,$password){
-        if(!is_numeric($id)){
+        if(!is_numeric($id) || strlen($id) > 10){
             return ['validacion' => "USUARIO-INVALIDO"];
         }
 
