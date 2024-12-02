@@ -16,14 +16,13 @@ class PsicologoFactory extends Factory
     {
         return [
             'claveUnica' => $this->faker->randomNumber(6,true),
-            'nombres' => $this->faker->name(), 
-            'apellidoPaterno' => $this->faker->lastName(), 
-            'apellidoMaterno' => $this->faker->lastName(),
-            'idCarrera' => $this->faker->numberBetween(1,2),
-            'semestre' => $this->faker->numberBetween(1,9),
-            'correo' => $this->faker->email(),
-            'activo' => $this->faker->boolean(),
-            'contrasena' => 12345
+            'nombres' => "Dora Emma", 
+            'apellidoPaterno' => "Reynaga", 
+            'apellidoMaterno' => "Navarro",
+            'idCarrera' => 2,
+            'semestre' => null,
+            'correo' => "emma.reynaga@uaslp.mx",
+            'activo' => 1
         ];
     }
 }

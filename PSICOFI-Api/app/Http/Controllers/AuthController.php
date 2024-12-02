@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Alumno;
 use App\Models\PsicologoExterno;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -131,16 +132,28 @@ class AuthController extends Controller
     private function auth_psico($id,$password){
         $lenID = strlen($id);
 
-        if($lenID != 6 && $lenID != 18){
-            return ['validacion' => "USUARIO-INVALIDO"];
-        }
-
         $psicologo = DB::table('view_psicologos')
                 ->where('idPsicologo', $id)
                 ->where('activo', '=', 1)
                 ->exists();
 
         if(!$psicologo){
+            return ['validacion' => "USUARIO-INVALIDO"];
+        }
+
+        if($lenID != 6 && $lenID <= 10 && is_numeric($id)){
+
+            $arrayDatos = json_decode($this->authWebAdmin($id, $password), true);
+
+            if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
+                $arrayDatos['id'] = $arrayDatos['rpe_usuario'];
+                unset($arrayDatos['rpe_usuario']);
+
+                $arrayDatos['rol'] = "Psicologo";
+                
+                return $arrayDatos;
+            }
+
             return ['validacion' => "USUARIO-INVALIDO"];
         }
 
@@ -193,39 +206,38 @@ class AuthController extends Controller
 
     // Función para validar administradores
     private function auth_admin($id,$password){
-        // $arrayDatos = json_decode($this->authWebAdmin($id, $password), true);
-        
         if(!is_numeric($id)){
             return ['validacion' => "USUARIO-INVALIDO"];
         }
 
-        $arrayDatos = json_decode($this->authWebStudent($id, $password), true);
+        //$arrayDatos = json_decode($this->authWebStudent($id, $password), true);
+        $arrayDatos = json_decode($this->authWebAdmin($id, $password), true);
 
         if($arrayDatos['validacion'] == 'USUARIO-VALIDO'){
             $administrador = Administrador::where('idUsuario', $id)
             ->exists();
 
-            if($administrador == 1){
-                $arrayDatos['id'] = $arrayDatos['clave_unica'];
-                unset($arrayDatos['clave_unica']);
-
-                unset($arrayDatos['situacion_alumno']);
-                unset($arrayDatos['nombre_alumno']);
-
-                $arrayDatos['rol'] = "Administrador";
-                
-                return $arrayDatos;
-            }
-            
             // if($administrador == 1){
-            //     $arrayDatos['id'] = $arrayDatos['rpe_usuario'];
-            //     unset($arrayDatos['rpe_usuario']);
+            //     $arrayDatos['id'] = $arrayDatos['clave_unica'];
+            //     unset($arrayDatos['clave_unica']);
+
+            //     unset($arrayDatos['situacion_alumno']);
+            //     unset($arrayDatos['nombre_alumno']);
 
             //     $arrayDatos['rol'] = "Administrador";
-            //     $jsonResult = json_encode($arrayDatos);
                 
-            //     return $jsonResult;
+            //     return $arrayDatos;
             // }
+            
+            if($administrador == 1){
+                $arrayDatos['id'] = $arrayDatos['rpe_usuario'];
+                unset($arrayDatos['rpe_usuario']);
+
+                $arrayDatos['rol'] = "Administrador";
+                $jsonResult = json_encode($arrayDatos);
+                
+                return $jsonResult;
+            }
             return ['validacion' => "USUARIO-INVALIDO"];
         }
 
@@ -239,9 +251,9 @@ class AuthController extends Controller
 
         $lenID = strlen($id);
 
-        if(($lenID != 6) || $id == null){
-            return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
-        }
+        // if(($lenID != 6) || $id == null){
+        //     return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
+        // }
 
         $admin = $this->auth_admin($id,$password);
         
@@ -259,16 +271,18 @@ class AuthController extends Controller
 
         $lenID = strlen($id);
 
-        if(($lenID != 6 && $lenID != 18) || $id == null){
-            return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
-        }
+        // if(($lenID != 6 && $lenID != 18) || $id == null){
+        //     return response()->json(['validacion' => 'USUARIO-INVALIDO'], 200);
+        // }
 
         $alumno = $this->auth_student($id,$password);
+
+        // $alumno = [
+        //     'validacion' => 'USUARIO-INVALIDO'
+        // ];
     
         if($alumno['validacion'] == 'USUARIO-INVALIDO'){
             $psicologo = $this->auth_psico($id,$password);
-
-            return $psicologo;
 
             if($psicologo['validacion'] == 'USUARIO-VALIDO'){
                 return response($psicologo,200);
