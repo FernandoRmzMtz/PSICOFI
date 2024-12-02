@@ -8,9 +8,12 @@ use App\Models\PsicologoExterno;
 use App\Models\Psicologo;
 use Carbon\Carbon;
 use App\Mail\confirmDateMail;
+use App\Mail\confirmDateMailPsicologo;
 use App\Mail\cancelMail;
 use App\Mail\cancelMailPsicologo;
+use App\Mail\cancelMailRestriction;
 use App\Mail\scheduleDateMail;
+use App\Mail\scheduleDateMailPsicologo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SendEmail;
@@ -168,30 +171,35 @@ class DateController extends Controller
     }
 
     private function sendScheduleMail(String $fecha,String $hora,array $alumno,String $id){
-        if(strlen($id) != 6 && strlen($id) != 18){
-            return "ID incorrecto";
+        try{
+            if(strlen($id) != 6 && strlen($id) != 18){
+                return "ID incorrecto";
+            }
+    
+            $psicologo = DB::table('view_psicologos')
+                            ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto,correo")
+                            ->where('idPsicologo',$id)
+                            ->first();
+    
+            if($psicologo == null){
+                return "Psicologo no encontrado";
+            }
+    
+            $correoAlumno = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
+            
+            $details = [
+                'fecha' => $fecha,
+                'hora' => $hora,
+                'psicologo' => $psicologo->nombreCompleto,
+                'name' => $alumno['nombre_alumno']
+            ];
+    
+            SendEmail::dispatch($correoAlumno,new scheduleDateMail($details));
+            SendEmail::dispatch($psicologo->correo,new scheduleDateMailPsicologo($details));
+
+        }catch(\Exception $e){
+            Log::info($e);
         }
-
-        $psicologo = DB::table('view_psicologos')
-                        ->selectRaw("CONCAT(nombres, ' ', apellidoPaterno, ' ', apellidoMaterno) AS nombreCompleto")
-                        ->where('idPsicologo',$id)
-                        ->first();
-
-        if($psicologo == null){
-            return "Psicologo no encontrado";
-        }
-
-        $correo = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
-        
-        $details = [
-            'email' => $correo,
-            'fecha' => $fecha,
-            'hora' => $hora,
-            'psicologo' => $psicologo->nombreCompleto,
-            'name' => $alumno['nombre_alumno']
-        ];
-
-        SendEmail::dispatch($details['email'],new scheduleDateMail($details));
     }
 
     public function scheduleDate(Request $request){
@@ -416,16 +424,14 @@ class DateController extends Controller
                 'name' => $alumno['nombre_alumno'],
                 'psicologo' => $cita[0]->{'Nombres psicologo'} . ' ' . $cita[0]->{'Apellido Pat psicologo'} . ' ' . $cita[0]->{'Apellido Mat psicologo'}
             ];
+
+            $correo = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
     
             if($alumno['clave_unica'] == $id){
-                $details['email'] = $cita[0]->correo;
-    
-                SendEmail::dispatch($details['email'],new cancelMail($details));
+                SendEmail::dispatch($correo,new cancelMailRestriction($details));
+                SendEmail::dispatch($cita[0]->correo,new cancelMail($details));
             }else if($cita[0]->idPsicologo = $id){
-                $correo = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
-                $details['email'] = $correo;
-    
-                SendEmail::dispatch($details['email'],new cancelMailPsicologo($details));
+                SendEmail::dispatch($correo,new cancelMailPsicologo($details));
             }
         }catch(\Exception $e){
             Log::info($e);
@@ -504,8 +510,9 @@ class DateController extends Controller
                 return "Error";
             }
             
+            $correoAlumno = 'A' . $alumno['clave_unica'] . '@alumnos.uaslp.mx';
+
             $details = [
-                'email' => $cita[0]->correo,
                 'hora' => $cita[0]->hora,
                 'fecha' => $cita[0]->fecha,
                 'name' => $alumno['nombre_alumno'],
@@ -513,7 +520,8 @@ class DateController extends Controller
             ];
     
             if($alumno['clave_unica'] == $id){
-                SendEmail::dispatch($details['email'],new confirmDateMail($details));
+                SendEmail::dispatch($correoAlumno,new confirmDateMail($details));
+                SendEmail::dispatch($cita[0]->correo,new confirmDateMailPsicologo($details));
             }
         }catch(\Exception $e){
             Log::info($e);
