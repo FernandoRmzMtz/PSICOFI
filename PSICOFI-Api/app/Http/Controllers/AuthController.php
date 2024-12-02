@@ -16,9 +16,9 @@ class AuthController extends Controller
         $request = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
                         <s:Body>
                             <valida_usuario xmlns="http://tempuri.org/">
-                            <key_sw>'.env('SERVICE_KEY').'</key_sw>
+                            <key_sw>'.htmlspecialchars(env('SERVICE_KEY')).'</key_sw>
                             <rpe_usuario>'. $rpe .'</rpe_usuario>
-                            <contrasena>'. $password .'</contrasena>
+                            <contrasena>'. htmlspecialchars($password) .'</contrasena>
                             </valida_usuario>
                         </s:Body>
                     </s:Envelope>';

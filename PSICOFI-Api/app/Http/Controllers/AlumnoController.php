@@ -6,7 +6,7 @@ use App\Models\Alumno;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class AlumnoController extends Controller
 {
@@ -65,6 +65,12 @@ class AlumnoController extends Controller
         return $edad;
     }
 
+    function removerAcentos($cadena) {
+        $buscar = ['á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ñ', 'Ñ'];
+        $reemplazar = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'n', 'N'];
+        return str_replace($buscar, $reemplazar, $cadena);
+    }
+
     public function addAlumno($id){
         $alumno = $this->obtainAlumno($id);
 
@@ -74,13 +80,16 @@ class AlumnoController extends Controller
 
         if($alumno){
             $alumno = json_decode($alumno, true);
+            $carrera = $this->removerAcentos($alumno['nombre_carrera']);
+            $area = $this->removerAcentos($alumno['nombre_area']);
+            Log::info($carrera);
             //$edad = $this->calcularEdad($alumno['fecha_nace']);
 
             $newAlumno = new Alumno;
 
             $newAlumno -> claveUnica = intval($alumno['clave_unica']);
-            $newAlumno -> carrera = iconv('UTF-8', 'ASCII//TRANSLIT', $alumno['nombre_carrera']);
-            $newAlumno -> area = iconv('UTF-8', 'ASCII//TRANSLIT', $alumno['nombre_area']);
+            $newAlumno -> carrera = $carrera;
+            $newAlumno -> area = $area;
             $newAlumno -> semestre = intval($alumno['semestre']);
             $newAlumno -> fechaCancelacion = null;
             
